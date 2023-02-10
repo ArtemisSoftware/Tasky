@@ -17,13 +17,14 @@ import com.artemissoftware.core_ui.theme.White
 
 @Composable
 fun TYButton(
+    modifier: Modifier = Modifier,
     text : String,
     onClick: () -> Unit,
     textColor: Color = White,
     backGroundColor: Color = Black
 ) {
     Button(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(55.dp),
         shape = RoundedCornerShape(38.dp),

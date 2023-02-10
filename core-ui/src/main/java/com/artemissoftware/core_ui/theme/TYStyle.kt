@@ -67,7 +67,8 @@ val InterTypography = Typography(
     caption = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 12.sp,
+        lineHeight = 14.4.sp,
     ),
     overline = TextStyle(
         fontFamily = InterFont,
