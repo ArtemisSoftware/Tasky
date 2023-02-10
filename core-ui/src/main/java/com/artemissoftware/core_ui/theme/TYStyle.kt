@@ -60,8 +60,9 @@ val InterTypography = Typography(
     ),
     button = TextStyle(
         fontFamily = InterFont,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontWeight = FontWeight.W700,
+        fontSize = 16.sp,
+        lineHeight = 30.sp,
     ),
     caption = TextStyle(
         fontFamily = InterFont,
