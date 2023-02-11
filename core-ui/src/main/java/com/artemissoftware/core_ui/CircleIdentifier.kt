@@ -1,9 +1,7 @@
 package com.artemissoftware.core_ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -52,8 +50,17 @@ fun CircleIdentifier(
 @Preview(showBackground = true)
 @Composable
 private fun TYTextButtonPreview() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(32.dp)
+    ) {
 
-    CircleIdentifier(
-        text = "AA"
-    )
+        CircleIdentifier(
+            text = "AA"
+        )
+
+        CircleIdentifier(
+            text = "WW",
+            size = 32.dp,
+        )
+    }
 }

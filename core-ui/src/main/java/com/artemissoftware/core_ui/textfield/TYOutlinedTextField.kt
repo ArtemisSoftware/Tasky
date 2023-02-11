@@ -46,7 +46,7 @@ fun TYOutlinedTextField(
     maxChar: Int? = null,
     onValueChange: (String) -> Unit = {},
     imeAction: ImeAction = ImeAction.Next,
-    isValid: Boolean = true
+    validationState: TYTextFieldValidationStateType = TYTextFieldValidationStateType.NOT_VALIDATED
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -65,7 +65,7 @@ fun TYOutlinedTextField(
             .background(color = Light2)
             .border(
                 width = 1.dp,
-                color = if (isValid) Light2 else ErrorRed,
+                color = if (validationState == TYTextFieldValidationStateType.INVALID) ErrorRed else Light2,
                 shape = shape
             )
             .bringIntoViewRequester(relocation)
@@ -89,7 +89,7 @@ fun TYOutlinedTextField(
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = Light2,
-            unfocusedBorderColor = if(isValid) Light2 else ErrorRed,
+            unfocusedBorderColor = if (validationState == TYTextFieldValidationStateType.INVALID) ErrorRed else Light2,
             focusedBorderColor = LightBlue,
             cursorColor = Black
         ),
@@ -113,7 +113,7 @@ fun TYOutlinedTextField(
                 onClick = { onValueChange.invoke(text) },
                 text = text,
                 isPasswordVisible = isPasswordVisible,
-                isValid = isValid
+                validationState = validationState
             )
         },
         shape = shape
@@ -127,7 +127,7 @@ private fun TrailingIcon(
     onClick: (TextFieldValue) -> Unit,
     text: String,
     isPasswordVisible: MutableState<Boolean>,
-    isValid: Boolean = true
+    validationState: TYTextFieldValidationStateType = TYTextFieldValidationStateType.NOT_VALIDATED
 ) {
     when (tyTextFieldType) {
 
@@ -147,7 +147,7 @@ private fun TrailingIcon(
         }
         else -> {
 
-            if (text.isNotBlank() && isValid) {
+            if (text.isNotBlank() && validationState == TYTextFieldValidationStateType.VALID) {
                 IconButton(
                     onClick = {
                         onClick.invoke(TextFieldValue(""))
@@ -211,7 +211,8 @@ private fun TYOutlinedTextFieldPreview() {
         TYOutlinedTextField(
             tyTextFieldType = TYTextFieldType.EMAIL,
             text = "email@email.com",
-            hint = "Email address"
+            hint = "Email address",
+            validationState = TYTextFieldValidationStateType.VALID
         )
 
         TYOutlinedTextField(
@@ -224,7 +225,7 @@ private fun TYOutlinedTextFieldPreview() {
             tyTextFieldType = TYTextFieldType.EMAIL,
             text = "text",
             hint = "password",
-            isValid = false
+            validationState = TYTextFieldValidationStateType.INVALID
         )
 
         TYOutlinedTextField(
