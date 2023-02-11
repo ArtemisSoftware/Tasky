@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.button
+package com.artemissoftware.core_ui.composables.button
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.text.TYText
+import com.artemissoftware.core_ui.composables.text.TYText
 import com.artemissoftware.core_ui.theme.Black
 import com.artemissoftware.core_ui.theme.White
 

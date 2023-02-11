@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.textfield
+package com.artemissoftware.core_ui.composables.textfield
 
 enum class TYTextFieldValidationStateType {
 

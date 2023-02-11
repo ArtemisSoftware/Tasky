@@ -1,11 +1,11 @@
-package com.artemissoftware.core_ui.button
+package com.artemissoftware.core_ui.composables.button
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.artemissoftware.core_ui.text.TYText
+import com.artemissoftware.core_ui.composables.text.TYText
 import com.artemissoftware.core_ui.theme.Silver
 
 @Composable

@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.textfield
+package com.artemissoftware.core_ui.composables.textfield
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,7 +29,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.text.TYText
+import com.artemissoftware.core_ui.composables.text.TYText
 import com.artemissoftware.core_ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.text
+package com.artemissoftware.core_ui.composables.text
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme

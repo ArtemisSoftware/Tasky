@@ -1,24 +1,20 @@
-package com.artemissoftware.core_ui
+package com.artemissoftware.core_ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.button.TYTextButton
-import com.artemissoftware.core_ui.text.TYText
+import com.artemissoftware.core_ui.composables.text.TYText
 import com.artemissoftware.core_ui.theme.Black
-import com.artemissoftware.core_ui.theme.Gray
 import com.artemissoftware.core_ui.theme.Green
 
 @Composable
