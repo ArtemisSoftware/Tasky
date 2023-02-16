@@ -21,7 +21,7 @@ data class EventDto(
     @SerializedName("to")
     val to: Long,
     @SerializedName("attendees")
-    val attendees: List<AttendeeDto>,
+    val attendees: List<EventAttendeeDto>,
     @SerializedName("photos")
     val photos: List<PhotoDto>
 )
