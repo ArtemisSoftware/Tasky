@@ -1,6 +1,6 @@
 package com.artemissoftware.tasky.domain.usecases.validation
 
-class ValidateEmailUseCase constructor(){
+class ValidateEmailUseCase {
 
     operator fun invoke(email: String): Boolean  {
 
