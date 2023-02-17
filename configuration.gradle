@@ -27,6 +27,7 @@ ext.versions = [
         junitExtension          : '1.1.4',
 
         retrofit                : '2.9.0',
+        room                    : '2.5.0',
         okhttpBom               : '4.10.0'
 ]
 
@@ -45,6 +46,10 @@ ext.libraries = [
 
         retrofit                        : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitConverterGson           : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
+
+        roomRuntime                     : "androidx.room:room-runtime:$versions.room",
+        roomCompiler                    : "androidx.room:room-compiler:$versions.room",
+        roomKtx                         : "androidx.room:room-ktx:$versions.room",
 
         okhttpBom                       : "com.squareup.okhttp3:okhttp-bom:$versions.okhttpBom",
         okhttp                          : "com.squareup.okhttp3:okhttp",
