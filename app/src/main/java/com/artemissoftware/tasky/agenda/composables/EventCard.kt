@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.composables
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -15,12 +16,15 @@ import androidx.compose.ui.unit.dp
 import com.artemissoftware.tasky.R
 
 @Composable
-fun EventCard() {
+fun EventCard(
+    onCheckedChange: (Boolean) -> Unit,
+) {
 
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        elevation = 0.dp
+        elevation = 0.dp,
+        shape = RoundedCornerShape(20.dp)
     ) {
         Column(
             modifier = Modifier
@@ -32,7 +36,7 @@ fun EventCard() {
                 Column{
                     EventRadioButton(
                         modifier = Modifier.padding(top = 4.dp),
-                        onCheckedChange = {}
+                        onCheckedChange = onCheckedChange
                     )
                 }
 
@@ -76,12 +80,12 @@ fun EventCard() {
 
 @Preview(showBackground = true)
 @Composable
-private fun DefaultPreview() {
+private fun EventCardPreview() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        EventCard()
-        EventCard()
-        EventCard()
-        EventCard()
+        EventCard(onCheckedChange = {})
+        EventCard(onCheckedChange = {})
+        EventCard(onCheckedChange = {})
+        EventCard(onCheckedChange = {})
     }
 }
