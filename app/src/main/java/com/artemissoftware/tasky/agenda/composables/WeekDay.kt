@@ -56,9 +56,10 @@ fun WeekDay(
 @Composable
 private fun WeekDayPreview() {
 
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         WeekDay(weekDay = "M", dayOfTheWeek = "1")
         WeekDay(weekDay = "T", dayOfTheWeek = "2", isSelected = true)
         WeekDay(weekDay = "W", dayOfTheWeek = "13")
+        WeekDay(weekDay = "F", dayOfTheWeek = "23", isSelected = true)
     }
 }
