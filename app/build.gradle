@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    //--id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -70,4 +71,8 @@ dependencies {
     implementation rootProject.libraries.okhttpBom
     implementation rootProject.libraries.okhttp
     implementation rootProject.libraries.okhttpLoggingInterceptor
+
+    //datastore
+    //--implementation rootProject.libraries.datastore
+    implementation rootProject.libraries.kotlinxSerializationJson
 }
