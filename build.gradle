@@ -7,6 +7,9 @@ buildscript {
         kotlin_version = "$rootProject.versions.kotlin"
         compose_ui_version = '1.2.0'
     }
+    dependencies {
+        //--classpath "org.jetbrains.kotlin:kotlin-serialization:1.6.10"
+    }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id 'com.android.application' version "$gradle_version" apply false

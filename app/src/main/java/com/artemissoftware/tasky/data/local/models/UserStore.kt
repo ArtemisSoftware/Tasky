@@ -3,7 +3,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class UserSettings(
+data class UserStore(
     val name: String,
     val token: String
 )
