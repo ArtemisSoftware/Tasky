@@ -11,7 +11,7 @@ import com.airbnb.lottie.compose.*
 
 @Composable
 fun TYLottieLoader(
-    @RawRes id: Int,
+    @RawRes id: Int = R.raw.example_lottie,
     modifier: Modifier = Modifier,
     iterateForever: Boolean = false
 ) {
