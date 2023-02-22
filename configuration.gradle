@@ -23,6 +23,7 @@ ext.versions = [
         kotlin                  : '1.7.0',
 
         lifecycleRuntimeKtx     : '2.3.1',
+        lottie                  : '6.0.0',
 
         junit                   : '4.13.2',
         junitExtension          : '1.1.4',
@@ -41,7 +42,9 @@ ext.libraries = [
 
         composeUiTooling                : "androidx.compose.ui:ui-tooling:$versions.compose",
 
-        composeFoundation               : "androidx.compose.foundation:foundation:$versions.composeFoundation"
+        composeFoundation               : "androidx.compose.foundation:foundation:$versions.composeFoundation",
+
+        lottie                          :"com.airbnb.android:lottie-compose:$versions.lottie",
 ]
 
 ext.tests = [

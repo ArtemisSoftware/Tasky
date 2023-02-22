@@ -48,4 +48,6 @@ dependencies {
     androidTestImplementation rootProject.tests.espressoCore
 
     implementation rootProject.libraries.composeFoundation
+
+    implementation rootProject.libraries.lottie
 }
