@@ -1,183 +1,263 @@
 package com.artemissoftware.core_ui.composables.dialog
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.constraintlayout.compose.ConstraintLayout
+import com.artemissoftware.core_ui.R
 import com.artemissoftware.core_ui.composables.animations.TYLottieLoader
-import com.artemissoftware.core_ui.composables.button.TYButton
+import com.artemissoftware.core_ui.composables.button.TYTextButton
+import com.artemissoftware.core_ui.composables.scaffold.TYScaffoldState
 import com.artemissoftware.core_ui.composables.text.TYText
-import com.artemissoftware.core_ui.theme.White
+
 
 @Composable
-fun TYDialog(
-    title: String,
-    description: String? = null,
-    buttonDescription: String,
-    onDismiss: () -> Unit,
-    iconSize: Dp = 300.dp
-) {
+fun TYDialog(tyScaffoldState: TYScaffoldState) {
 
-    val ratioTop = (iconSize.value * 2 / 3).dp
-    val ratioTopText = (iconSize.value * 10 / 75).dp
+    tyScaffoldState.dialog.value?.let { dialogType->
 
-    Dialog(
-        onDismissRequest = onDismiss
+        Dialog(
+            onDismissRequest = { },
+            content = {
+                TYDialogContent(
+                    tyScaffoldState = tyScaffoldState,
+                    dialogType = dialogType
+                )
+            }
+        )
+    }
+}
+
+
+
+
+@Composable
+private fun TYDialogContent(
+    tyScaffoldState: TYScaffoldState,
+    dialogType: TYDialogType
+){
+
+    Card(
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(top = 5.dp, bottom = 20.dp),
+        elevation = 8.dp
     ) {
+        Column {
 
-        Box(modifier = Modifier.wrapContentSize()) {
+            ResourceContent(dialogType = dialogType).invoke()
 
-            ConstraintLayout {
+            DialogMessage(dialogType = dialogType)
 
-                val (lottie, content) = createRefs()
-
-                DialogContent(
-                    modifier = Modifier
-                        .constrainAs(content){
-                            top.linkTo(parent.top, margin = ratioTop)
-                        },
-                    ratioTopText = ratioTopText,
-                    title = title,
-                    description = description,
-                    buttonDescription = buttonDescription,
-                    onClick = onDismiss
-                )
-
-                TYLottieLoader(
-                    modifier = Modifier
-                        .size(iconSize)
-                        .constrainAs(lottie) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                )
-
-            }
-        }
-    }
-
-}
-
-
-@Composable
-private fun DialogContent(
-    modifier: Modifier = Modifier,
-    ratioTopText: Dp,
-    title: String,
-    description: String? = null,
-    buttonDescription: String,
-    onClick: () -> Unit,
-) {
-
-    Column(modifier = modifier) {
-
-        Box(
-            modifier = Modifier
-                .wrapContentSize()
-                .background(
-                    color = White,
-                    shape = RoundedCornerShape(25.dp, 10.dp, 25.dp, 10.dp)
-                )
-        ) {
-
-            Column(
+            Divider(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp)
-                    .padding(top = ratioTopText),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+                    .fillMaxWidth()
+                    .height(1.dp)
+            )
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                TextCaption(title = title, description = description)
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                TYButton(
-                    text = buttonDescription,
-                    onClick = onClick
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-            }
+            DialogOptions(
+                tyScaffoldState = tyScaffoldState,
+                dialogOptions = dialogType.dialogOptions
+            )
         }
     }
 }
 
 
+
+
+@Preview
 @Composable
-private fun TextCaption(
-    title: String,
-    description: String? = null,
-    modifier: Modifier = Modifier,
-) {
+private fun TYDialogContentPreview(){
+
+    val dialogTypeSuccess = TYDialogType.Success(
+        title =  "Get updates",
+        description = "Allow permission to send notifications every day of the year",
+        lottieId = R.raw.example_lottie,
+        dialogOptions = TYDialogOptions(
+            confirmationTextId = R.string.ok,
+            cancelTextId = R.string.cancel
+        )
+    )
+
+    val dialogTypError = TYDialogType.Error(
+        title =  "Get updates",
+        description = "Allow permission to send notifications every day of the year",
+        lottieId = R.raw.example_lottie_2,
+        dialogOptions = TYDialogOptions(
+            confirmationTextId = R.string.ok,
+        )
+    )
+
+    Column {
+        TYDialogContent(dialogType = dialogTypeSuccess, tyScaffoldState = TYScaffoldState())
+        TYDialogContent(dialogType = dialogTypError, tyScaffoldState = TYScaffoldState())
+    }
+}
+
+
+
+@Composable
+private fun ResourceContent(
+    dialogType: TYDialogType
+): @Composable () -> Unit {
+    val resourceContent: @Composable () -> Unit = when {
+
+        dialogType.lottieId != null -> {
+            {
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TYLottieLoader(
+                        id = dialogType.lottieId,
+                        iterateForever = true,
+                        modifier = Modifier
+                            .size(120.dp)
+                            .padding(top = 16.dp)
+                    )
+                }
+
+            }
+        }
+        else -> {
+            {}
+        }
+    }
+    return resourceContent
+}
+
+
+
+@Composable
+private fun DialogMessage(dialogType: TYDialogType){
 
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        TYText(
+            text = dialogType.title,
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier
+                .padding(top = 5.dp)
+                .fillMaxWidth(),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        TYText(
+            text = dialogType.description,
+            style = MaterialTheme.typography.subtitle2,
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .fillMaxWidth(),
+        )
+    }
+}
+
+
+@Preview
+@Composable
+private fun DialogMessagePreview(){
+
+    val dialogTypeSuccess = TYDialogType.Success(
+        title =  "Get updates",
+        description = "Allow permission to send notifications every day of the year",
+        lottieId = R.raw.example_lottie,
+        dialogOptions = TYDialogOptions(
+            confirmationTextId = R.string.ok,
+            cancelTextId = R.string.cancel
+        )
+    )
+
+    DialogMessage(dialogType = dialogTypeSuccess)
+}
+
+
+
+
+
+@Composable
+private fun DialogOptions(
+    tyScaffoldState: TYScaffoldState,
+    dialogOptions: TYDialogOptions
+){
+
+    val confirmModifier = if(dialogOptions.getOptionsType() == TYDialogButtonType.DOUBLE_OPTION) Modifier else Modifier.fillMaxWidth()
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
 
-        TYText(
-            text = title,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h5
-        )
-
-        description?.let {
-            TYText(
-                text = description,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1
+        if(dialogOptions.getOptionsType() == TYDialogButtonType.DOUBLE_OPTION){
+            TYTextButton(
+                text = stringResource(id = dialogOptions.cancelTextId ?: R.string.cancel),
+                onClick = {
+                    dialogOptions.cancel()
+                    tyScaffoldState.closeDialog()
+                }
             )
         }
 
-    }
-
-}
-
-
-
-
-@Preview(showBackground = true)
-@Composable
-private fun TYDialogPreview() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        TYDialog(
-            onDismiss = {},
-            title = "title",
-            description = "description",
-            buttonDescription = "Your Button Message",
+        TYTextButton(
+            modifier = confirmModifier,
+            text = stringResource(id = dialogOptions.confirmationTextId),
+            onClick = {
+                dialogOptions.confirmation()
+                tyScaffoldState.closeDialog()
+            }
         )
     }
 }
 
-@Preview(showBackground = true)
+
+@Preview
 @Composable
-private fun DialogContentPreview() {
-    DialogContent(
-        title = "title",
-        description = "description",
-        buttonDescription = "Your Button Message",
-        onClick = {},
-        ratioTopText = 200.dp
+private fun DialogOptionsPreview(){
+
+    val dialogTypeSuccess = TYDialogType.Success(
+        title =  "Get updates",
+        description = "Allow permission to send notifications every day of the year",
+        lottieId = R.raw.example_lottie,
+        dialogOptions = TYDialogOptions(
+            confirmationTextId = R.string.ok,
+            cancelTextId = R.string.cancel
+        )
     )
+
+    val dialogTypError = TYDialogType.Error(
+        title =  "Get updates",
+        description = "Allow permission to send notifications every day of the year",
+        lottieId = R.raw.example_lottie_2,
+        dialogOptions = TYDialogOptions(
+            confirmationTextId = R.string.ok,
+        )
+    )
+
+    Column {
+        DialogOptions(
+            tyScaffoldState = TYScaffoldState(),
+            dialogOptions = dialogTypeSuccess.dialogOptions
+        )
+        DialogOptions(
+            tyScaffoldState = TYScaffoldState(),
+            dialogOptions = dialogTypError.dialogOptions
+        )
+    }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun TextCaptionPreview() {
-    TextCaption(title = "title", description = "description")
-}
 
