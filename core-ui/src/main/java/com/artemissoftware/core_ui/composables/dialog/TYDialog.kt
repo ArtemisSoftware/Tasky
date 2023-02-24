@@ -82,7 +82,6 @@ private fun TYDialogContentPreview(){
     val dialogTypeSuccess = TYDialogType.Success(
         title =  "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        lottieId = R.raw.example_lottie,
         dialogOptions = TYDialogOptions(
             confirmationTextId = R.string.ok,
             cancelTextId = R.string.cancel
@@ -92,7 +91,6 @@ private fun TYDialogContentPreview(){
     val dialogTypError = TYDialogType.Error(
         title =  "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        lottieId = R.raw.example_lottie_2,
         dialogOptions = TYDialogOptions(
             confirmationTextId = R.string.ok,
         )
@@ -121,7 +119,7 @@ private fun ResourceContent(
                 ) {
                     TYLottieLoader(
                         id = dialogType.lottieId,
-                        iterateForever = true,
+                        iterateForever = false,
                         modifier = Modifier
                             .size(120.dp)
                             .padding(top = 16.dp)
@@ -174,7 +172,6 @@ private fun DialogMessagePreview(){
     val dialogTypeSuccess = TYDialogType.Success(
         title =  "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        lottieId = R.raw.example_lottie,
         dialogOptions = TYDialogOptions(
             confirmationTextId = R.string.ok,
             cancelTextId = R.string.cancel
@@ -232,7 +229,6 @@ private fun DialogOptionsPreview(){
     val dialogTypeSuccess = TYDialogType.Success(
         title =  "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        lottieId = R.raw.example_lottie,
         dialogOptions = TYDialogOptions(
             confirmationTextId = R.string.ok,
             cancelTextId = R.string.cancel
@@ -242,7 +238,6 @@ private fun DialogOptionsPreview(){
     val dialogTypError = TYDialogType.Error(
         title =  "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        lottieId = R.raw.example_lottie_2,
         dialogOptions = TYDialogOptions(
             confirmationTextId = R.string.ok,
         )
