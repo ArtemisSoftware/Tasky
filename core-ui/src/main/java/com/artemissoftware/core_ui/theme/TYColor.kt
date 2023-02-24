@@ -1,5 +1,6 @@
 package com.artemissoftware.core_ui.theme
 
+import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
 
 val Black = Color(0xFF16161C)
@@ -22,3 +23,6 @@ val UnfocusedTrailingIconColor = Color(0xFFBEBEBE)
 val ErrorRed = Color(0xFFFF7272)
 
 val Silver = Color(0xFFA9B4BE)
+
+val Colors.LoadingBackground: Color
+    get() = if (isLight) Color(0xffffffff) else Color(0xff252525)
