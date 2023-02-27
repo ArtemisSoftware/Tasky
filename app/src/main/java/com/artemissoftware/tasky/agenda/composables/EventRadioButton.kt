@@ -30,16 +30,12 @@ fun EventRadioButton(
         onCheckedChange = onCheckedChange,
         modifier = modifier.size(24.dp)
     ) {
-        Icon(
-            painter = painterResource(
-                if (selected) {
+        TYIcon(
+            icon = if (selected) {
                     R.drawable.ic_launcher_foreground
                 } else {
                     R.drawable.ic_launcher_background
                 }
-            ),
-            contentDescription = null,
-            tint = MaterialTheme.colors.primary
         )
     }
 }

@@ -14,7 +14,7 @@ fun TYDivider( // TODO: mudar a cor e por no core UI
 ) {
     Divider(
         modifier = modifier,
-        color = Color.Green
+        color = color
     )
 }
 

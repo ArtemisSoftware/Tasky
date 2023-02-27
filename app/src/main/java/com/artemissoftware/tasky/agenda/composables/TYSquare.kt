@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TYSquare(
+fun TYSquare( // TODO: change to core UI
     size: Dp = 24.dp,
     color: Color,
     borderColor: Color = color
 ) {
 
-    val shape = RoundedCornerShape(5.dp)
+    val shape = RoundedCornerShape(2.dp)
 
     Box(
         modifier = Modifier
