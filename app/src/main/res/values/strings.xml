@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Tasky</string>
+    <string name="reminder">Reminder</string>
+    <string name="task">Task</string>
+    <string name="event">Event</string>
 </resources>
