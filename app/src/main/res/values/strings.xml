@@ -3,4 +3,6 @@
     <string name="reminder">Reminder</string>
     <string name="task">Task</string>
     <string name="event">Event</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>
