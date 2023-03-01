@@ -24,12 +24,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.composables.text.TYText
+import com.artemissoftware.core_ui.composables.text.TaskyText
 import com.artemissoftware.core_ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,35 +36,36 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun TYOutlinedTextField(
+fun TaskyOutlinedTextField(
     modifier: Modifier = Modifier,
-    tyTextFieldType: TYTextFieldType = TYTextFieldType.TEXT,
+    taskyTextFieldType: TaskyTextFieldType = TaskyTextFieldType.TEXT,
     hint: String,
     text: String,
     textStyle: TextStyle = MaterialTheme.typography.body1,
     maxChar: Int? = null,
     onValueChange: (String) -> Unit = {},
     imeAction: ImeAction = ImeAction.Next,
-    validationState: TYTextFieldValidationStateType = TYTextFieldValidationStateType.NOT_VALIDATED
+    validationState: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED
 ) {
 
     val focusManager = LocalFocusManager.current
     val relocation = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
-    val textFormatted = text.take(maxChar ?: tyTextFieldType.getMaxChar())
-    val isPasswordVisible = remember { mutableStateOf(tyTextFieldType != TYTextFieldType.PASSWORD) }
+
+    val textFormatted = maxChar?.let {
+        text.take(it)
+    } ?: run { text }
+    val isPasswordVisible = remember { mutableStateOf(taskyTextFieldType != TaskyTextFieldType.PASSWORD) }
     val shape = RoundedCornerShape(10.dp)
 
 
     OutlinedTextField(
         modifier = modifier
-            .fillMaxWidth()
-            .height(60.dp)
             .clip(shape)
             .background(color = Light2)
             .border(
                 width = 1.dp,
-                color = if (validationState == TYTextFieldValidationStateType.INVALID) ErrorRed else Light2,
+                color = if (validationState == TaskyTextFieldValidationStateType.INVALID) ErrorRed else Light2,
                 shape = shape
             )
             .bringIntoViewRequester(relocation)
@@ -81,7 +81,7 @@ fun TYOutlinedTextField(
             onValueChange.invoke(textValue)
         },
         placeholder = {
-            TYText(
+            TaskyText(
                 text = hint,
                 style = MaterialTheme.typography.body1,
                 color = HintTextColor
@@ -89,12 +89,12 @@ fun TYOutlinedTextField(
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = Light2,
-            unfocusedBorderColor = if (validationState == TYTextFieldValidationStateType.INVALID) ErrorRed else Light2,
+            unfocusedBorderColor = if (validationState == TaskyTextFieldValidationStateType.INVALID) ErrorRed else Light2,
             focusedBorderColor = LightBlue,
             cursorColor = Black
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = tyTextFieldType.getKeyboardType(),
+            keyboardType = taskyTextFieldType.getKeyboardType(),
             imeAction = imeAction
         ),
         keyboardActions = KeyboardActions(
@@ -109,10 +109,11 @@ fun TYOutlinedTextField(
         singleLine = true,
         trailingIcon = {
             TrailingIcon(
-                tyTextFieldType = tyTextFieldType,
-                onClick = { onValueChange.invoke(text) },
-                text = text,
-                isPasswordVisible = isPasswordVisible,
+                taskyTextFieldType = taskyTextFieldType,
+                isPasswordVisible = isPasswordVisible.value,
+                onPasswordIconClick = {
+                    isPasswordVisible.value = !isPasswordVisible.value
+                },
                 validationState = validationState
             )
         },
@@ -123,23 +124,20 @@ fun TYOutlinedTextField(
 
 @Composable
 private fun TrailingIcon(
-    tyTextFieldType: TYTextFieldType,
-    onClick: (TextFieldValue) -> Unit,
-    text: String,
-    isPasswordVisible: MutableState<Boolean>,
-    validationState: TYTextFieldValidationStateType = TYTextFieldValidationStateType.NOT_VALIDATED
+    taskyTextFieldType: TaskyTextFieldType,
+    isPasswordVisible: Boolean,
+    validationState: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED,
+    onPasswordIconClick: () -> Unit = {}
 ) {
-    when (tyTextFieldType) {
+    when (taskyTextFieldType) {
 
-        TYTextFieldType.PASSWORD -> {
+        TaskyTextFieldType.PASSWORD -> {
 
             IconButton(
-                onClick = {
-                    isPasswordVisible.value = !isPasswordVisible.value
-                },
+                onClick = onPasswordIconClick,
                 content = {
                     Icon(
-                        painter = painterResource(if (isPasswordVisible.value) R.drawable.ic_visibility else R.drawable.ic_visibility_off),
+                        painter = painterResource(if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off),
                         contentDescription = ""
                     )
                 }
@@ -147,18 +145,11 @@ private fun TrailingIcon(
         }
         else -> {
 
-            if (text.isNotBlank() && validationState == TYTextFieldValidationStateType.VALID) {
-                IconButton(
-                    onClick = {
-                        onClick.invoke(TextFieldValue(""))
-                    },
-                    content = {
-                        Icon(
-                            tint = Green,
-                            painter = painterResource(R.drawable.ic_check),
-                            contentDescription = ""
-                        )
-                    }
+            if (validationState == TaskyTextFieldValidationStateType.VALID) {
+                Icon(
+                    tint = Green,
+                    painter = painterResource(R.drawable.ic_check),
+                    contentDescription = ""
                 )
             }
         }
@@ -167,74 +158,68 @@ private fun TrailingIcon(
 
 private fun getVisualTransformation(isPasswordVisible: Boolean) = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
 
-@SuppressLint("UnrememberedMutableState")
 @Preview(showBackground = true)
 @Composable
 private fun TrailingIconPreview() {
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TrailingIcon(
-            tyTextFieldType = TYTextFieldType.PASSWORD,
-            onClick = {},
-            text = "Example",
-            isPasswordVisible = mutableStateOf(true)
+            taskyTextFieldType = TaskyTextFieldType.PASSWORD,
+            isPasswordVisible = true
         )
 
         TrailingIcon(
-            tyTextFieldType = TYTextFieldType.PASSWORD,
-            onClick = {},
-            text = "Example",
-            isPasswordVisible = mutableStateOf(false)
+            taskyTextFieldType = TaskyTextFieldType.PASSWORD,
+            isPasswordVisible = false
         )
     }
 }
 
 
 
-@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
-private fun TYOutlinedTextFieldPreview() {
+private fun TaskyOutlinedTextFieldPreview() {
 
-    var text by remember {
-        mutableStateOf("Test")
-    }
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
-        TYOutlinedTextField(
+        TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             text = "",
             hint = "Email address"
         )
 
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.EMAIL,
+        TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = "email@email.com",
             hint = "Email address",
-            validationState = TYTextFieldValidationStateType.VALID
+            validationState = TaskyTextFieldValidationStateType.VALID
         )
 
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.PASSWORD,
+        TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            taskyTextFieldType = TaskyTextFieldType.PASSWORD,
             text = "text",
             hint = "password"
         )
 
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.EMAIL,
+        TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = "text",
             hint = "password",
-            validationState = TYTextFieldValidationStateType.INVALID
-        )
-
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.EMAIL,
-            text = text,
-            onValueChange = {
-                text = it
-            },
-            hint = "Email address"
+            validationState = TaskyTextFieldValidationStateType.INVALID
         )
     }
 }

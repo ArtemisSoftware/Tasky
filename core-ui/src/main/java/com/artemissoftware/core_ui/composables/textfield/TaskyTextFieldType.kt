@@ -3,7 +3,7 @@ package com.artemissoftware.core_ui.composables.textfield
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.KeyboardType
 
-enum class TYTextFieldType {
+enum class TaskyTextFieldType {
 
     TEXT,
     EMAIL,
@@ -14,10 +14,5 @@ enum class TYTextFieldType {
         EMAIL -> KeyboardType.Email
         PASSWORD -> KeyboardType.Password
         else -> KeyboardType.Text
-    }
-
-    fun getMaxChar(): Int = when (this) {
-        EMAIL -> 28
-        else -> 32
     }
 }

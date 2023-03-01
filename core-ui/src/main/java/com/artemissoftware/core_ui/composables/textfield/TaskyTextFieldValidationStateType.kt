@@ -1,6 +1,6 @@
 package com.artemissoftware.core_ui.composables.textfield
 
-enum class TYTextFieldValidationStateType {
+enum class TaskyTextFieldValidationStateType {
 
     VALID,
     INVALID,
