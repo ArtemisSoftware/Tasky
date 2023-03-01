@@ -1,8 +1,7 @@
-package com.artemissoftware.core_ui.composables.dialog
+package com.artemissoftware.core.presentation.composables.dialog
 
 import androidx.annotation.RawRes
 import com.artemissoftware.core.R
-import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 
 sealed class TaskyDialogType(
     val title: String,

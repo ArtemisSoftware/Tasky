@@ -19,8 +19,8 @@ import com.artemissoftware.core.presentation.theme.LoadingBackground
 
 @Composable
 fun TaskyLoading(
-    modifier: Modifier = Modifier,
     isLoading: Boolean,
+    modifier: Modifier = Modifier,
     @RawRes lottieId: Int = R.raw.loading_lottie,
 ) {
 

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
-import com.artemissoftware.core_ui.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.composables.loading.TaskyLoading
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
@@ -47,13 +47,14 @@ fun TaskyScaffold(
         )
 
         TaskyLoading(
+            modifier = Modifier.fillMaxSize(),
             isLoading = isLoading,
             lottieId = loadingLottieId
         )
 
-        taskyScaffoldState?.dialog?.let {
+        taskyScaffoldState?.dialog?.value?.let {
             TaskyDialog(
-                taskyDialogType = it.value,
+                taskyDialogType = it,
                 onDialogDismiss = { taskyScaffoldState.closeDialog() }
             )
         }
@@ -61,9 +62,10 @@ fun TaskyScaffold(
     
 }
 
+
 @Preview(showBackground = true)
 @Composable
-private fun TaskyScaffold_1_Preview() {
+private fun TaskyScaffoldPreview() {
 
     TaskyScaffold(
         content = {
@@ -78,7 +80,7 @@ private fun TaskyScaffold_1_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun TaskyScaffold_2_Preview() {
+private fun TaskyScaffoldLoadingPreview() {
 
     TaskyScaffold(
         isLoading = true,
@@ -94,14 +96,14 @@ private fun TaskyScaffold_2_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun TaskyScaffold_3_Preview() {
+private fun TaskyScaffoldDialogPreview() {
 
     val dialogTypeSuccess = TaskyDialogType.Success(
         title =  "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TaskyDialogOptions(
-            confirmationTextId = R.string.ok,
-            cancelTextId = R.string.cancel
+        dialogOptions = TaskyDialogOptions.DoubleOption(
+            confirmationText = R.string.ok,
+            cancelText = R.string.cancel
         )
     )
 
@@ -123,7 +125,7 @@ private fun TaskyScaffold_3_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun TaskyScaffold_4_Preview() {
+private fun TaskyScaffoldTopBarPreview() {
 
     TaskyScaffold(
         topBar = {
@@ -146,7 +148,7 @@ private fun TaskyScaffold_4_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun TaskyScaffold_5_Preview() {
+private fun TaskyScaffoldWithContentSurfacePreview() {
 
     TaskyScaffold(
         backgroundColor = Black,

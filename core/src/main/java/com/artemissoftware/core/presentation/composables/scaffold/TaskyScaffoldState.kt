@@ -1,7 +1,7 @@
 package com.artemissoftware.core.presentation.composables.scaffold
 
 import androidx.compose.runtime.mutableStateOf
-import com.artemissoftware.core_ui.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 
 class TaskyScaffoldState {
 

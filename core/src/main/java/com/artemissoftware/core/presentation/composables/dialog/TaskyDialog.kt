@@ -1,5 +1,6 @@
 package com.artemissoftware.core.presentation.composables.dialog
 
+import androidx.annotation.RawRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -16,27 +17,25 @@ import com.artemissoftware.core.R
 import com.artemissoftware.core.presentation.composables.animations.TaskyLottieLoader
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.text.TaskyText
-import com.artemissoftware.core_ui.composables.dialog.TaskyDialogType
 
 
 @Composable
 fun TaskyDialog(
-    taskyDialogType: TaskyDialogType? = null,
-    onDialogDismiss: () -> Unit
+    taskyDialogType: TaskyDialogType,
+    onDialogDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
-    taskyDialogType?.let { dialogType->
-
-        Dialog(
-            onDismissRequest = { },
-            content = {
-                TaskyDialogContent(
-                    onDialogDismiss = onDialogDismiss,
-                    taskyDialogType = dialogType
-                )
-            }
-        )
-    }
+    Dialog(
+        onDismissRequest = { },
+        content = {
+            TaskyDialogContent(
+                modifier = modifier,
+                onDialogDismiss = onDialogDismiss,
+                taskyDialogType = taskyDialogType
+            )
+        }
+    )
 }
 
 
@@ -45,21 +44,31 @@ fun TaskyDialog(
 @Composable
 private fun TaskyDialogContent(
     taskyDialogType: TaskyDialogType,
-    onDialogDismiss: () -> Unit
+    onDialogDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ){
 
     Card(
         shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 12.dp)
             .padding(top = 5.dp, bottom = 20.dp),
         elevation = 8.dp
     ) {
         Column {
 
-            ResourceContent(dialogType = taskyDialogType).invoke()
+            taskyDialogType.lottieId?.let {
+                ResourceContent(
+                    modifier = Modifier.fillMaxWidth(),
+                    lottieId = it
+                )
+            }
 
-            DialogMessage(dialogType = taskyDialogType)
+            DialogMessage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                dialogType = taskyDialogType)
 
             Divider(
                 modifier = Modifier
@@ -68,6 +77,9 @@ private fun TaskyDialogContent(
             )
 
             DialogOptions(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 onDialogDismiss = onDialogDismiss,
                 dialogOptions = taskyDialogType.dialogOptions
             )
@@ -85,17 +97,17 @@ private fun TaskyDialogContentPreview(){
     val dialogTypeSuccess = TaskyDialogType.Success(
         title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TaskyDialogOptions(
-            confirmationTextId = R.string.ok,
-            cancelTextId = R.string.cancel
+        dialogOptions = TaskyDialogOptions.DoubleOption(
+            confirmationText = R.string.ok,
+            cancelText = R.string.cancel
         )
     )
 
     val dialogTypError = TaskyDialogType.Error(
         title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TaskyDialogOptions(
-            confirmationTextId = R.string.ok,
+        dialogOptions = TaskyDialogOptions.SingleOption(
+            confirmationText = R.string.ok,
         )
     )
 
@@ -109,44 +121,34 @@ private fun TaskyDialogContentPreview(){
 
 @Composable
 private fun ResourceContent(
-    dialogType: TaskyDialogType
-): @Composable () -> Unit {
-    val resourceContent: @Composable () -> Unit = when {
+    @RawRes lottieId: Int,
+    modifier: Modifier = Modifier
 
-        dialogType.lottieId != null -> {
-            {
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TaskyLottieLoader(
-                        id = dialogType.lottieId,
-                        iterateForever = false,
-                        modifier = Modifier
-                            .size(120.dp)
-                            .padding(top = 16.dp)
-                    )
-                }
-
-            }
-        }
-        else -> {
-            {}
-        }
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        TaskyLottieLoader(
+            id = lottieId,
+            iterateForever = false,
+            modifier = Modifier
+                .size(120.dp)
+                .padding(top = 16.dp)
+        )
     }
-    return resourceContent
 }
 
 
 
 @Composable
-private fun DialogMessage(dialogType: TaskyDialogType){
+private fun DialogMessage(
+    dialogType: TaskyDialogType,
+    modifier: Modifier = Modifier
+){
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier = modifier
     ) {
         TaskyText(
             text = dialogType.title,
@@ -175,9 +177,9 @@ private fun DialogMessagePreview(){
     val dialogTypeSuccess = TaskyDialogType.Success(
         title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TaskyDialogOptions(
-            confirmationTextId = R.string.ok,
-            cancelTextId = R.string.cancel
+        dialogOptions = TaskyDialogOptions.DoubleOption(
+            confirmationText = R.string.ok,
+            cancelText = R.string.cancel
         )
     )
 
@@ -191,21 +193,28 @@ private fun DialogMessagePreview(){
 @Composable
 private fun DialogOptions(
     onDialogDismiss: () -> Unit,
-    dialogOptions: TaskyDialogOptions
+    dialogOptions: TaskyDialogOptions,
+    modifier: Modifier = Modifier
 ){
 
-    val confirmModifier = if(dialogOptions.getOptionsType() == TaskyDialogButtonType.DOUBLE_OPTION) Modifier else Modifier.fillMaxWidth()
+    val confirmModifier = when(dialogOptions){
+
+        is TaskyDialogOptions.SingleOption ->{
+            Modifier.fillMaxWidth()
+        }
+        is TaskyDialogOptions.DoubleOption ->{
+            Modifier
+        }
+    }
 
     Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = modifier,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
 
-        if(dialogOptions.getOptionsType() == TaskyDialogButtonType.DOUBLE_OPTION){
+        if(dialogOptions is TaskyDialogOptions.DoubleOption){
             TaskyTextButton(
-                text = stringResource(id = dialogOptions.cancelTextId ?: R.string.cancel),
+                text = stringResource(id = dialogOptions.cancelText ?: R.string.cancel),
                 onClick = {
                     dialogOptions.cancel()
                     onDialogDismiss.invoke()
@@ -215,9 +224,9 @@ private fun DialogOptions(
 
         TaskyTextButton(
             modifier = confirmModifier,
-            text = stringResource(id = dialogOptions.confirmationTextId),
+            text = stringResource(id = dialogOptions.optionText),
             onClick = {
-                dialogOptions.confirmation()
+                dialogOptions.confirmationOption()
                 onDialogDismiss.invoke()
             }
         )
@@ -232,17 +241,17 @@ private fun DialogOptionsPreview(){
     val dialogTypeSuccess = TaskyDialogType.Success(
         title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TaskyDialogOptions(
-            confirmationTextId = R.string.ok,
-            cancelTextId = R.string.cancel
+        dialogOptions = TaskyDialogOptions.DoubleOption(
+            confirmationText = R.string.ok,
+            cancelText = R.string.cancel
         )
     )
 
     val dialogTypError = TaskyDialogType.Error(
         title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TaskyDialogOptions(
-            confirmationTextId = R.string.ok,
+        dialogOptions = TaskyDialogOptions.SingleOption(
+            confirmationText = R.string.ok,
         )
     )
 

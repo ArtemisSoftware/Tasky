@@ -19,10 +19,12 @@ fun TaskyTopBar(
     contentColor: Color = White,
     backGroundColor: Color = Green,
     onBackClicked: (() -> Unit)? = null,
-    title: String? = null
+    title: String? = null,
+    modifier: Modifier = Modifier
 ) {
 
     TopAppBar(
+        modifier = modifier,
         elevation = 0.dp,
         navigationIcon = {
             onBackClicked?.let {
