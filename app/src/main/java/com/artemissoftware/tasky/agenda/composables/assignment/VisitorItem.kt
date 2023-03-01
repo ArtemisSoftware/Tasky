@@ -48,7 +48,7 @@ fun VisitorItem( // TODO: Mudar texto e icons
                     icon = R.drawable.ic_launcher_foreground,
                     color = Color.Green
                 )
-                Spacer(modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 Text(text = name)
             }
 

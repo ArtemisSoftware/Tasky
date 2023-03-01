@@ -6,4 +6,8 @@
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="creator">creator</string>
+    <string name="visitors">Visitors</string>
+    <string name="all">All</string>
+    <string name="going">Going</string>
+    <string name="not_going">Not going</string>
 </resources>
