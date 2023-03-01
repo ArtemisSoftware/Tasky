@@ -53,7 +53,7 @@ fun TaskyOutlinedTextField(
     val scope = rememberCoroutineScope()
 
     val textFormatted = maxChar?.let {
-        text.take(maxChar)
+        text.take(it)
     } ?: run { text }
     val isPasswordVisible = remember { mutableStateOf(taskyTextFieldType != TaskyTextFieldType.PASSWORD) }
     val shape = RoundedCornerShape(10.dp)
