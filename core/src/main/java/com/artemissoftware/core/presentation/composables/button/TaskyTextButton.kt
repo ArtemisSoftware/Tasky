@@ -1,12 +1,12 @@
-package com.artemissoftware.core_ui.composables.button
+package com.artemissoftware.core.presentation.composables.button
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.artemissoftware.core_ui.composables.text.TaskyText
-import com.artemissoftware.core_ui.theme.Silver
+import com.artemissoftware.core.presentation.composables.text.TaskyText
+import com.artemissoftware.core.presentation.theme.Silver
 
 @Composable
 fun TaskyTextButton(

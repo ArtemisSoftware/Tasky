@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables.text
+package com.artemissoftware.core.presentation.composables.text
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
@@ -12,8 +12,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
-import com.artemissoftware.core_ui.theme.Black
-import com.artemissoftware.core_ui.theme.InterTypography
+import com.artemissoftware.core.presentation.theme.Black
+import com.artemissoftware.core.presentation.theme.InterTypography
 
 @Composable
 fun TaskyText(

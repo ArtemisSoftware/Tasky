@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.theme
+package com.artemissoftware.core.presentation.theme
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
