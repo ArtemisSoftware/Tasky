@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables.button
+package com.artemissoftware.core.presentation.composables.button
 
 import androidx.annotation.DrawableRes
 
