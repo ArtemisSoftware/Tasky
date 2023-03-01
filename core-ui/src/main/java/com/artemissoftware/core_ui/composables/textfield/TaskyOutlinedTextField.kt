@@ -110,7 +110,10 @@ fun TaskyOutlinedTextField(
         trailingIcon = {
             TrailingIcon(
                 taskyTextFieldType = taskyTextFieldType,
-                isPasswordVisible = isPasswordVisible,
+                isPasswordVisible = isPasswordVisible.value,
+                onPasswordIconClick = {
+                    isPasswordVisible.value = !isPasswordVisible.value
+                },
                 validationState = validationState
             )
         },
@@ -122,20 +125,19 @@ fun TaskyOutlinedTextField(
 @Composable
 private fun TrailingIcon(
     taskyTextFieldType: TaskyTextFieldType,
-    isPasswordVisible: MutableState<Boolean>,
-    validationState: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED
+    isPasswordVisible: Boolean,
+    validationState: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED,
+    onPasswordIconClick: () -> Unit = {}
 ) {
     when (taskyTextFieldType) {
 
         TaskyTextFieldType.PASSWORD -> {
 
             IconButton(
-                onClick = {
-                    isPasswordVisible.value = !isPasswordVisible.value
-                },
+                onClick = onPasswordIconClick,
                 content = {
                     Icon(
-                        painter = painterResource(if (isPasswordVisible.value) R.drawable.ic_visibility else R.drawable.ic_visibility_off),
+                        painter = painterResource(if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off),
                         contentDescription = ""
                     )
                 }
@@ -156,7 +158,6 @@ private fun TrailingIcon(
 
 private fun getVisualTransformation(isPasswordVisible: Boolean) = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
 
-@SuppressLint("UnrememberedMutableState")
 @Preview(showBackground = true)
 @Composable
 private fun TrailingIconPreview() {
@@ -164,12 +165,12 @@ private fun TrailingIconPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TrailingIcon(
             taskyTextFieldType = TaskyTextFieldType.PASSWORD,
-            isPasswordVisible = mutableStateOf(true)
+            isPasswordVisible = true
         )
 
         TrailingIcon(
             taskyTextFieldType = TaskyTextFieldType.PASSWORD,
-            isPasswordVisible = mutableStateOf(false)
+            isPasswordVisible = false
         )
     }
 }
@@ -180,10 +181,6 @@ private fun TrailingIconPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun TaskyOutlinedTextFieldPreview() {
-
-    var text by remember {
-        mutableStateOf("Test")
-    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp)
@@ -223,18 +220,6 @@ private fun TaskyOutlinedTextFieldPreview() {
             text = "text",
             hint = "password",
             validationState = TaskyTextFieldValidationStateType.INVALID
-        )
-
-        TaskyOutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp),
-            taskyTextFieldType = TaskyTextFieldType.EMAIL,
-            text = text,
-            onValueChange = {
-                text = it
-            },
-            hint = "Email address"
         )
     }
 }

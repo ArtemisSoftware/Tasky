@@ -44,7 +44,7 @@ ext.libraries = [
 
         composeUiTooling                : "androidx.compose.ui:ui-tooling:$versions.compose",
 
-        composeFoundation               : "androidx.compose.foundation:foundation:$versions.composeFoundation"
+        composeFoundation               : "androidx.compose.foundation:foundation:$versions.composeFoundation",
         retrofit                        : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitConverterGson           : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
 
