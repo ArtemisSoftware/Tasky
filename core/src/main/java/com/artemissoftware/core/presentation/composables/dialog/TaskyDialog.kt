@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables.dialog
+package com.artemissoftware.core.presentation.composables.dialog
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,24 +12,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.composables.animations.TYLottieLoader
-import com.artemissoftware.core_ui.composables.button.TYTextButton
-import com.artemissoftware.core_ui.composables.scaffold.TYScaffoldState
-import com.artemissoftware.core_ui.composables.text.TYText
+import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.composables.animations.TaskyLottieLoader
+import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
+import com.artemissoftware.core.presentation.composables.text.TaskyText
+import com.artemissoftware.core_ui.composables.dialog.TaskyDialogType
 
 
 @Composable
-fun TYDialog(tyScaffoldState: TYScaffoldState) {
+fun TaskyDialog(
+    taskyDialogType: TaskyDialogType? = null,
+    onDialogDismiss: () -> Unit
+) {
 
-    tyScaffoldState.dialog.value?.let { dialogType->
+    taskyDialogType?.let { dialogType->
 
         Dialog(
             onDismissRequest = { },
             content = {
-                TYDialogContent(
-                    tyScaffoldState = tyScaffoldState,
-                    dialogType = dialogType
+                TaskyDialogContent(
+                    onDialogDismiss = onDialogDismiss,
+                    taskyDialogType = dialogType
                 )
             }
         )
@@ -40,9 +43,9 @@ fun TYDialog(tyScaffoldState: TYScaffoldState) {
 
 
 @Composable
-private fun TYDialogContent(
-    tyScaffoldState: TYScaffoldState,
-    dialogType: TYDialogType
+private fun TaskyDialogContent(
+    taskyDialogType: TaskyDialogType,
+    onDialogDismiss: () -> Unit
 ){
 
     Card(
@@ -54,9 +57,9 @@ private fun TYDialogContent(
     ) {
         Column {
 
-            ResourceContent(dialogType = dialogType).invoke()
+            ResourceContent(dialogType = taskyDialogType).invoke()
 
-            DialogMessage(dialogType = dialogType)
+            DialogMessage(dialogType = taskyDialogType)
 
             Divider(
                 modifier = Modifier
@@ -65,8 +68,8 @@ private fun TYDialogContent(
             )
 
             DialogOptions(
-                tyScaffoldState = tyScaffoldState,
-                dialogOptions = dialogType.dialogOptions
+                onDialogDismiss = onDialogDismiss,
+                dialogOptions = taskyDialogType.dialogOptions
             )
         }
     }
@@ -77,28 +80,28 @@ private fun TYDialogContent(
 
 @Preview
 @Composable
-private fun TYDialogContentPreview(){
+private fun TaskyDialogContentPreview(){
 
-    val dialogTypeSuccess = TYDialogType.Success(
-        title =  "Get updates",
+    val dialogTypeSuccess = TaskyDialogType.Success(
+        title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TYDialogOptions(
+        dialogOptions = TaskyDialogOptions(
             confirmationTextId = R.string.ok,
             cancelTextId = R.string.cancel
         )
     )
 
-    val dialogTypError = TYDialogType.Error(
-        title =  "Get updates",
+    val dialogTypError = TaskyDialogType.Error(
+        title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TYDialogOptions(
+        dialogOptions = TaskyDialogOptions(
             confirmationTextId = R.string.ok,
         )
     )
 
     Column {
-        TYDialogContent(dialogType = dialogTypeSuccess, tyScaffoldState = TYScaffoldState())
-        TYDialogContent(dialogType = dialogTypError, tyScaffoldState = TYScaffoldState())
+        TaskyDialogContent(taskyDialogType = dialogTypeSuccess, onDialogDismiss = {})
+        TaskyDialogContent(taskyDialogType = dialogTypError, onDialogDismiss = {})
     }
 }
 
@@ -106,7 +109,7 @@ private fun TYDialogContentPreview(){
 
 @Composable
 private fun ResourceContent(
-    dialogType: TYDialogType
+    dialogType: TaskyDialogType
 ): @Composable () -> Unit {
     val resourceContent: @Composable () -> Unit = when {
 
@@ -117,7 +120,7 @@ private fun ResourceContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    TYLottieLoader(
+                    TaskyLottieLoader(
                         id = dialogType.lottieId,
                         iterateForever = false,
                         modifier = Modifier
@@ -138,14 +141,14 @@ private fun ResourceContent(
 
 
 @Composable
-private fun DialogMessage(dialogType: TYDialogType){
+private fun DialogMessage(dialogType: TaskyDialogType){
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        TYText(
+        TaskyText(
             text = dialogType.title,
             style = MaterialTheme.typography.h6,
             modifier = Modifier
@@ -154,7 +157,7 @@ private fun DialogMessage(dialogType: TYDialogType){
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        TYText(
+        TaskyText(
             text = dialogType.description,
             style = MaterialTheme.typography.subtitle2,
             modifier = Modifier
@@ -169,10 +172,10 @@ private fun DialogMessage(dialogType: TYDialogType){
 @Composable
 private fun DialogMessagePreview(){
 
-    val dialogTypeSuccess = TYDialogType.Success(
-        title =  "Get updates",
+    val dialogTypeSuccess = TaskyDialogType.Success(
+        title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TYDialogOptions(
+        dialogOptions = TaskyDialogOptions(
             confirmationTextId = R.string.ok,
             cancelTextId = R.string.cancel
         )
@@ -187,11 +190,11 @@ private fun DialogMessagePreview(){
 
 @Composable
 private fun DialogOptions(
-    tyScaffoldState: TYScaffoldState,
-    dialogOptions: TYDialogOptions
+    onDialogDismiss: () -> Unit,
+    dialogOptions: TaskyDialogOptions
 ){
 
-    val confirmModifier = if(dialogOptions.getOptionsType() == TYDialogButtonType.DOUBLE_OPTION) Modifier else Modifier.fillMaxWidth()
+    val confirmModifier = if(dialogOptions.getOptionsType() == TaskyDialogButtonType.DOUBLE_OPTION) Modifier else Modifier.fillMaxWidth()
 
     Row(
         Modifier
@@ -200,22 +203,22 @@ private fun DialogOptions(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
 
-        if(dialogOptions.getOptionsType() == TYDialogButtonType.DOUBLE_OPTION){
-            TYTextButton(
+        if(dialogOptions.getOptionsType() == TaskyDialogButtonType.DOUBLE_OPTION){
+            TaskyTextButton(
                 text = stringResource(id = dialogOptions.cancelTextId ?: R.string.cancel),
                 onClick = {
                     dialogOptions.cancel()
-                    tyScaffoldState.closeDialog()
+                    onDialogDismiss.invoke()
                 }
             )
         }
 
-        TYTextButton(
+        TaskyTextButton(
             modifier = confirmModifier,
             text = stringResource(id = dialogOptions.confirmationTextId),
             onClick = {
                 dialogOptions.confirmation()
-                tyScaffoldState.closeDialog()
+                onDialogDismiss.invoke()
             }
         )
     }
@@ -226,30 +229,30 @@ private fun DialogOptions(
 @Composable
 private fun DialogOptionsPreview(){
 
-    val dialogTypeSuccess = TYDialogType.Success(
-        title =  "Get updates",
+    val dialogTypeSuccess = TaskyDialogType.Success(
+        title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TYDialogOptions(
+        dialogOptions = TaskyDialogOptions(
             confirmationTextId = R.string.ok,
             cancelTextId = R.string.cancel
         )
     )
 
-    val dialogTypError = TYDialogType.Error(
-        title =  "Get updates",
+    val dialogTypError = TaskyDialogType.Error(
+        title = "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TYDialogOptions(
+        dialogOptions = TaskyDialogOptions(
             confirmationTextId = R.string.ok,
         )
     )
 
     Column {
         DialogOptions(
-            tyScaffoldState = TYScaffoldState(),
+            onDialogDismiss = {},
             dialogOptions = dialogTypeSuccess.dialogOptions
         )
         DialogOptions(
-            tyScaffoldState = TYScaffoldState(),
+            onDialogDismiss = {},
             dialogOptions = dialogTypError.dialogOptions
         )
     }

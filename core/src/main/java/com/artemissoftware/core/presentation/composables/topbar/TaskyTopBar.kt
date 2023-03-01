@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables.topbar
+package com.artemissoftware.core.presentation.composables.topbar
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -8,13 +8,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.composables.text.TYText
-import com.artemissoftware.core_ui.theme.Green
-import com.artemissoftware.core_ui.theme.White
+import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.composables.text.TaskyText
+import com.artemissoftware.core.presentation.theme.Green
+import com.artemissoftware.core.presentation.theme.White
 
 @Composable
-fun TYTopBar(
+fun TaskyTopBar(
     toolbarActions: @Composable RowScope.(Color) -> Unit = {},
     contentColor: Color = White,
     backGroundColor: Color = Green,
@@ -26,7 +26,7 @@ fun TYTopBar(
         elevation = 0.dp,
         navigationIcon = {
             onBackClicked?.let {
-                TYToolBarAction(
+                TaskyToolBarAction(
                     iconId = R.drawable.ic_visibility,
                     onClicked = it,
                     tint = contentColor
@@ -35,7 +35,7 @@ fun TYTopBar(
         },
         title = {
             title?.let {
-                TYText(
+                TaskyText(
                     style = MaterialTheme.typography.subtitle1,
                     text = it,
                     color = contentColor,
@@ -55,7 +55,7 @@ fun TYTopBar(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYTopBarPreview() {
+private fun TaskyTopBarPreview() {
 
     val text = "EDIT TASK"
 
@@ -63,39 +63,39 @@ private fun TYTopBarPreview() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        TYTopBar()
-        TYTopBar(title = text, onBackClicked = {})
-        TYTopBar(
+        TaskyTopBar()
+        TaskyTopBar(title = text, onBackClicked = {})
+        TaskyTopBar(
             onBackClicked = {},
             title = text,
             toolbarActions = { color->
-                TYToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
             }
         )
-        TYTopBar(
+        TaskyTopBar(
             title = text,
             toolbarActions = { color->
-                TYToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
             }
         )
-        TYTopBar(
+        TaskyTopBar(
             title = text,
             toolbarActions = { color->
-                TYToolBarAction(text = "Save")
+                TaskyToolBarAction(text = "Save")
             }
         )
-        TYTopBar(
+        TaskyTopBar(
             title = text,
             toolbarActions = { color->
-                TYToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
-                TYToolBarAction(text = "Save", tint = color)
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                TaskyToolBarAction(text = "Save", tint = color)
             }
         )
-        TYTopBar(
+        TaskyTopBar(
             title = text,
             toolbarActions = { color->
-                TYToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
-                TYToolBarAction(iconId = R.drawable.ic_visibility)
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility)
             }
         )
     }

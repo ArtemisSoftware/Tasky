@@ -1,22 +1,22 @@
-package com.artemissoftware.core_ui.composables.dialog
+package com.artemissoftware.core.presentation.composables.dialog
 
 import androidx.annotation.StringRes
 
-data class TYDialogOptions(
+data class TaskyDialogOptions(
     @StringRes val confirmationTextId: Int,
     val confirmation: () -> Unit = {},
     @StringRes val cancelTextId: Int? = null,
     val cancel: () -> Unit = {},
 ) {
-    fun getOptionsType(): TYDialogButtonType{
+    fun getOptionsType(): TaskyDialogButtonType {
 
         return when{
 
             (cancelTextId != null) ->{
-                TYDialogButtonType.DOUBLE_OPTION
+                TaskyDialogButtonType.DOUBLE_OPTION
             }
             else ->{
-                TYDialogButtonType.SINGLE_OPTION
+                TaskyDialogButtonType.SINGLE_OPTION
             }
 
         }

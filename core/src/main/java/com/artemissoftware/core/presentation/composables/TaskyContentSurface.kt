@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables
+package com.artemissoftware.core.presentation.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TYSurface(
+fun TaskyContentSurface(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -28,8 +28,8 @@ fun TYSurface(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYSurfacePreview() {
-    TYSurface(
+private fun TaskyContentSurfacePreview() {
+    TaskyContentSurface(
         modifier = Modifier,
         content = {
             Column(modifier = Modifier.padding(16.dp)) {

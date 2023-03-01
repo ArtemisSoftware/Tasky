@@ -1,16 +1,16 @@
-package com.artemissoftware.core_ui.composables.animations
+package com.artemissoftware.core.presentation.composables.animations
 
 import androidx.compose.runtime.Composable
-import com.artemissoftware.core_ui.R
 import androidx.annotation.RawRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.*
+import com.artemissoftware.core.R
 
 @Composable
-fun TYLottieLoader(
+fun TaskyLottieLoader(
     @RawRes id: Int = R.raw.example_lottie,
     modifier: Modifier = Modifier,
     iterateForever: Boolean = false
@@ -33,18 +33,18 @@ fun TYLottieLoader(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYLottieLoaderPreview() {
+private fun TaskyLottieLoaderPreview() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        TYLottieLoader(
+        TaskyLottieLoader(
             id = R.raw.example_lottie,
             modifier = Modifier
                 .size(300.dp)
         )
-        TYLottieLoader(
+        TaskyLottieLoader(
             id = R.raw.example_lottie,
             iterateForever = true,
             modifier = Modifier.size(300.dp)

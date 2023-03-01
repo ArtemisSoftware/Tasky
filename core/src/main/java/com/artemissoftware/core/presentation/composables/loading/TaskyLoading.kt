@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables.loading
+package com.artemissoftware.core.presentation.composables.loading
 
 import androidx.annotation.RawRes
 import androidx.compose.animation.AnimatedVisibility
@@ -7,20 +7,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.composables.animations.TYLottieLoader
-import com.artemissoftware.core_ui.theme.LoadingBackground
+import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.composables.animations.TaskyLottieLoader
+import com.artemissoftware.core.presentation.theme.LoadingBackground
 
 @Composable
-fun TYLoading(
+fun TaskyLoading(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     @RawRes lottieId: Int = R.raw.loading_lottie,
@@ -38,7 +36,7 @@ fun TYLoading(
             contentAlignment = Alignment.Center
         ) {
 
-            TYLottieLoader(
+            TaskyLottieLoader(
                 iterateForever = true,
                 modifier = Modifier
                     .fillMaxSize()
@@ -51,6 +49,6 @@ fun TYLoading(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYLoadingPreview() {
-    TYLoading(isLoading = true, modifier = Modifier.fillMaxSize())
+private fun TaskyLoadingPreview() {
+    TaskyLoading(isLoading = true, modifier = Modifier.fillMaxSize())
 }

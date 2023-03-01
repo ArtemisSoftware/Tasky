@@ -1,7 +1,6 @@
-package com.artemissoftware.core_ui.composables.scaffold
+package com.artemissoftware.core.presentation.composables.scaffold
 
 import androidx.annotation.RawRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -10,23 +9,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.composables.TYSurface
-import com.artemissoftware.core_ui.composables.dialog.TYDialog
-import com.artemissoftware.core_ui.composables.dialog.TYDialogOptions
-import com.artemissoftware.core_ui.composables.dialog.TYDialogType
-import com.artemissoftware.core_ui.composables.loading.TYLoading
-import com.artemissoftware.core_ui.composables.topbar.TYToolBarAction
-import com.artemissoftware.core_ui.composables.topbar.TYTopBar
-import com.artemissoftware.core_ui.theme.White
+import com.artemissoftware.core.presentation.composables.TaskyContentSurface
+import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
+import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
+import com.artemissoftware.core_ui.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.loading.TaskyLoading
+import com.artemissoftware.core.presentation.theme.White
+import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
+import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
+import com.artemissoftware.core.presentation.theme.Black
 
 @Composable
-fun TYScaffold(
-    modifier: Modifier = Modifier,
+fun TaskyScaffold(
     backgroundColor: Color = White,
     isLoading: Boolean = false,
     @RawRes loadingLottieId: Int = R.raw.loading_lottie,
-    tyScaffoldState: TYScaffoldState? = null,
+    taskyScaffoldState: TaskyScaffoldState? = null,
     topBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
@@ -47,22 +46,26 @@ fun TYScaffold(
             content = content
         )
 
-        TYLoading(
+        TaskyLoading(
             isLoading = isLoading,
             lottieId = loadingLottieId
         )
 
-        tyScaffoldState?.let { TYDialog(tyScaffoldState = it) }
-
+        taskyScaffoldState?.dialog?.let {
+            TaskyDialog(
+                taskyDialogType = it.value,
+                onDialogDismiss = { taskyScaffoldState.closeDialog() }
+            )
+        }
     }
     
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun FGScaffold_1_Preview() {
+private fun TaskyScaffold_1_Preview() {
 
-    TYScaffold(
+    TaskyScaffold(
         content = {
 
             Column(modifier = Modifier.fillMaxSize()) {
@@ -75,9 +78,9 @@ private fun FGScaffold_1_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun FGScaffold_2_Preview() {
+private fun TaskyScaffold_2_Preview() {
 
-    TYScaffold(
+    TaskyScaffold(
         isLoading = true,
         content = {
 
@@ -91,22 +94,22 @@ private fun FGScaffold_2_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun FGScaffold_3_Preview() {
+private fun TaskyScaffold_3_Preview() {
 
-    val dialogTypeSuccess = TYDialogType.Success(
+    val dialogTypeSuccess = TaskyDialogType.Success(
         title =  "Get updates",
         description = "Allow permission to send notifications every day of the year",
-        dialogOptions = TYDialogOptions(
+        dialogOptions = TaskyDialogOptions(
             confirmationTextId = R.string.ok,
             cancelTextId = R.string.cancel
         )
     )
 
-    val scaffoldState = TYScaffoldState()
+    val scaffoldState = TaskyScaffoldState()
     scaffoldState.showDialog(dialogTypeSuccess)
 
-    TYScaffold(
-        tyScaffoldState = scaffoldState,
+    TaskyScaffold(
+        taskyScaffoldState = scaffoldState,
         isLoading = false,
         content = {
 
@@ -120,14 +123,14 @@ private fun FGScaffold_3_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun FGScaffold_4_Preview() {
+private fun TaskyScaffold_4_Preview() {
 
-    TYScaffold(
+    TaskyScaffold(
         topBar = {
-            TYTopBar(
+            TaskyTopBar(
                 title = "Top bar title",
                 toolbarActions = { color->
-                    TYToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                    TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
                 }
             )
         },
@@ -143,20 +146,21 @@ private fun FGScaffold_4_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun FGScaffold_5_Preview() {
+private fun TaskyScaffold_5_Preview() {
 
-    TYScaffold(
+    TaskyScaffold(
+        backgroundColor = Black,
         topBar = {
-            TYTopBar(
+            TaskyTopBar(
                 title = "Top bar title",
                 toolbarActions = { color->
-                    TYToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                    TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
                 }
             )
         },
         content = {
 
-            TYSurface(
+            TaskyContentSurface(
                 modifier = Modifier.padding(top = 32.dp),
                 content = {
                     Column(modifier = Modifier.padding(16.dp)) {

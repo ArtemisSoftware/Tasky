@@ -1,6 +1,5 @@
 package com.artemissoftware.core.presentation.composables.textfield
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.R
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.*
-import com.artemissoftware.core.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
