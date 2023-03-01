@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables.button
+package com.artemissoftware.core.presentation.composables.button
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,9 +19,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.theme.Light2
-import com.artemissoftware.core_ui.theme.LightBlue
+import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.theme.Light2
+import com.artemissoftware.core.presentation.theme.LightBlue
 
 @Composable
 fun TaskyIconButton(

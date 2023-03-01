@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.composables.textfield
+package com.artemissoftware.core.presentation.composables.textfield
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.KeyboardType
