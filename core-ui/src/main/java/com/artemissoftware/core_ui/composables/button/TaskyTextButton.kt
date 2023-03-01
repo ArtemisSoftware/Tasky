@@ -5,11 +5,11 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.artemissoftware.core_ui.composables.text.TYText
+import com.artemissoftware.core_ui.composables.text.TaskyText
 import com.artemissoftware.core_ui.theme.Silver
 
 @Composable
-fun TYTextButton(
+fun TaskyTextButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: ()->Unit
@@ -18,7 +18,7 @@ fun TYTextButton(
         modifier = modifier,
         onClick = onClick
     ) {
-        TYText(
+        TaskyText(
             style = MaterialTheme.typography.button,
             text = text,
             color = Silver
@@ -28,7 +28,7 @@ fun TYTextButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYTextButtonPreview() {
+private fun TaskyTextButtonPreview() {
 
-    TYTextButton(text = "JOIN EVENT", onClick = {})
+    TaskyTextButton(text = "JOIN EVENT", onClick = {})
 }

@@ -29,7 +29,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core_ui.R
-import com.artemissoftware.core_ui.composables.text.TYText
+import com.artemissoftware.core_ui.composables.text.TaskyText
 import com.artemissoftware.core_ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,23 +37,23 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun TYOutlinedTextField(
+fun TaskyOutlinedTextField(
     modifier: Modifier = Modifier,
-    tyTextFieldType: TYTextFieldType = TYTextFieldType.TEXT,
+    taskyTextFieldType: TaskyTextFieldType = TaskyTextFieldType.TEXT,
     hint: String,
     text: String,
     textStyle: TextStyle = MaterialTheme.typography.body1,
     maxChar: Int? = null,
     onValueChange: (String) -> Unit = {},
     imeAction: ImeAction = ImeAction.Next,
-    validationState: TYTextFieldValidationStateType = TYTextFieldValidationStateType.NOT_VALIDATED
+    validationState: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED
 ) {
 
     val focusManager = LocalFocusManager.current
     val relocation = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
-    val textFormatted = text.take(maxChar ?: tyTextFieldType.getMaxChar())
-    val isPasswordVisible = remember { mutableStateOf(tyTextFieldType != TYTextFieldType.PASSWORD) }
+    val textFormatted = text.take(maxChar ?: taskyTextFieldType.getMaxChar())
+    val isPasswordVisible = remember { mutableStateOf(taskyTextFieldType != TaskyTextFieldType.PASSWORD) }
     val shape = RoundedCornerShape(10.dp)
 
 
@@ -65,7 +65,7 @@ fun TYOutlinedTextField(
             .background(color = Light2)
             .border(
                 width = 1.dp,
-                color = if (validationState == TYTextFieldValidationStateType.INVALID) ErrorRed else Light2,
+                color = if (validationState == TaskyTextFieldValidationStateType.INVALID) ErrorRed else Light2,
                 shape = shape
             )
             .bringIntoViewRequester(relocation)
@@ -81,7 +81,7 @@ fun TYOutlinedTextField(
             onValueChange.invoke(textValue)
         },
         placeholder = {
-            TYText(
+            TaskyText(
                 text = hint,
                 style = MaterialTheme.typography.body1,
                 color = HintTextColor
@@ -89,12 +89,12 @@ fun TYOutlinedTextField(
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = Light2,
-            unfocusedBorderColor = if (validationState == TYTextFieldValidationStateType.INVALID) ErrorRed else Light2,
+            unfocusedBorderColor = if (validationState == TaskyTextFieldValidationStateType.INVALID) ErrorRed else Light2,
             focusedBorderColor = LightBlue,
             cursorColor = Black
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = tyTextFieldType.getKeyboardType(),
+            keyboardType = taskyTextFieldType.getKeyboardType(),
             imeAction = imeAction
         ),
         keyboardActions = KeyboardActions(
@@ -109,7 +109,7 @@ fun TYOutlinedTextField(
         singleLine = true,
         trailingIcon = {
             TrailingIcon(
-                tyTextFieldType = tyTextFieldType,
+                taskyTextFieldType = taskyTextFieldType,
                 onClick = { onValueChange.invoke(text) },
                 text = text,
                 isPasswordVisible = isPasswordVisible,
@@ -123,15 +123,15 @@ fun TYOutlinedTextField(
 
 @Composable
 private fun TrailingIcon(
-    tyTextFieldType: TYTextFieldType,
+    taskyTextFieldType: TaskyTextFieldType,
     onClick: (TextFieldValue) -> Unit,
     text: String,
     isPasswordVisible: MutableState<Boolean>,
-    validationState: TYTextFieldValidationStateType = TYTextFieldValidationStateType.NOT_VALIDATED
+    validationState: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED
 ) {
-    when (tyTextFieldType) {
+    when (taskyTextFieldType) {
 
-        TYTextFieldType.PASSWORD -> {
+        TaskyTextFieldType.PASSWORD -> {
 
             IconButton(
                 onClick = {
@@ -147,7 +147,7 @@ private fun TrailingIcon(
         }
         else -> {
 
-            if (text.isNotBlank() && validationState == TYTextFieldValidationStateType.VALID) {
+            if (text.isNotBlank() && validationState == TaskyTextFieldValidationStateType.VALID) {
                 IconButton(
                     onClick = {
                         onClick.invoke(TextFieldValue(""))
@@ -174,14 +174,14 @@ private fun TrailingIconPreview() {
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TrailingIcon(
-            tyTextFieldType = TYTextFieldType.PASSWORD,
+            taskyTextFieldType = TaskyTextFieldType.PASSWORD,
             onClick = {},
             text = "Example",
             isPasswordVisible = mutableStateOf(true)
         )
 
         TrailingIcon(
-            tyTextFieldType = TYTextFieldType.PASSWORD,
+            taskyTextFieldType = TaskyTextFieldType.PASSWORD,
             onClick = {},
             text = "Example",
             isPasswordVisible = mutableStateOf(false)
@@ -195,7 +195,7 @@ private fun TrailingIconPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
-private fun TYOutlinedTextFieldPreview() {
+private fun TaskyOutlinedTextFieldPreview() {
 
     var text by remember {
         mutableStateOf("Test")
@@ -203,33 +203,33 @@ private fun TYOutlinedTextFieldPreview() {
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
-        TYOutlinedTextField(
+        TaskyOutlinedTextField(
             text = "",
             hint = "Email address"
         )
 
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.EMAIL,
+        TaskyOutlinedTextField(
+            taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = "email@email.com",
             hint = "Email address",
-            validationState = TYTextFieldValidationStateType.VALID
+            validationState = TaskyTextFieldValidationStateType.VALID
         )
 
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.PASSWORD,
+        TaskyOutlinedTextField(
+            taskyTextFieldType = TaskyTextFieldType.PASSWORD,
             text = "text",
             hint = "password"
         )
 
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.EMAIL,
+        TaskyOutlinedTextField(
+            taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = "text",
             hint = "password",
-            validationState = TYTextFieldValidationStateType.INVALID
+            validationState = TaskyTextFieldValidationStateType.INVALID
         )
 
-        TYOutlinedTextField(
-            tyTextFieldType = TYTextFieldType.EMAIL,
+        TaskyOutlinedTextField(
+            taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = text,
             onValueChange = {
                 text = it

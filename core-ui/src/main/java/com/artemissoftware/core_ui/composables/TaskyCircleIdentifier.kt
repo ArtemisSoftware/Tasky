@@ -13,12 +13,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.composables.text.TYText
+import com.artemissoftware.core_ui.composables.text.TaskyText
 import com.artemissoftware.core_ui.theme.Black
 import com.artemissoftware.core_ui.theme.Green
 
 @Composable
-fun CircleIdentifier(
+fun TaskyCircleIdentifier(
     text: String,
     textColor: Color = Black,
     circleColor: Color = Green,
@@ -35,7 +35,7 @@ fun CircleIdentifier(
         contentAlignment = Alignment.Center
     ) {
 
-        TYText(
+        TaskyText(
             text = text,
             style = textStyle,
             color = textColor
@@ -45,16 +45,16 @@ fun CircleIdentifier(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYTextButtonPreview() {
+private fun TaskyCircleIdentifierPreview() {
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
 
-        CircleIdentifier(
+        TaskyCircleIdentifier(
             text = "AA"
         )
 
-        CircleIdentifier(
+        TaskyCircleIdentifier(
             text = "WW",
             size = 32.dp,
         )

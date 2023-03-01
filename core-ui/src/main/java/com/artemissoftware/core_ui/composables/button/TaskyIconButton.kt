@@ -24,9 +24,9 @@ import com.artemissoftware.core_ui.theme.Light2
 import com.artemissoftware.core_ui.theme.LightBlue
 
 @Composable
-fun TYIconButton(
+fun TaskyIconButton(
     modifier: Modifier = Modifier,
-    icon: TYIconButtonType,
+    icon: TaskyIconButtonType,
     size: Dp = 56.dp,
     borderColor: Color = LightBlue,
     iconColor: Color = LightBlue,
@@ -53,14 +53,14 @@ fun TYIconButton(
     ) {
 
         when(icon){
-            is TYIconButtonType.Drawable -> {
+            is TaskyIconButtonType.Drawable -> {
                 Icon(
                     painter = painterResource(id = icon.iconId),
                     tint = iconColor,
                     contentDescription = ""
                 )
             }
-            is TYIconButtonType.ImageUrl -> {
+            is TaskyIconButtonType.ImageUrl -> {
                 Image(
                     painterResource(R.drawable.ic_visibility), //TODO: coil image load
                     contentDescription = "",
@@ -78,19 +78,19 @@ fun TYIconButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYIconPreview() {
+private fun TaskyIconPreview() {
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        TYIconButton(icon = TYIconButtonType.Drawable(R.drawable.ic_add), onClick = {}, size = 35.dp)
-        TYIconButton(icon = TYIconButtonType.Drawable(R.drawable.ic_add), onClick = {}, size = 30.dp)
-        TYIconButton(icon = TYIconButtonType.Drawable(R.drawable.ic_add), onClick = {}, size = 60.dp)
+        TaskyIconButton(icon = TaskyIconButtonType.Drawable(R.drawable.ic_add), onClick = {}, size = 35.dp)
+        TaskyIconButton(icon = TaskyIconButtonType.Drawable(R.drawable.ic_add), onClick = {}, size = 30.dp)
+        TaskyIconButton(icon = TaskyIconButtonType.Drawable(R.drawable.ic_add), onClick = {}, size = 60.dp)
 
 
-        TYIconButton(icon = TYIconButtonType.Drawable(R.drawable.ic_visibility), onClick = {}, size = 30.dp)
+        TaskyIconButton(icon = TaskyIconButtonType.Drawable(R.drawable.ic_visibility), onClick = {}, size = 30.dp)
 
-        TYIconButton(icon = TYIconButtonType.ImageUrl("https://i.pinimg.com/200x150/5f/34/00/5f340004b05809fe2c3bd164ce64c3c8.jpg"), onClick = {}, size = 30.dp)
+        TaskyIconButton(icon = TaskyIconButtonType.ImageUrl("https://i.pinimg.com/200x150/5f/34/00/5f340004b05809fe2c3bd164ce64c3c8.jpg"), onClick = {}, size = 30.dp)
     }
 }

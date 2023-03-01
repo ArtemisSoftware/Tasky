@@ -16,7 +16,7 @@ import com.artemissoftware.core_ui.theme.Black
 import com.artemissoftware.core_ui.theme.InterTypography
 
 @Composable
-fun TYText(
+fun TaskyText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Black,
@@ -41,7 +41,7 @@ fun TYText(
 
 @Preview
 @Composable
-private fun TYTextPreview() {
+private fun TaskyTextPreview() {
 
     MaterialTheme(typography = InterTypography){
 
@@ -49,27 +49,27 @@ private fun TYTextPreview() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            TYText(
+            TaskyText(
                 text = "MaterialTheme.typography.h4",
                 style = MaterialTheme.typography.h4
             )
 
-            TYText(
+            TaskyText(
                 text = "MaterialTheme.typography.body1",
                 style = MaterialTheme.typography.body1
             )
 
-            TYText(
+            TaskyText(
                 text = "MaterialTheme.typography.caption",
                 style = MaterialTheme.typography.caption
             )
 
-            TYText(
+            TaskyText(
                 text = "MaterialTheme.typography.overline",
                 style = MaterialTheme.typography.overline
             )
 
-            TYText(
+            TaskyText(
                 text = "MaterialTheme.typography.button",
                 style = MaterialTheme.typography.button
             )

@@ -11,12 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core_ui.composables.text.TYText
+import com.artemissoftware.core_ui.composables.text.TaskyText
 import com.artemissoftware.core_ui.theme.Black
 import com.artemissoftware.core_ui.theme.White
 
 @Composable
-fun TYButton(
+fun TaskyButton(
     modifier: Modifier = Modifier,
     text : String,
     onClick: () -> Unit,
@@ -33,7 +33,7 @@ fun TYButton(
         ),
         onClick = { onClick.invoke() }
     ) {
-        TYText(
+        TaskyText(
             style = MaterialTheme.typography.button,
             text = text,
             color = textColor
@@ -43,8 +43,8 @@ fun TYButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYButtonPreview() {
+private fun TaskyButtonPreview() {
 
-    TYButton(text = "GET STARTED", onClick = {})
+    TaskyButton(text = "GET STARTED", onClick = {})
 }
 
