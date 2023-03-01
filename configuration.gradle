@@ -25,6 +25,9 @@ ext.versions = [
 
         junit                   : '4.13.2',
         junitExtension          : '1.1.4',
+
+        retrofit                : '2.9.0',
+        okhttpBom               : '4.10.0'
 ]
 
 ext.libraries = [
@@ -39,6 +42,13 @@ ext.libraries = [
         composeMaterial                 : "androidx.compose.material:material:$versions.composeMaterial",
 
         composeUiTooling                : "androidx.compose.ui:ui-tooling:$versions.compose",
+
+        retrofit                        : "com.squareup.retrofit2:retrofit:$versions.retrofit",
+        retrofitConverterGson           : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
+
+        okhttpBom                       : "com.squareup.okhttp3:okhttp-bom:$versions.okhttpBom",
+        okhttp                          : "com.squareup.okhttp3:okhttp",
+        okhttpLoggingInterceptor        : "com.squareup.okhttp3:logging-interceptor",
 ]
 
 ext.tests = [
