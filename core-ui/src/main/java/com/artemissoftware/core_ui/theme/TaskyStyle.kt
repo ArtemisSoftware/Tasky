@@ -5,7 +5,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.artemissoftware.core_ui.R
 
@@ -60,17 +59,20 @@ val InterTypography = Typography(
     ),
     button = TextStyle(
         fontFamily = InterFont,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontWeight = FontWeight.W700,
+        fontSize = 16.sp,
+        lineHeight = 30.sp,
     ),
     caption = TextStyle(
         fontFamily = InterFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontWeight = FontWeight.W600,
+        fontSize = 22.sp,
+        lineHeight = 14.4.sp,
     ),
     overline = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.W500,
         fontSize = 12.sp
-    )
+    ),
+
 )

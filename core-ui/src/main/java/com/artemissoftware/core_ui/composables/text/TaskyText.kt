@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui.text
+package com.artemissoftware.core_ui.composables.text
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
@@ -13,9 +13,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import com.artemissoftware.core_ui.theme.Black
+import com.artemissoftware.core_ui.theme.InterTypography
 
 @Composable
-fun TYText(
+fun TaskyText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Black,
@@ -40,32 +41,39 @@ fun TYText(
 
 @Preview
 @Composable
-private fun TYTextPreview() {
+private fun TaskyTextPreview() {
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    MaterialTheme(typography = InterTypography){
 
-        TYText(
-            text = "MaterialTheme.typography.h4",
-            style = MaterialTheme.typography.h4
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        TYText(
-            text = "MaterialTheme.typography.body1",
-            style = MaterialTheme.typography.body1
-        )
+            TaskyText(
+                text = "MaterialTheme.typography.h4",
+                style = MaterialTheme.typography.h4
+            )
 
-        TYText(
-            text = "MaterialTheme.typography.caption",
-            style = MaterialTheme.typography.caption
-        )
+            TaskyText(
+                text = "MaterialTheme.typography.body1",
+                style = MaterialTheme.typography.body1
+            )
 
-        TYText(
-            text = "MaterialTheme.typography.overline",
-            style = MaterialTheme.typography.overline
-        )
+            TaskyText(
+                text = "MaterialTheme.typography.caption",
+                style = MaterialTheme.typography.caption
+            )
 
+            TaskyText(
+                text = "MaterialTheme.typography.overline",
+                style = MaterialTheme.typography.overline
+            )
+
+            TaskyText(
+                text = "MaterialTheme.typography.button",
+                style = MaterialTheme.typography.button
+            )
+        }
     }
 
 }

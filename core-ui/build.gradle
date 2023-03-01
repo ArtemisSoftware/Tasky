@@ -46,4 +46,6 @@ dependencies {
     testImplementation rootProject.tests.junit
     androidTestImplementation rootProject.tests.junitExtension
     androidTestImplementation rootProject.tests.espressoCore
+
+    implementation rootProject.libraries.composeFoundation
 }
