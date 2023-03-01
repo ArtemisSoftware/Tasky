@@ -24,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,15 +51,16 @@ fun TaskyOutlinedTextField(
     val focusManager = LocalFocusManager.current
     val relocation = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
-    val textFormatted = text.take(maxChar ?: taskyTextFieldType.getMaxChar())
+
+    val textFormatted = maxChar?.let {
+        text.take(maxChar)
+    } ?: run { text }
     val isPasswordVisible = remember { mutableStateOf(taskyTextFieldType != TaskyTextFieldType.PASSWORD) }
     val shape = RoundedCornerShape(10.dp)
 
 
     OutlinedTextField(
         modifier = modifier
-            .fillMaxWidth()
-            .height(60.dp)
             .clip(shape)
             .background(color = Light2)
             .border(
@@ -110,8 +110,6 @@ fun TaskyOutlinedTextField(
         trailingIcon = {
             TrailingIcon(
                 taskyTextFieldType = taskyTextFieldType,
-                onClick = { onValueChange.invoke(text) },
-                text = text,
                 isPasswordVisible = isPasswordVisible,
                 validationState = validationState
             )
@@ -124,8 +122,6 @@ fun TaskyOutlinedTextField(
 @Composable
 private fun TrailingIcon(
     taskyTextFieldType: TaskyTextFieldType,
-    onClick: (TextFieldValue) -> Unit,
-    text: String,
     isPasswordVisible: MutableState<Boolean>,
     validationState: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED
 ) {
@@ -147,18 +143,11 @@ private fun TrailingIcon(
         }
         else -> {
 
-            if (text.isNotBlank() && validationState == TaskyTextFieldValidationStateType.VALID) {
-                IconButton(
-                    onClick = {
-                        onClick.invoke(TextFieldValue(""))
-                    },
-                    content = {
-                        Icon(
-                            tint = Green,
-                            painter = painterResource(R.drawable.ic_check),
-                            contentDescription = ""
-                        )
-                    }
+            if (validationState == TaskyTextFieldValidationStateType.VALID) {
+                Icon(
+                    tint = Green,
+                    painter = painterResource(R.drawable.ic_check),
+                    contentDescription = ""
                 )
             }
         }
@@ -175,15 +164,11 @@ private fun TrailingIconPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TrailingIcon(
             taskyTextFieldType = TaskyTextFieldType.PASSWORD,
-            onClick = {},
-            text = "Example",
             isPasswordVisible = mutableStateOf(true)
         )
 
         TrailingIcon(
             taskyTextFieldType = TaskyTextFieldType.PASSWORD,
-            onClick = {},
-            text = "Example",
             isPasswordVisible = mutableStateOf(false)
         )
     }
@@ -191,7 +176,6 @@ private fun TrailingIconPreview() {
 
 
 
-@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
@@ -200,15 +184,22 @@ private fun TaskyOutlinedTextFieldPreview() {
     var text by remember {
         mutableStateOf("Test")
     }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             text = "",
             hint = "Email address"
         )
 
         TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = "email@email.com",
             hint = "Email address",
@@ -216,12 +207,18 @@ private fun TaskyOutlinedTextFieldPreview() {
         )
 
         TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             taskyTextFieldType = TaskyTextFieldType.PASSWORD,
             text = "text",
             hint = "password"
         )
 
         TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = "text",
             hint = "password",
@@ -229,6 +226,9 @@ private fun TaskyOutlinedTextFieldPreview() {
         )
 
         TaskyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             taskyTextFieldType = TaskyTextFieldType.EMAIL,
             text = text,
             onValueChange = {

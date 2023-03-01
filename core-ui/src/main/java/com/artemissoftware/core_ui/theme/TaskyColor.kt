@@ -14,9 +14,6 @@ val White = Color(0xFFFFFFFF)
 val Brown = Color(0xFF40492D)
 val Orange = Color(0xFFFDEFA8)
 
-/**
- * A1A4B2
- */
 val HintTextColor = Color(0xFFA1A4B2)
 val UnfocusedTrailingIconColor = Color(0xFFBEBEBE)
 val ErrorRed = Color(0xFFFF7272)

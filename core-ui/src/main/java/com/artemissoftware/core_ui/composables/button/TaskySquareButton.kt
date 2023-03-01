@@ -18,18 +18,18 @@ import com.artemissoftware.core_ui.theme.Black
 import com.artemissoftware.core_ui.theme.White
 
 @Composable
-fun TYSquareButton(
+fun TaskySquareButton(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
     size: Dp = 56.dp,
     iconColor: Color = White,
-    backGroundColor: Color = Black,
+    backgroundColor: Color = Black,
     onClick: () -> Unit
 ) {
 
     IconButton(
         modifier = modifier
-            .background(color = backGroundColor, shape = RoundedCornerShape(16.dp))
+            .background(color = backgroundColor, shape = RoundedCornerShape(16.dp))
             .size(size),
         onClick = onClick
     ){
@@ -44,6 +44,6 @@ fun TYSquareButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYSquareButtonPreview() {
-    TYSquareButton(icon = R.drawable.ic_add, onClick = {})
+private fun TaskySquareButtonPreview() {
+    TaskySquareButton(icon = R.drawable.ic_add, onClick = {})
 }

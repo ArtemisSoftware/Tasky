@@ -24,9 +24,7 @@ fun TaskyButton(
     backGroundColor: Color = Black
 ) {
     Button(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(55.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(38.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backGroundColor
@@ -45,6 +43,12 @@ fun TaskyButton(
 @Composable
 private fun TaskyButtonPreview() {
 
-    TaskyButton(text = "GET STARTED", onClick = {})
+    TaskyButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(55.dp),
+        text = "GET STARTED",
+        onClick = {}
+    )
 }
 

@@ -15,9 +15,4 @@ enum class TaskyTextFieldType {
         PASSWORD -> KeyboardType.Password
         else -> KeyboardType.Text
     }
-
-    fun getMaxChar(): Int = when (this) {
-        EMAIL -> 28
-        else -> 32
-    }
 }
