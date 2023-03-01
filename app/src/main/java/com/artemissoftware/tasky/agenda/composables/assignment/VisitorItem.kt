@@ -27,7 +27,8 @@ fun VisitorItem( // TODO: Mudar texto e icons
             .fillMaxWidth()
             .height(46.dp)
             .clickable { },
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        elevation = 0.dp
     ) {
         Row(
             modifier = Modifier
