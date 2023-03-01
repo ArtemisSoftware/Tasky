@@ -48,4 +48,8 @@ dependencies {
     androidTestImplementation rootProject.tests.espressoCore
 
     implementation rootProject.libraries.composeFoundation
+
+    //Retrofit
+    implementation rootProject.libraries.retrofit
+    implementation rootProject.libraries.retrofitConverterGson
 }

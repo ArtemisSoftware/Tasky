@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.R
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.*
-import com.artemissoftware.core.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -1,8 +1,7 @@
-package com.artemissoftware.tasky.data.remote
+package com.artemissoftware.core.data.remote
 
-import com.artemissoftware.tasky.data.remote.dto.ErrorDto
-import com.artemissoftware.tasky.data.remote.exceptions.NetworkErrors
-import com.artemissoftware.tasky.data.remote.exceptions.TaskyNetworkException
+import com.artemissoftware.core.data.remote.exceptions.NetworkErrors
+import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.google.gson.Gson
 import retrofit2.HttpException
 import java.net.UnknownHostException
@@ -30,17 +29,23 @@ object HandleApi {
 
                 }
                 is UnknownHostException ->{
-                    throw TaskyNetworkException(code = NetworkErrors.UNKNOWN_HOST.first, message = ex.message)
+                    throw TaskyNetworkException(
+                        code = NetworkErrors.UNKNOWN_HOST.first,
+                        message = ex.message
+                    )
                 }
-                else -> throw TaskyNetworkException(code = NetworkErrors.GENERIC_API_ERROR.first, message = NetworkErrors.GENERIC_API_ERROR.second)
+                else -> throw TaskyNetworkException(
+                    code = NetworkErrors.GENERIC_API_ERROR.first,
+                    message = NetworkErrors.GENERIC_API_ERROR.second
+                )
             }
         }
     }
 
-    private fun convertErrorBody(httpException: HttpException): ErrorDto? {
+    private fun convertErrorBody(httpException: HttpException): com.artemissoftware.core.data.remote.dto.ErrorDto? {
         return try {
             httpException.response()?.errorBody()?.let {
-                Gson().fromJson(it.charStream(), ErrorDto::class.java)
+                Gson().fromJson(it.charStream(), com.artemissoftware.core.data.remote.dto.ErrorDto::class.java)
             }
         } catch (exception: Exception) {
             null

@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.data.remote.dto
+package com.artemissoftware.core.data.remote.dto
 
 
 import com.google.gson.annotations.SerializedName

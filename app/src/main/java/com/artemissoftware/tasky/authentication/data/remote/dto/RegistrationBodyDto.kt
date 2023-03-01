@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.data.remote.dto.authentication
+package com.artemissoftware.tasky.authentication.data.remote.dto
 
 
 import com.google.gson.annotations.SerializedName

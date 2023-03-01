@@ -1,13 +1,13 @@
-package com.artemissoftware.tasky.data.remote.dto.authentication
+package com.artemissoftware.tasky.agenda.data.remote.dto
 
 
 import com.google.gson.annotations.SerializedName
 
-data class LoginResponseDto(
+data class AttendeeProfileDto(
+    @SerializedName("email")
+    val email: String,
     @SerializedName("fullName")
     val fullName: String,
-    @SerializedName("token")
-    val token: String,
     @SerializedName("userId")
     val userId: String
 )

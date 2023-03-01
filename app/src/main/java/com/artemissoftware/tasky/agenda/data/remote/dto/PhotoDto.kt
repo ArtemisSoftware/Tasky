@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.data.remote.dto.agenda
+package com.artemissoftware.tasky.agenda.data.remote.dto
 
 
 import com.google.gson.annotations.SerializedName

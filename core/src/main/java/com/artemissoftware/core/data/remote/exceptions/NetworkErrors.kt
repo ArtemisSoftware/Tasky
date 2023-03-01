@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.data.remote.exceptions
+package com.artemissoftware.core.data.remote.exceptions
 
 object NetworkErrors {
 
