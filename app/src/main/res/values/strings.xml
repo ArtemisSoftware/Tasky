@@ -5,4 +5,5 @@
     <string name="event">Event</string>
     <string name="from">From</string>
     <string name="to">To</string>
+    <string name="creator">creator</string>
 </resources>
