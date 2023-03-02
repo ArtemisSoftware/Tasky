@@ -6,7 +6,7 @@ class ValidateUserNameUseCase {
 
     operator fun invoke(name: String): Boolean  {
 
-        if (name.isEmpty() || name.isBlank()) {
+        if (name.isEmpty()) {
             return false
         }
         return USER_NAME_REGEX.toRegex().matches(name)

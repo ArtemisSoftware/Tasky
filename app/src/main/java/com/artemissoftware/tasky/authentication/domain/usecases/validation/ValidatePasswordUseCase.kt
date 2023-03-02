@@ -6,7 +6,7 @@ class ValidatePasswordUseCase {
 
     operator fun invoke(password: String): Boolean  {
 
-        if (password.isEmpty() || password.isBlank()) {
+        if (password.isEmpty()) {
             return false
         }
 
