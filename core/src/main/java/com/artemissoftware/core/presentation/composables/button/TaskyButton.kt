@@ -17,9 +17,10 @@ import com.artemissoftware.core.presentation.theme.White
 
 @Composable
 fun TaskyButton(
-    modifier: Modifier = Modifier,
     text : String,
     onClick: () -> Unit,
+    allCaps: Boolean = true,
+    modifier: Modifier = Modifier,
     textColor: Color = White,
     backGroundColor: Color = Black
 ) {
@@ -32,6 +33,7 @@ fun TaskyButton(
         onClick = { onClick.invoke() }
     ) {
         TaskyText(
+            allCaps = allCaps,
             style = MaterialTheme.typography.button,
             text = text,
             color = textColor

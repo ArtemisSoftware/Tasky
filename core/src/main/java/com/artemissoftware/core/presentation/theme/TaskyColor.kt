@@ -20,6 +20,7 @@ val UnfocusedTrailingIconColor = Color(0xFFBEBEBE)
 val ErrorRed = Color(0xFFFF7272)
 
 val Silver = Color(0xFFA9B4BE)
+val Link = Color(0xFF8E97FD)
 
 val Colors.LoadingBackground: Color
     get() = if (isLight) Color(0xffffffff) else Color(0xff252525)

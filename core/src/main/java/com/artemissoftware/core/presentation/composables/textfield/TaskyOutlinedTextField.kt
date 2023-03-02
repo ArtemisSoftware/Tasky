@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,11 +37,12 @@ import kotlinx.coroutines.launch
 @ExperimentalFoundationApi
 @Composable
 fun TaskyOutlinedTextField(
-    modifier: Modifier = Modifier,
-    taskyTextFieldType: TaskyTextFieldType = TaskyTextFieldType.TEXT,
     hint: String,
     text: String,
+    textColor: Color = DarkGray,
     textStyle: TextStyle = MaterialTheme.typography.body1,
+    modifier: Modifier = Modifier,
+    taskyTextFieldType: TaskyTextFieldType = TaskyTextFieldType.TEXT,
     maxChar: Int? = null,
     onValueChange: (String) -> Unit = {},
     imeAction: ImeAction = ImeAction.Next,
@@ -87,6 +89,7 @@ fun TaskyOutlinedTextField(
             )
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
+            textColor = textColor,
             backgroundColor = Light2,
             unfocusedBorderColor = if (validationState == TaskyTextFieldValidationStateType.INVALID) ErrorRed else Light2,
             focusedBorderColor = LightBlue,
@@ -136,6 +139,7 @@ private fun TrailingIcon(
                 onClick = onPasswordIconClick,
                 content = {
                     Icon(
+                        tint = UnfocusedTrailingIconColor,
                         painter = painterResource(if (isPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off),
                         contentDescription = ""
                     )
