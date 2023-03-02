@@ -1,0 +1,19 @@
+ext.flavorConfig = { // 1
+
+    flavorDimensions "env"
+    productFlavors {
+        dev {
+            dimension "env"
+
+            buildConfigField "int", "MIN_CHARACTERS_FOR_NAME", "4"
+            buildConfigField "int", "MAX_CHARACTERS_FOR_NAME", "50"
+        }
+
+        prod {
+            dimension "env"
+
+            buildConfigField "int", "MIN_CHARACTERS_FOR_NAME", "4"
+            buildConfigField "int", "MAX_CHARACTERS_FOR_NAME", "50"
+        }
+    }
+}
