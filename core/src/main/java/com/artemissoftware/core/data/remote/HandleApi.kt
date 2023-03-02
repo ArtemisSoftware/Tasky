@@ -20,7 +20,7 @@ object HandleApi {
 
             when (ex) {
                 is CancellationException ->{
-                    throw TaskyNetworkException(TaskyNetworkError.Cancellation)
+                    throw ex
                 }
                 is HttpException -> {
 
