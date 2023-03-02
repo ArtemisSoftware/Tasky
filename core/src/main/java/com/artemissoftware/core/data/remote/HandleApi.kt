@@ -1,10 +1,11 @@
 package com.artemissoftware.core.data.remote
 
-import com.artemissoftware.core.data.remote.exceptions.NetworkErrors
+import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkError
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.google.gson.Gson
 import retrofit2.HttpException
 import java.net.UnknownHostException
+import java.util.concurrent.CancellationException
 
 object HandleApi {
 
@@ -16,28 +17,27 @@ object HandleApi {
         } catch (ex: Exception) {
 
             when (ex) {
+                is CancellationException ->{
+                    throw TaskyNetworkException(TaskyNetworkError.Cancellation)
+                }
                 is HttpException -> {
 
                     convertErrorBody(ex)?.let { error ->
                         throw TaskyNetworkException(
                             code = ex.code(),
-                            message = error.message
+                            description = error.message
                         )
                     } ?: run {
-                        throw TaskyNetworkException()
+                        throw TaskyNetworkException(code = ex.code(), description = ex.message())
                     }
 
                 }
                 is UnknownHostException ->{
-                    throw TaskyNetworkException(
-                        code = NetworkErrors.UNKNOWN_HOST.first,
-                        message = ex.message
-                    )
+                    throw TaskyNetworkException(TaskyNetworkError.UnknownHost)
                 }
-                else -> throw TaskyNetworkException(
-                    code = NetworkErrors.GENERIC_API_ERROR.first,
-                    message = NetworkErrors.GENERIC_API_ERROR.second
-                )
+                else ->{
+                    throw TaskyNetworkException( )
+                }
             }
         }
     }
