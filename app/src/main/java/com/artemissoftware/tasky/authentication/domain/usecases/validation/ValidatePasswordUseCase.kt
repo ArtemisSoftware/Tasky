@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.domain.usecases.validation
+package com.artemissoftware.tasky.authentication.domain.usecases.validation
 
 class ValidatePasswordUseCase {
 
