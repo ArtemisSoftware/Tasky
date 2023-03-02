@@ -30,36 +30,28 @@ fun TaskyScaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) {
 
-    Box(
+    Scaffold(
+        backgroundColor = backgroundColor,
         modifier = Modifier
-            .fillMaxSize()
-    ) {
+            .fillMaxSize(),
+        topBar = {
+            topBar.invoke()
+        },
+        content = content
+    )
 
+    TaskyLoading(
+        modifier = Modifier.fillMaxSize(),
+        isLoading = isLoading,
+        lottieId = loadingLottieId
+    )
 
-        Scaffold(
-            backgroundColor = backgroundColor,
-            modifier = Modifier
-                .fillMaxSize(),
-            topBar = {
-                topBar.invoke()
-            },
-            content = content
+    taskyScaffoldState?.dialog?.value?.let {
+        TaskyDialog(
+            taskyDialogType = it,
+            onDialogDismiss = { taskyScaffoldState.closeDialog() }
         )
-
-        TaskyLoading(
-            modifier = Modifier.fillMaxSize(),
-            isLoading = isLoading,
-            lottieId = loadingLottieId
-        )
-
-        taskyScaffoldState?.dialog?.value?.let {
-            TaskyDialog(
-                taskyDialogType = it,
-                onDialogDismiss = { taskyScaffoldState.closeDialog() }
-            )
-        }
     }
-    
 }
 
 
@@ -151,6 +143,36 @@ private fun TaskyScaffoldTopBarPreview() {
 private fun TaskyScaffoldWithContentSurfacePreview() {
 
     TaskyScaffold(
+        backgroundColor = Black,
+        topBar = {
+            TaskyTopBar(
+                title = "Top bar title",
+                toolbarActions = { color->
+                    TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                }
+            )
+        },
+        content = {
+
+            TaskyContentSurface(
+                modifier = Modifier.padding(top = 32.dp),
+                content = {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Hello World", modifier = Modifier.padding(8.dp))
+                    }
+                }
+            )
+
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TaskyScaffoldWithContentLoadingSurfacePreview() {
+
+    TaskyScaffold(
+        isLoading = true,
         backgroundColor = Black,
         topBar = {
             TaskyTopBar(
