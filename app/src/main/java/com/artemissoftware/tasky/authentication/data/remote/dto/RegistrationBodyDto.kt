@@ -1,13 +1,13 @@
 package com.artemissoftware.tasky.authentication.data.remote.dto
 
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class RegistrationBodyDto(
-    @SerializedName("email")
+    @field:Json(name = "email")
     val email: String,
-    @SerializedName("fullName")
+    @field:Json(name = "fullName")
     val fullName: String,
-    @SerializedName("password")
+    @field:Json(name = "password")
     val password: String
 )

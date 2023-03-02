@@ -1,9 +1,9 @@
 package com.artemissoftware.core.data.remote.dto
 
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class ErrorDto(
-    @SerializedName("message")
+    @field:Json(name = "message")
     val message: String
 )

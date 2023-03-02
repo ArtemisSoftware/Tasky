@@ -1,27 +1,27 @@
 package com.artemissoftware.tasky.agenda.data.remote.dto
 
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class EventDto(
-    @SerializedName("description")
+    @field:Json(name = "description")
     val description: String,
-    @SerializedName("from")
+    @field:Json(name = "from")
     val from: Long,
-    @SerializedName("host")
+    @field:Json(name = "host")
     val host: String,
-    @SerializedName("id")
+    @field:Json(name = "id")
     val id: String,
-    @SerializedName("isUserEventCreator")
+    @field:Json(name = "isUserEventCreator")
     val isUserEventCreator: Boolean,
-    @SerializedName("remindAt")
+    @field:Json(name = "remindAt")
     val remindAt: Long,
-    @SerializedName("title")
+    @field:Json(name = "title")
     val title: String,
-    @SerializedName("to")
+    @field:Json(name = "to")
     val to: Long,
-    @SerializedName("attendees")
+    @field:Json(name = "attendees")
     val attendees: List<EventAttendeeDto>,
-    @SerializedName("photos")
+    @field:Json(name = "photos")
     val photos: List<PhotoDto>
 )

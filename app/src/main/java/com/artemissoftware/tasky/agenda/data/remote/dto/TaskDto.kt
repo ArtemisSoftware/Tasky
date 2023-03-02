@@ -1,19 +1,19 @@
 package com.artemissoftware.tasky.agenda.data.remote.dto
 
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class TaskDto(
-    @SerializedName("description")
+    @field:Json(name = "description")
     val description: String? = null,
-    @SerializedName("id")
+    @field:Json(name = "id")
     val id: String,
-    @SerializedName("isDone")
+    @field:Json(name = "isDone")
     val isDone: Boolean,
-    @SerializedName("remindAt")
+    @field:Json(name = "remindAt")
     val remindAt: Long,
-    @SerializedName("time")
+    @field:Json(name = "time")
     val time: Long,
-    @SerializedName("title")
+    @field:Json(name = "title")
     val title: String
 )

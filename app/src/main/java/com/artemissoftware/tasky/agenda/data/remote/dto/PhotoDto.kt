@@ -1,11 +1,11 @@
 package com.artemissoftware.tasky.agenda.data.remote.dto
 
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class PhotoDto(
-    @SerializedName("key")
+    @field:Json(name = "key")
     val key: String,
-    @SerializedName("url")
+    @field:Json(name = "url")
     val url: String
 )

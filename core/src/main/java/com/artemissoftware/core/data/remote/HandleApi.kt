@@ -1,8 +1,10 @@
 package com.artemissoftware.core.data.remote
 
+import com.artemissoftware.core.data.remote.dto.ErrorDto
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkError
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
-import com.google.gson.Gson
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import retrofit2.HttpException
 import java.net.UnknownHostException
 import java.util.concurrent.CancellationException
@@ -42,10 +44,13 @@ object HandleApi {
         }
     }
 
-    private fun convertErrorBody(httpException: HttpException): com.artemissoftware.core.data.remote.dto.ErrorDto? {
+    private fun convertErrorBody(httpException: HttpException): ErrorDto? {
         return try {
             httpException.response()?.errorBody()?.let {
-                Gson().fromJson(it.charStream(), com.artemissoftware.core.data.remote.dto.ErrorDto::class.java)
+
+                val moshi: Moshi = Moshi.Builder().build()
+                val adapter: JsonAdapter<ErrorDto> = moshi.adapter(ErrorDto::class.java)
+                adapter.fromJson(it.string())
             }
         } catch (exception: Exception) {
             null

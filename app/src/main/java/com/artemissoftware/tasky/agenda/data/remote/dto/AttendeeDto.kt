@@ -1,11 +1,10 @@
 package com.artemissoftware.tasky.agenda.data.remote.dto
 
-
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class AttendeeDto(
-    @SerializedName("attendee")
+    @field:Json(name = "attendee")
     val attendeeProfile: AttendeeProfileDto,
-    @SerializedName("doesUserExist")
+    @field:Json(name = "doesUserExist")
     val doesUserExist: Boolean
 )
