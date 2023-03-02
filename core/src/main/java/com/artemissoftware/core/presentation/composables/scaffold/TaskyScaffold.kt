@@ -22,6 +22,7 @@ import com.artemissoftware.core.presentation.theme.Black
 
 @Composable
 fun TaskyScaffold(
+    modifier: Modifier = Modifier,
     backgroundColor: Color = White,
     isLoading: Boolean = false,
     @RawRes loadingLottieId: Int = R.raw.loading_lottie,
@@ -32,7 +33,7 @@ fun TaskyScaffold(
 
     Scaffold(
         backgroundColor = backgroundColor,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize(),
         topBar = {
             topBar.invoke()
