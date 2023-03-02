@@ -4,4 +4,5 @@
     <string name="ok">Ok</string>
     <string name="unknown_host">Unknown Host</string>
     <string name="an_error_occorred">An error has occurred</string>
+    <string name="coroutine_cancelled">The coroutine was cancelled</string>
 </resources>
