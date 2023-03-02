@@ -30,7 +30,29 @@ import com.artemissoftware.tasky.ui.theme.TaskyTheme
 @Composable
 fun LoginScreen() {
 
+    /* TODO: uncomment when view model is ready
+    val state = viewModel.state.collectAsState()
+
+    BuildLoginScreen(
+        state = state.value,
+        events = viewModel::onTriggerEvent,
+        email = viewModel.email,
+        password = viewModel.password
+    )
+*/
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun BuildLoginScreen(
+    state: LoginState,
+    email: String,
+    password: String
+) {
+
     TaskyScaffold(
+        isLoading = state.isLoading,
         backgroundColor = Black,
         content = {
 
@@ -64,8 +86,10 @@ fun LoginScreen() {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(64.dp),
+                                    taskyTextFieldType = TaskyTextFieldType.EMAIL,
                                     hint = stringResource(id = R.string.email_address),
-                                    text = ""
+                                    validationState = state.emailValidationStateType,
+                                    text = email
                                 )
 
                                 TaskyOutlinedTextField(
@@ -75,7 +99,8 @@ fun LoginScreen() {
                                         .height(64.dp),
                                     taskyTextFieldType = TaskyTextFieldType.PASSWORD,
                                     hint = stringResource(id = R.string.password),
-                                    text = ""
+                                    validationState = state.passwordValidationStateType,
+                                    text = password
                                 )
 
                                 TaskyButton(
@@ -84,7 +109,9 @@ fun LoginScreen() {
                                         .fillMaxWidth()
                                         .height(52.dp),
                                     text = stringResource(id = R.string.log_in),
-                                    onClick = {  }
+                                    onClick = {
+                                        // TODO: add event
+                                    }
                                 )
                             }
 
@@ -105,7 +132,9 @@ fun LoginScreen() {
                                         append(stringResource(id = R.string.sign_up))
                                     }
                                 },
-                                onClick = {}
+                                onClick = {
+                                    // TODO: add event
+                                }
                             )
                         }
                     }
@@ -120,6 +149,6 @@ fun LoginScreen() {
 
 @Preview(showBackground = true)
 @Composable
-private fun LoginScreenPreview() {
-    LoginScreen()
+private fun BuildLoginScreenPreview() {
+    BuildLoginScreen(state = LoginState(), "email", "password")
 }
