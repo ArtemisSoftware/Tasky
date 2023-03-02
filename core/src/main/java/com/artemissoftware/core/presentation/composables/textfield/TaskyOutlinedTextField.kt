@@ -1,6 +1,5 @@
 package com.artemissoftware.core.presentation.composables.textfield
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
