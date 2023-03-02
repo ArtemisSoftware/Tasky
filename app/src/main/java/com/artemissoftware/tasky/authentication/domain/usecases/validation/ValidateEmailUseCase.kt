@@ -1,18 +1,8 @@
 package com.artemissoftware.tasky.authentication.domain.usecases.validation
 
-class ValidateEmailUseCase {
+import com.artemissoftware.tasky.authentication.domain.validators.EmailPatternValidator
 
-    operator fun invoke(email: String): Boolean  {
+class ValidateEmailUseCase(private val emailPatternValidator: EmailPatternValidator) {
 
-        if (email.isEmpty() || email.isBlank()) {
-            return false
-        }
-
-        return EMAIL_REGEX.toRegex().matches(email)
-    }
-
-    companion object{
-
-        private const val EMAIL_REGEX = "^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)\$"
-    }
+    operator fun invoke(email: String): Boolean  = emailPatternValidator.isValidEmailPattern(email)
 }
