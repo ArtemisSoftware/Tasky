@@ -64,7 +64,7 @@ dependencies {
 
     //Retrofit
     implementation rootProject.libraries.retrofit
-    implementation rootProject.libraries.retrofitConverterGson
+    implementation rootProject.libraries.retrofitConverterMoshi
 
     //okhttp
     implementation rootProject.libraries.okhttpBom
