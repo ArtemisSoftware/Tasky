@@ -1,23 +1,18 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.artemissoftware.tasky'
+    namespace 'com.artemissoftware.core'
     compileSdk rootProject.androidconfig.compileSdk
 
     defaultConfig {
-        applicationId "com.artemissoftware.tasky"
         minSdk rootProject.androidconfig.minSdk
         targetSdk rootProject.androidconfig.targetSdk
-        versionCode rootProject.androidconfig.versionCode
-        versionName rootProject.androidconfig.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary true
-        }
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -39,35 +34,25 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion rootProject.versions.compose
     }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
-    }
 }
 
 dependencies {
 
     implementation rootProject.libraries.coreKtx
-    implementation rootProject.libraries.lifecycleRuntimeKtx
-    implementation rootProject.libraries.activityCompose
-    implementation rootProject.libraries.composeUi
-    implementation rootProject.libraries.composeUiToolingPreview
-    implementation rootProject.libraries.composeMaterial
 
+    implementation rootProject.libraries.composeUi
+    implementation rootProject.libraries.composeUiTooling
+    implementation rootProject.libraries.composeMaterial
     testImplementation rootProject.tests.junit
     androidTestImplementation rootProject.tests.junitExtension
     androidTestImplementation rootProject.tests.espressoCore
-    androidTestImplementation rootProject.tests.uiTestJunit4
-    debugImplementation rootProject.libraries.composeUiTooling
-    debugImplementation rootProject.tests.uiTestManifest
+
+    implementation rootProject.libraries.composeFoundation
+
+    implementation rootProject.libraries.lottie
 
     //Retrofit
     implementation rootProject.libraries.retrofit
     implementation rootProject.libraries.retrofitConverterMoshi
 
-    //okhttp
-    implementation rootProject.libraries.okhttpBom
-    implementation rootProject.libraries.okhttp
-    implementation rootProject.libraries.okhttpLoggingInterceptor
 }
