@@ -5,7 +5,7 @@ import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
 import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import okhttp3.ResponseBody
 
-interface TaskyAuthenticationApiSource {
+interface AuthenticationApiSource {
 
     suspend fun registerUser(registrationBodyDto: RegistrationBodyDto): ResponseBody
     suspend fun loginUser(loginBodyDto: LoginBodyDto): LoginResponseDto

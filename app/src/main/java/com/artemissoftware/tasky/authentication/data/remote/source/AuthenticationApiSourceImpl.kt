@@ -7,7 +7,7 @@ import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
 import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import okhttp3.ResponseBody
 
-class TaskyAuthenticationApiSourceImpl constructor(private val taskyAuthenticationApi: TaskyAuthenticationApi) : TaskyAuthenticationApiSource {
+class AuthenticationApiSourceImpl constructor(private val taskyAuthenticationApi: TaskyAuthenticationApi) : AuthenticationApiSource {
 
     override suspend fun registerUser(registrationBodyDto: RegistrationBodyDto): ResponseBody {
         return HandleApi.safeApiCall {
