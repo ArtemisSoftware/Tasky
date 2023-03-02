@@ -1,14 +1,14 @@
-package com.artemissoftware.tasky.data.remote
+package com.artemissoftware.tasky.authentication.data.remote
 
-import com.artemissoftware.tasky.data.remote.dto.authentication.LoginBodyDto
-import com.artemissoftware.tasky.data.remote.dto.authentication.LoginResponseDto
-import com.artemissoftware.tasky.data.remote.dto.authentication.RegistrationBodyDto
+import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
+import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
+import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface TaskyApi {
+interface TaskyAuthenticationApi {
 
     @POST("register")
     suspend fun registerUser(@Body registrationBodyDto: RegistrationBodyDto): ResponseBody

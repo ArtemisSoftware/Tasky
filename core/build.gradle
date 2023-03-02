@@ -51,5 +51,8 @@ dependencies {
 
     implementation rootProject.libraries.lottie
 
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    //Retrofit
+    implementation rootProject.libraries.retrofit
+    implementation rootProject.libraries.retrofitConverterMoshi
+
 }
