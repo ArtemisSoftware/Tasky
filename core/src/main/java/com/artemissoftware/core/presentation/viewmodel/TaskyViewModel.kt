@@ -1,14 +1,14 @@
-package com.artemissoftware.tasky.base
+package com.artemissoftware.core.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.artemissoftware.tasky.base.events.TYEvents
 import androidx.lifecycle.viewModelScope
-import com.artemissoftware.tasky.base.events.UiEvent
+import com.artemissoftware.core.presentation.events.TaskyEvents
+import com.artemissoftware.core.presentation.events.UiEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-abstract class TYBaseEventViewModel <E: TYEvents> : ViewModel() {
+abstract class TaskyViewModel <E: TaskyEvents> : ViewModel() {
 
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()

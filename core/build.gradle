@@ -39,10 +39,12 @@ android {
 dependencies {
 
     implementation rootProject.libraries.coreKtx
+    implementation rootProject.libraries.lifecycleViewmodelKtx
 
     implementation rootProject.libraries.composeUi
     implementation rootProject.libraries.composeUiTooling
     implementation rootProject.libraries.composeMaterial
+
     testImplementation rootProject.tests.junit
     androidTestImplementation rootProject.tests.junitExtension
     androidTestImplementation rootProject.tests.espressoCore
