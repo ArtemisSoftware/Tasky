@@ -14,6 +14,6 @@ class ValidateUserNameUseCase {
 
     companion object{
 
-        private const val USER_NAME_REGEX = "^[A-Za-z0-9\\s\\S]{$MIN_CHARACTERS_FOR_NAME,$MAX_CHARACTERS_FOR_NAME}\$" // TODO : min and max from build config
+        private const val USER_NAME_REGEX = "^[A-Za-z0-9\\s\\S]{$MIN_CHARACTERS_FOR_NAME,$MAX_CHARACTERS_FOR_NAME}\$"
     }
 }

@@ -1,5 +1,7 @@
 package com.artemissoftware.tasky.authentication.domain.usecases.validation
 
+import com.artemissoftware.tasky.BuildConfig.*
+
 class ValidatePasswordUseCase {
 
     operator fun invoke(password: String): Boolean  {
@@ -13,6 +15,6 @@ class ValidatePasswordUseCase {
 
     companion object{
 
-        private const val PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{9,}\$" // TODO : min and max from build config
+        private const val PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{$MIN_CHARACTERS_FOR_PASSWORD,}\$"
     }
 }
