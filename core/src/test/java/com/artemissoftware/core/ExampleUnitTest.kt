@@ -1,4 +1,4 @@
-package com.artemissoftware.core_ui
+package com.artemissoftware.core
 
 import org.junit.Test
 
