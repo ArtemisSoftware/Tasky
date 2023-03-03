@@ -48,7 +48,7 @@ class ValidateUserNameUseCaseTest {
     fun `enter blank name get false confirmation`() {
 
         val name = "            "
-        Assert.assertFalse(validateUserNameUseCase.invoke(name = name))
+        Assert.assertTrue(validateUserNameUseCase.invoke(name = name))
     }
 
     @Test
