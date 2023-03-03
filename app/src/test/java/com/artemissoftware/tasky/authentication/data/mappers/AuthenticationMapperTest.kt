@@ -10,12 +10,14 @@ class AuthenticationMapperTest {
     @Test
     fun `map LoginResponseDto to User`() {
 
+        val loginResponse = FakeData.loginResponseDto
+
         val user = User(
             fullName = "Bruce Wayne",
             token = "IamBatman",
             id="DarkKnight"
         )
 
-        Assert.assertEquals(user, FakeData.loginResponseDto.toUser())
+        Assert.assertEquals(user, loginResponse.toUser())
     }
 }
