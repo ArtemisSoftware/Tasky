@@ -16,6 +16,8 @@ import com.artemissoftware.core.presentation.composables.textfield.TaskyOutlined
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.tasky.R
+import com.artemissoftware.tasky.authentication.presentation.login.LoginEvents
+import com.artemissoftware.tasky.authentication.presentation.register.RegisterEvents
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -23,10 +25,7 @@ fun RegisterForm(
     name: String,
     email: String,
     password: String,
-    onNameValueChange: (String) ->Unit,
-    onEmailValueChange: (String) ->Unit,
-    onPasswordValueChange: (String) ->Unit,
-    onRegisterClick: () ->Unit,
+    events: (RegisterEvents) -> Unit,
     nameValidationStateType: TaskyTextFieldValidationStateType,
     emailValidationStateType: TaskyTextFieldValidationStateType,
     passwordValidationStateType: TaskyTextFieldValidationStateType,
@@ -43,7 +42,7 @@ fun RegisterForm(
                 .fillMaxWidth()
                 .height(64.dp),
             hint = stringResource(id = R.string.name),
-            onValueChange = onNameValueChange,
+            onValueChange = { events(RegisterEvents.ValidateName(it)) },
             validationState = nameValidationStateType,
             text = name
         )
@@ -55,7 +54,7 @@ fun RegisterForm(
                 .height(64.dp),
             taskyTextFieldType = TaskyTextFieldType.EMAIL,
             hint = stringResource(id = R.string.email_address),
-            onValueChange = onEmailValueChange,
+            onValueChange = { events(RegisterEvents.ValidateEmail(it)) },
             validationState = emailValidationStateType,
             text = email
         )
@@ -67,7 +66,7 @@ fun RegisterForm(
                 .height(64.dp),
             taskyTextFieldType = TaskyTextFieldType.PASSWORD,
             hint = stringResource(id = R.string.password),
-            onValueChange = onPasswordValueChange,
+            onValueChange = { events(RegisterEvents.ValidatePassword(it)) },
             validationState = passwordValidationStateType,
             text = password,
             imeAction = ImeAction.Done
@@ -79,7 +78,7 @@ fun RegisterForm(
                 .fillMaxWidth()
                 .height(52.dp),
             text = stringResource(id = R.string.get_started),
-            onClick = onRegisterClick
+            onClick = { events(RegisterEvents.Register) },
         )
     }
 
@@ -94,10 +93,7 @@ private fun RegisterFormPreview() {
         name = "name",
         email = "email",
         password = "password",
-        onNameValueChange = {},
-        onEmailValueChange = {},
-        onPasswordValueChange = {},
-        onRegisterClick = {},
+        events = {},
         nameValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED,
         emailValidationStateType = TaskyTextFieldValidationStateType.VALID,
         passwordValidationStateType = TaskyTextFieldValidationStateType.INVALID,

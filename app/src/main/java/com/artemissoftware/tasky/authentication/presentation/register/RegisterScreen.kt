@@ -56,23 +56,12 @@ fun RegisterScreen(
                             RegisterForm(
                                 modifier = Modifier.align(Alignment.TopCenter),
                                 name = name,
-                                onNameValueChange = {
-                                    events.invoke(RegisterEvents.ValidateName(name = it))
-                                },
                                 nameValidationStateType = state.nameValidationStateType,
                                 email = email,
-                                onEmailValueChange = {
-                                    events.invoke(RegisterEvents.ValidateEmail(email = it))
-                                },
                                 emailValidationStateType = state.emailValidationStateType,
                                 password = password,
-                                onPasswordValueChange = {
-                                    events.invoke(RegisterEvents.ValidatePassword(password = it))
-                                },
                                 passwordValidationStateType = state.passwordValidationStateType,
-                                onRegisterClick = {
-                                    events.invoke(RegisterEvents.Register)
-                                }
+                                events = events
                             )
 
 
@@ -81,7 +70,7 @@ fun RegisterScreen(
                                     .align(Alignment.BottomStart),
                                 icon = R.drawable.ic_arrow_left,
                                 onClick = {
-                                    events.invoke(RegisterEvents.PopBackStack)
+                                    events(RegisterEvents.PopBackStack)
                                 }
                             )
 
