@@ -6,4 +6,5 @@
     <string name="password">Password</string>
     <string name="dont_have_an_account">Dont\'t have an account?</string>
     <string name="sign_up">Sign up</string>
+    <string name="create_your_account">Create your account</string>
 </resources>
