@@ -21,6 +21,14 @@ class ValidateUserNameUseCaseTest {
         Assert.assertTrue(validateUserNameUseCase.invoke(name = name))
     }
 
+    @Test
+    fun `enter a name with more than 2 words get true confirmation`() {
+
+        val name = "Bruce Wayne Junior"
+        val name2 = "Bruce Wayne Senior the third"
+        Assert.assertTrue(validateUserNameUseCase.invoke(name = name))
+        Assert.assertTrue(validateUserNameUseCase.invoke(name = name2))
+    }
 
     @Test
     fun `enter a name with less characters than mandatory get false confirmation`() {
@@ -39,7 +47,7 @@ class ValidateUserNameUseCaseTest {
     @Test
     fun `enter blank name get false confirmation`() {
 
-        val name = "   "
+        val name = "            "
         Assert.assertFalse(validateUserNameUseCase.invoke(name = name))
     }
 
@@ -49,4 +57,6 @@ class ValidateUserNameUseCaseTest {
         val name = ""
         Assert.assertFalse(validateUserNameUseCase.invoke(name = name))
     }
+
+
 }

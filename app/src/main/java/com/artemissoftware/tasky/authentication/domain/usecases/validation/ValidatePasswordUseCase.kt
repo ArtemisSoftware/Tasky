@@ -6,15 +6,12 @@ class ValidatePasswordUseCase {
 
     operator fun invoke(password: String): Boolean  {
 
-        if (password.isEmpty()) {
-            return false
-        }
+        val hasValidLength = password.length >= MIN_CHARACTERS_FOR_PASSWORD
+        val hasUppercase = password.any { it.isUpperCase() }
+        val hasLowercase = password.any { it.isLowerCase() }
+        val hasDigits = password.any { it.isDigit() }
+        val hasSpecialCharacter = password.any { !it.isLetterOrDigit() }
 
-        return PASSWORD_REGEX.toRegex().matches(password)
-    }
-
-    companion object{
-
-        private const val PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{$MIN_CHARACTERS_FOR_PASSWORD,}\$"
+        return hasValidLength && hasUppercase && hasLowercase && hasDigits && !hasSpecialCharacter
     }
 }

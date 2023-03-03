@@ -6,14 +6,8 @@ class ValidateUserNameUseCase {
 
     operator fun invoke(name: String): Boolean  {
 
-        if (name.isEmpty()) {
-            return false
-        }
-        return USER_NAME_REGEX.toRegex().matches(name)
+        val hasValidLength =  name.length in (MIN_CHARACTERS_FOR_NAME..MAX_CHARACTERS_FOR_NAME)
+        return hasValidLength && name.isNotBlank()
     }
 
-    companion object{
-
-        private const val USER_NAME_REGEX = "^[A-Za-z0-9\\s\\S]{$MIN_CHARACTERS_FOR_NAME,$MAX_CHARACTERS_FOR_NAME}\$"
-    }
 }
