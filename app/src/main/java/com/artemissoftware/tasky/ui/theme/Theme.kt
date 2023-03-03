@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.artemissoftware.core.presentation.theme.InterTypography
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -37,7 +38,7 @@ fun TaskyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable 
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = InterTypography,
         shapes = Shapes,
         content = content
     )
