@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.composables
+package com.artemissoftware.core.presentation.composables.geometric
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,16 +16,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TYSquare(
-    size: Dp = 24.dp,
+fun TaskySquare(
     color: Color,
-    borderColor: Color = color
+    borderColor: Color = color,
+    size: Dp = 24.dp,
+    modifier: Modifier = Modifier
 ) {
 
     val shape = RoundedCornerShape(5.dp)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(size)
             .clip(shape)
             .background(color)
@@ -35,11 +36,11 @@ fun TYSquare(
 
 @Preview(showBackground = true)
 @Composable
-private fun TYSquarePreview() {
+private fun TaskySquarePreview() {
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        TYSquare(color = Color.Green, size = 30.dp)
-        TYSquare(color = Color.Green, size = 50.dp, borderColor = Color.Red)
-        TYSquare(color = Color.Green, size = 100.dp)
+        TaskySquare(color = Color.Green, size = 30.dp)
+        TaskySquare(color = Color.Green, size = 50.dp, borderColor = Color.Red)
+        TaskySquare(color = Color.Green, size = 100.dp)
     }
 }
