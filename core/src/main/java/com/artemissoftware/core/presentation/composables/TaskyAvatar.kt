@@ -18,7 +18,7 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Green
 
 @Composable
-fun TaskyCircleIdentifier(
+fun TaskyAvatar(
     text: String,
     textColor: Color = Black,
     circleColor: Color = Green,
@@ -45,16 +45,16 @@ fun TaskyCircleIdentifier(
 
 @Preview(showBackground = true)
 @Composable
-private fun TaskyCircleIdentifierPreview() {
+private fun TaskyAvatarPreview() {
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
 
-        TaskyCircleIdentifier(
+        TaskyAvatar(
             text = "AA"
         )
 
-        TaskyCircleIdentifier(
+        TaskyAvatar(
             text = "WW",
             size = 32.dp,
         )

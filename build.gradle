@@ -1,6 +1,7 @@
 buildscript {
 
     apply from: 'configuration.gradle'
+    apply from: 'flavors.gradle'
 
     ext {
         gradle_version = "$rootProject.versions.gradle"
