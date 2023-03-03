@@ -70,4 +70,6 @@ dependencies {
     implementation rootProject.libraries.okhttpBom
     implementation rootProject.libraries.okhttp
     implementation rootProject.libraries.okhttpLoggingInterceptor
+
+    implementation project(':core')
 }
