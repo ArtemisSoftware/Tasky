@@ -19,7 +19,7 @@ import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
-fun AssignmentTime( // TODO: mudar os text para TYtext e as fontes
+fun AssignmentTime(
     @StringRes title: Int,
     hour: String,
     day: String,

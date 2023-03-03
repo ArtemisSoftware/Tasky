@@ -20,7 +20,7 @@ import com.artemissoftware.tasky.agenda.composables.TaskySquare
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
-fun AssignmentHeader( // TODO: mudar os text para TYtext e as fontes
+fun AssignmentHeader(
     assignment: Assignment,
     title: String,
     modifier: Modifier = Modifier,

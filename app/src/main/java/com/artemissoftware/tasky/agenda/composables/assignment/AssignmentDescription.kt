@@ -17,7 +17,7 @@ import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
-fun AssignmentDescription( // TODO: mudar os text para TYtext e as fontes
+fun AssignmentDescription(
     description: String,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false

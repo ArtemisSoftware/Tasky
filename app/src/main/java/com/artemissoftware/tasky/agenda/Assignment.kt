@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import com.artemissoftware.core.presentation.theme.*
 import com.artemissoftware.tasky.R
 
-sealed class Assignment( // TODO: mudar cores com as da core
+sealed class Assignment(
     @StringRes val title: Int,
     val color: Color,
     val borderColor: Color,
