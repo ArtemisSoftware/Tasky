@@ -66,21 +66,12 @@ fun LoginScreen(
                             LoginForm(
                                 modifier = Modifier.align(Alignment.TopCenter),
                                 email = email,
-                                onEmailValueChange = {
-                                    events.invoke(LoginEvents.ValidateEmail(email = it))
-                                },
                                 emailValidationStateType = state.emailValidationStateType,
                                 password = password,
-                                onPasswordValueChange = {
-                                    events.invoke(LoginEvents.ValidatePassword(password = it))
-                                },
                                 passwordValidationStateType = state.passwordValidationStateType,
-                                onLoginClick = {
-                                    events.invoke(LoginEvents.Login)
-                                }
+                                events = events
                             )
 
-                            
                             TaskyTextButton(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -98,16 +89,13 @@ fun LoginScreen(
                                     }
                                 },
                                 onClick = {
-                                    events.invoke(LoginEvents.SignUp)
+                                    events(LoginEvents.SignUp)
                                 }
                             )
                         }
                     }
                 )
             }
-
-
-
         }
     )
 }

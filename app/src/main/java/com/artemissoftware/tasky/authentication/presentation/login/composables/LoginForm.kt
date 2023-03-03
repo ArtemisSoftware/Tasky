@@ -16,15 +16,14 @@ import com.artemissoftware.core.presentation.composables.textfield.TaskyOutlined
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.tasky.R
+import com.artemissoftware.tasky.authentication.presentation.login.LoginEvents
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LoginForm(
     email: String,
     password: String,
-    onEmailValueChange: (String) ->Unit,
-    onPasswordValueChange: (String) ->Unit,
-    onLoginClick: () ->Unit,
+    events: (LoginEvents) -> Unit,
     emailValidationStateType: TaskyTextFieldValidationStateType,
     passwordValidationStateType: TaskyTextFieldValidationStateType,
     modifier: Modifier = Modifier
@@ -41,7 +40,7 @@ fun LoginForm(
                 .height(64.dp),
             taskyTextFieldType = TaskyTextFieldType.EMAIL,
             hint = stringResource(id = R.string.email_address),
-            onValueChange = onEmailValueChange,
+            onValueChange = { events(LoginEvents.ValidateEmail(it)) },
             validationState = emailValidationStateType,
             text = email
         )
@@ -53,7 +52,7 @@ fun LoginForm(
                 .height(64.dp),
             taskyTextFieldType = TaskyTextFieldType.PASSWORD,
             hint = stringResource(id = R.string.password),
-            onValueChange = onPasswordValueChange,
+            onValueChange = { events(LoginEvents.ValidatePassword(it)) },
             validationState = passwordValidationStateType,
             text = password,
             imeAction = ImeAction.Done
@@ -65,7 +64,7 @@ fun LoginForm(
                 .fillMaxWidth()
                 .height(52.dp),
             text = stringResource(id = R.string.log_in),
-            onClick = onLoginClick
+            onClick = { events(LoginEvents.Login) }
         )
     }
 }
@@ -76,9 +75,7 @@ private fun LoginFormPreview() {
     LoginForm(
         email = "email",
         password = "password",
-        onEmailValueChange = {},
-        onPasswordValueChange = {},
-        onLoginClick = {},
+        events = {},
         emailValidationStateType = TaskyTextFieldValidationStateType.VALID,
         passwordValidationStateType = TaskyTextFieldValidationStateType.INVALID,
     )
