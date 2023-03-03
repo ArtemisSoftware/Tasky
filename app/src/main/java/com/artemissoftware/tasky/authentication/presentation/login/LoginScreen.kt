@@ -28,24 +28,7 @@ import com.artemissoftware.tasky.ui.theme.TaskyTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LoginScreen() {
-
-    /* TODO: uncomment when view model is ready
-    val state = viewModel.state.collectAsState()
-
-    BuildLoginScreen(
-        state = state.value,
-        events = viewModel::onTriggerEvent,
-        email = viewModel.email,
-        password = viewModel.password
-    )
-*/
-}
-
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun BuildLoginScreen(
+fun LoginScreen(
     state: LoginState,
     email: String,
     password: String
@@ -149,6 +132,6 @@ private fun BuildLoginScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun BuildLoginScreenPreview() {
-    BuildLoginScreen(state = LoginState(), "email", "password")
+private fun LoginScreenPreview() {
+    LoginScreen(state = LoginState(), "email", "password")
 }
