@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Needle(
-    modifier: Modifier = Modifier,
     color: Color,
-    radius: Float
+    radius: Float,
+    modifier: Modifier = Modifier
 ) {
 
     val context = LocalContext.current
@@ -25,7 +25,6 @@ fun Needle(
 
     Canvas(
         modifier = modifier
-            .fillMaxWidth()
             .height(height)
     ) {
         drawCircle(
@@ -49,7 +48,7 @@ fun Needle(
 private fun NeedlePreview() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Needle(radius = 200F, color = Color.Green)
+        Needle(modifier = Modifier.fillMaxWidth(), radius = 200F, color = Color.Green)
         Needle(radius = 100F, color = Color.Red, modifier = Modifier.width(100.dp))
         Needle(radius = 16F, color = Color.Black, modifier = Modifier.width(50.dp))
     }

@@ -2,27 +2,31 @@ package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
+import com.artemissoftware.core.presentation.composables.icon.TaskySquareIcon
+import com.artemissoftware.core.presentation.composables.text.TaskyText
+import com.artemissoftware.core.presentation.theme.Gray
+import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.composables.TYIcon
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
-fun AssignmentNotification( // TODO: mudar os text para TYtext e as fontes mudat o icon da esquerda
-    modifier: Modifier = Modifier,
+fun AssignmentNotification(
     description: String,
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    modifier: Modifier = Modifier,
 ) {
 
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
     ) {
-
 
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -34,9 +38,16 @@ fun AssignmentNotification( // TODO: mudar os text para TYtext e as fontes mudat
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TYIcon(icon = R.drawable.ic_launcher_foreground)
+                    TaskySquareIcon(
+                        size = 30.dp,
+                        icon = R.drawable.ic_notification,
+                        iconColor = Gray
+                    )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text(text = description)
+                    TaskyText(
+                        style = MaterialTheme.typography.body1,
+                        text = description
+                    )
                 }
             }
 
@@ -50,17 +61,20 @@ fun AssignmentNotification( // TODO: mudar os text para TYtext e as fontes mudat
                     enter = VisibilityTransitions.enterEdition(),
                     exit = VisibilityTransitions.exitEdition()
                 ) {
-                    TYIcon(icon = R.drawable.ic_launcher_foreground)
+                    TaskyIcon(
+                        icon = R.drawable.ic_right_arrow,
+                        size = 30.dp
+                    )
                 }
             }
 
         }
 
-
-        TYDivider(
+        Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp)
+                .padding(top = 20.dp),
+            color = Light
         )
     }
 }
@@ -70,8 +84,8 @@ fun AssignmentNotification( // TODO: mudar os text para TYtext e as fontes mudat
 @Composable
 private fun AssignmentTimePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentNotification(description = "First description")
-        AssignmentNotification(isEditing = true, description = "Second descriptionsdçljgjlsdglkdshfgklsdhfgjklhsdflkjghsdlkjfghlkdsfhgklsdfhgjklsdhfgjklshdfkljghsdlkfgjdfhgjklsdfhgjsdfg")
+        AssignmentNotification(description = "First description", modifier = Modifier.fillMaxWidth())
+        AssignmentNotification(isEditing = true, description = "Second descriptionsdçljgjlsdglkdshfgklsdhfgjklhsdflkjghsdlkjfghlkdsfhgklsdfhgjklsdhfgjklshdfkljghsdlkfgjdfhgjklsdfhgjsdfg", modifier = Modifier.fillMaxWidth())
     }
 
 }

@@ -3,6 +3,7 @@ package com.artemissoftware.tasky.agenda.composables.assignment
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,7 +13,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.composables.TYIcon
+import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
+import com.artemissoftware.core.presentation.composables.text.TaskyText
+import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
@@ -24,9 +27,11 @@ fun AssignmentTime( // TODO: mudar os text para TYtext e as fontes
     isEditing: Boolean = false
 ) {
 
-    Column {
+    Column(
+        modifier = modifier.padding(horizontal = 8.dp)
+    ) {
         Row(
-            modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
 
             Column(
@@ -36,11 +41,11 @@ fun AssignmentTime( // TODO: mudar os text para TYtext e as fontes
                 Row(
                     modifier = modifier.fillMaxWidth()
                 ) {
-                    Text(
+                    TaskyText(
                         text = stringResource(id = title),
                         modifier = Modifier.weight(0.5F)
                     )
-                    Text(
+                    TaskyText(
                         text = hour,
                         modifier = Modifier.weight(0.4F)
                     )
@@ -53,7 +58,10 @@ fun AssignmentTime( // TODO: mudar os text para TYtext e as fontes
                             enter = VisibilityTransitions.enterEdition(),
                             exit = VisibilityTransitions.exitEdition()
                         ) {
-                            TYIcon(icon = R.drawable.ic_launcher_foreground)
+                            TaskyIcon(
+                                icon = R.drawable.ic_right_arrow,
+                                size = 30.dp
+                            )
                         }
                     }
 
@@ -67,7 +75,7 @@ fun AssignmentTime( // TODO: mudar os text para TYtext e as fontes
                 Row(
                     modifier = modifier.fillMaxWidth()
                 ) {
-                    Text(
+                    TaskyText(
                         textAlign = TextAlign.Center,
                         text = day,
                         modifier = Modifier.weight(0.9F)
@@ -81,17 +89,21 @@ fun AssignmentTime( // TODO: mudar os text para TYtext e as fontes
                             enter = VisibilityTransitions.enterEdition(),
                             exit = VisibilityTransitions.exitEdition()
                         ) {
-                            TYIcon(icon = R.drawable.ic_launcher_foreground)
+                            TaskyIcon(
+                                icon = R.drawable.ic_right_arrow,
+                                size = 30.dp
+                            )
                         }
                     }
                 }
             }
         }
 
-        TYDivider(
+        Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 28.dp)
+                .padding(top = 28.dp),
+            color = Light
         )
     }
 }
@@ -100,7 +112,7 @@ fun AssignmentTime( // TODO: mudar os text para TYtext e as fontes
 @Composable
 private fun AssignmentTimePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentTime(title = R.string.from, day = "Jul 21 2022", hour = "08:00")
-        AssignmentTime(isEditing = true, title = R.string.to, day = "Jul 21 2022", hour = "08:30")
+        AssignmentTime(title = R.string.from, day = "Jul 21 2022", hour = "08:00", modifier = Modifier.fillMaxWidth())
+        AssignmentTime(isEditing = true, title = R.string.to, day = "Jul 21 2022", hour = "08:30", modifier = Modifier.fillMaxWidth())
     }
 }
