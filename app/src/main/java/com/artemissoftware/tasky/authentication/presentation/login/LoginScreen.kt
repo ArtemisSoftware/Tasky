@@ -24,6 +24,9 @@ import com.artemissoftware.core.presentation.theme.Link
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.Greeting
 import com.artemissoftware.tasky.R
+import com.artemissoftware.tasky.authentication.presentation.login.composables.LoginForm
+import com.artemissoftware.tasky.authentication.presentation.register.RegisterEvents
+import com.artemissoftware.tasky.authentication.presentation.register.composables.RegisterForm
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -31,7 +34,8 @@ import com.artemissoftware.tasky.ui.theme.TaskyTheme
 fun LoginScreen(
     state: LoginState,
     email: String,
-    password: String
+    password: String,
+    events: (LoginEvents) -> Unit
 ) {
 
     TaskyScaffold(
@@ -59,44 +63,22 @@ fun LoginScreen(
                                 .padding(horizontal = 16.dp)
                         ){
 
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.TopCenter)
-                            ) {
-
-                                TaskyOutlinedTextField(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(64.dp),
-                                    taskyTextFieldType = TaskyTextFieldType.EMAIL,
-                                    hint = stringResource(id = R.string.email_address),
-                                    validationState = state.emailValidationStateType,
-                                    text = email
-                                )
-
-                                TaskyOutlinedTextField(
-                                    modifier = Modifier
-                                        .padding(top = 16.dp)
-                                        .fillMaxWidth()
-                                        .height(64.dp),
-                                    taskyTextFieldType = TaskyTextFieldType.PASSWORD,
-                                    hint = stringResource(id = R.string.password),
-                                    validationState = state.passwordValidationStateType,
-                                    text = password
-                                )
-
-                                TaskyButton(
-                                    modifier = Modifier
-                                        .padding(top = 24.dp)
-                                        .fillMaxWidth()
-                                        .height(52.dp),
-                                    text = stringResource(id = R.string.log_in),
-                                    onClick = {
-                                        // TODO: add event
-                                    }
-                                )
-                            }
+                            LoginForm(
+                                modifier = Modifier.align(Alignment.TopCenter),
+                                email = email,
+                                onEmailValueChange = {
+                                    events.invoke(LoginEvents.ValidateEmail(email = it))
+                                },
+                                emailValidationStateType = state.emailValidationStateType,
+                                password = password,
+                                onPasswordValueChange = {
+                                    events.invoke(LoginEvents.ValidatePassword(password = it))
+                                },
+                                passwordValidationStateType = state.passwordValidationStateType,
+                                onLoginClick = {
+                                    events.invoke(LoginEvents.Login)
+                                }
+                            )
 
                             
                             TaskyTextButton(
@@ -116,7 +98,7 @@ fun LoginScreen(
                                     }
                                 },
                                 onClick = {
-                                    // TODO: add event
+                                    events.invoke(LoginEvents.SignUp)
                                 }
                             )
                         }
@@ -133,5 +115,5 @@ fun LoginScreen(
 @Preview(showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(state = LoginState(), "email", "password")
+    LoginScreen(state = LoginState(), "email", "password", events = {})
 }
