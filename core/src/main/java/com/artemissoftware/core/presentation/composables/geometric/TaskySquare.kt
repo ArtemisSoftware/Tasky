@@ -1,4 +1,4 @@
-package com.artemissoftware.core.presentation.composables.geometric
+package com.artemissoftware.tasky.agenda.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,7 +23,7 @@ fun TaskySquare(
     modifier: Modifier = Modifier
 ) {
 
-    val shape = RoundedCornerShape(5.dp)
+    val shape = RoundedCornerShape(2.dp)
 
     Box(
         modifier = modifier
