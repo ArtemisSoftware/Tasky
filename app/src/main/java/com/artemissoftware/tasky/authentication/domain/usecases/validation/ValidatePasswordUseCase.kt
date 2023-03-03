@@ -10,8 +10,7 @@ class ValidatePasswordUseCase {
         val hasUppercase = password.any { it.isUpperCase() }
         val hasLowercase = password.any { it.isLowerCase() }
         val hasDigits = password.any { it.isDigit() }
-        val hasSpecialCharacter = password.any { !it.isLetterOrDigit() }
 
-        return hasValidLength && hasUppercase && hasLowercase && hasDigits && !hasSpecialCharacter
+        return hasValidLength && hasUppercase && hasLowercase && hasDigits
     }
 }

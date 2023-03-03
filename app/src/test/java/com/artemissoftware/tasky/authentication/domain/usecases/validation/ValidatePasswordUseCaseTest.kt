@@ -23,8 +23,8 @@ class ValidatePasswordUseCaseTest {
     @Test
     fun `enter invalid password get false confirmation`() {
 
-        val password = "Passw.ord1"
-        val password2 = "password1"
+        val password = "oassw.ord1"
+        val password2 = "11111111111111"
         val password3 = "AAAAAAAAAAA"
         val password4 = "bbbffffdddss"
         Assert.assertFalse(validatePasswordUseCase.invoke(password = password))
@@ -55,9 +55,9 @@ class ValidatePasswordUseCaseTest {
     }
 
     @Test
-    fun `enter password with spaces get false confirmation`() {
+    fun `enter password with spaces get true confirmation`() {
 
         val name = "     d  1  A   "
-        Assert.assertFalse(validatePasswordUseCase.invoke(password = name))
+        Assert.assertTrue(validatePasswordUseCase.invoke(password = name))
     }
 }
