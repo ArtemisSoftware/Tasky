@@ -43,7 +43,7 @@ class ValidatePasswordUseCaseTest {
     @Test
     fun `enter blank password get false confirmation`() {
 
-        val name = "   "
+        val name = "          "
         Assert.assertFalse(validatePasswordUseCase.invoke(password = name))
     }
 
@@ -51,6 +51,13 @@ class ValidatePasswordUseCaseTest {
     fun `enter empty password get false confirmation`() {
 
         val name = ""
+        Assert.assertFalse(validatePasswordUseCase.invoke(password = name))
+    }
+
+    @Test
+    fun `enter password with spaces get false confirmation`() {
+
+        val name = "     d  1  A   "
         Assert.assertFalse(validatePasswordUseCase.invoke(password = name))
     }
 }
