@@ -58,4 +58,7 @@ dependencies {
     implementation rootProject.libraries.retrofit
     implementation rootProject.libraries.retrofitConverterMoshi
 
+    //datastore
+    //--implementation rootProject.libraries.datastore
+    implementation rootProject.libraries.kotlinxSerializationJson
 }

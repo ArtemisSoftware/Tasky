@@ -74,9 +74,5 @@ dependencies {
     implementation rootProject.libraries.okhttp
     implementation rootProject.libraries.okhttpLoggingInterceptor
 
-    //datastore
-    //--implementation rootProject.libraries.datastore
-    implementation rootProject.libraries.kotlinxSerializationJson
-
     implementation project(':core')
 }
