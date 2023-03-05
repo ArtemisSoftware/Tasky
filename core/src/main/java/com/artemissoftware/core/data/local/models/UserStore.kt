@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserStore(
-    val fullName: String,
-    val token: String,
-    val id: String
+    val fullName: String? = null,
+    val token: String? = null,
+    val id: String? = null
 )

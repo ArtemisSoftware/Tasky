@@ -5,9 +5,9 @@ import com.artemissoftware.core.domain.models.authentication.User
 
 fun UserStore.toUser() : User{
     return User(
-        fullName = fullName,
+        fullName = fullName ?: "",
         token = token,
-        id = id
+        id = id ?: ""
     )
 }
 
