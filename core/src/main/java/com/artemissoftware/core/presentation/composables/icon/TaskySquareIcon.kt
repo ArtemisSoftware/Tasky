@@ -29,6 +29,7 @@ fun TaskySquareIcon(
     size: Dp = 16.dp,
     padding: Dp = 4.dp,
     backgroundColor: Color = Light2,
+    borderWidth: Dp = (0.2).dp,
     borderColor: Color = backgroundColor,
     iconColor: Color = Black
 ) {
@@ -43,7 +44,8 @@ fun TaskySquareIcon(
             .background(backgroundColor)
             .border(
                 color = borderColor,
-                width = (0.2).dp
+                width = borderWidth,
+                shape = shape
             )
             .padding(padding),
         painter = painterResource(icon),
@@ -67,6 +69,14 @@ private fun TaskySquareIconPreview() {
         TaskySquareIcon(
             modifier = Modifier,
             size = 32.dp,
+            icon = R.drawable.ic_add
+        )
+
+        TaskySquareIcon(
+            modifier = Modifier,
+            size = 32.dp,
+            borderWidth = 2.dp,
+            borderColor = Black,
             icon = R.drawable.ic_add
         )
     }
