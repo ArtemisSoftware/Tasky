@@ -2,7 +2,6 @@ package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,10 +12,9 @@ import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.DarkGray
-import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
-import com.artemissoftware.tasky.agenda.composables.TaskySquare
+import com.artemissoftware.core.presentation.composables.geometric.TaskySquare
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable

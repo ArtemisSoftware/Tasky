@@ -25,12 +25,12 @@ import com.artemissoftware.core.presentation.theme.Light2
 @Composable
 fun TaskySquareIcon(
     @DrawableRes icon: Int,
+    modifier: Modifier = Modifier,
     size: Dp = 16.dp,
     padding: Dp = 4.dp,
     backgroundColor: Color = Light2,
     borderColor: Color = backgroundColor,
-    iconColor: Color = Black,
-    modifier: Modifier = Modifier
+    iconColor: Color = Black
 ) {
 
     val shape = RoundedCornerShape(5.dp)
@@ -43,8 +43,7 @@ fun TaskySquareIcon(
             .background(backgroundColor)
             .border(
                 color = borderColor,
-                width = (0.2).dp,
-                shape = shape
+                width = (0.2).dp
             )
             .padding(padding),
         painter = painterResource(icon),
