@@ -13,8 +13,7 @@ import java.io.OutputStream
 object UserStoreSerializer : Serializer<User> {
 
     override val defaultValue: User
-        get() = UserStore().toUser()
-
+        get() = User()
 
     override suspend fun readFrom(input: InputStream): User {
         return try {
@@ -23,18 +22,18 @@ object UserStoreSerializer : Serializer<User> {
                 string = input.readBytes().decodeToString()
             ).toUser()
         } catch (e: SerializationException) {
-            e.printStackTrace()
             defaultValue
         }
     }
 
 
-    override suspend fun writeTo(user: User, output: OutputStream) {
+    override suspend fun writeTo(t: User, output: OutputStream) {
         output.write(
             Json.encodeToString(
                 serializer = UserStore.serializer(),
-                value = user.toUserStore()
+                value = t.toUserStore()
             ).encodeToByteArray()
         )
+
     }
 }

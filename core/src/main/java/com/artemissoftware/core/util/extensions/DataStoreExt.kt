@@ -1,4 +1,4 @@
-package com.artemissoftware.core.data.local
+package com.artemissoftware.core.util.extensions
 
 import android.content.Context
 import androidx.datastore.dataStore
