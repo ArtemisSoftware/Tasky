@@ -83,4 +83,5 @@ ext.tests = [
 
 ext.classpath = [
 
+        kotlinSerialization             : "org.jetbrains.kotlin:kotlin-serialization:$versions.kotlin",
 ]
