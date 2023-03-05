@@ -23,13 +23,12 @@ import com.artemissoftware.core.presentation.theme.*
 @Composable
 fun VisitorItem(
     name: String,
-    isCreator: Boolean = false,
     modifier: Modifier = Modifier,
+    isCreator: Boolean = false
 ) {
 
     Card(
-        modifier = modifier
-            .clickable { },
+        modifier = modifier,
         shape = RoundedCornerShape(10.dp),
         elevation = 0.dp
     ) {
@@ -37,8 +36,7 @@ fun VisitorItem(
             modifier = Modifier
                 .background(color = Light2)
                 .padding(vertical = 8.dp)
-                .padding(start = 8.dp)
-                .padding(end = 16.dp),
+                .padding(start = 8.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 

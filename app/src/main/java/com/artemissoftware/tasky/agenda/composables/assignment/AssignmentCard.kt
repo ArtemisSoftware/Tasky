@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.composables
+package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,24 +14,24 @@ import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.icon.TaskyIconToggleButton
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.Assignment
+import com.artemissoftware.tasky.agenda.AgendaItemType
 
 @Composable
 fun AssignmentCard(
-    assignment: Assignment,
+    agendaItemType: AgendaItemType,
     title: String,
     description: String,
     date: String,
+    modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit,
     isComplete: Boolean = false,
 ) {
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         elevation = 0.dp,
         shape = RoundedCornerShape(20.dp),
-        backgroundColor = assignment.color
+        backgroundColor = agendaItemType.color
     ) {
         Column(
             modifier = Modifier
@@ -45,7 +45,7 @@ fun AssignmentCard(
                         modifier = Modifier.padding(top = 4.dp),
                         onIcon = R.drawable.ic_round_check,
                         offIcon = R.drawable.ic_circle,
-                        onIconColor = assignment.generalTextColor,
+                        onIconColor = agendaItemType.generalTextColor,
                         onCheckedChange = onCheckedChange
                     )
                 }
@@ -58,7 +58,7 @@ fun AssignmentCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         TaskyText(
-                            color = assignment.generalTextColor,
+                            color = agendaItemType.generalTextColor,
                             modifier = Modifier.weight(0.9F),
                             text = title,
                             style = MaterialTheme.typography.h6.copy(textDecoration = if(isComplete) TextDecoration.LineThrough else TextDecoration.None)
@@ -68,13 +68,13 @@ fun AssignmentCard(
                             modifier = Modifier
                                 .weight(0.1F),
                             icon = R.drawable.ic_more_options,
-                            color = assignment.generalTextColor
+                            color = agendaItemType.generalTextColor
                         )
                     }
 
                     TaskyText(
                         modifier = Modifier.padding(top = 12.dp),
-                        color = assignment.secondaryTextColor,
+                        color = agendaItemType.secondaryTextColor,
                         maxLines = 2,
                         text = description,
                         style = MaterialTheme.typography.caption
@@ -85,7 +85,7 @@ fun AssignmentCard(
             Box(modifier = Modifier.fillMaxWidth().padding(top = 40.dp)) {
                 TaskyText(
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    color = assignment.secondaryTextColor,
+                    color = agendaItemType.secondaryTextColor,
                     text = date,
                     style = MaterialTheme.typography.body2
                 )
@@ -100,21 +100,27 @@ private fun AssignmentCardPreview() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         AssignmentCard(
-            assignment = Assignment.Task(),
+            modifier = Modifier
+                .fillMaxWidth(),
+            agendaItemType = AgendaItemType.Task(),
             onCheckedChange = {},
             title = "title",
             description = "description",
             date = "date"
         )
         AssignmentCard(
-            assignment = Assignment.Event(),
+            modifier = Modifier
+                .fillMaxWidth(),
+            agendaItemType = AgendaItemType.Event(),
             onCheckedChange = {},
             title = "title",
             description = "description",
             date = "date"
         )
         AssignmentCard(
-            assignment = Assignment.Reminder(),
+            modifier = Modifier
+                .fillMaxWidth(),
+            agendaItemType = AgendaItemType.Reminder(),
             onCheckedChange = {},
             title = "title",
             description = "description",

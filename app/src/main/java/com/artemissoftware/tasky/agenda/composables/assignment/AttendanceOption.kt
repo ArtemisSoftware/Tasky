@@ -25,15 +25,16 @@ import com.artemissoftware.tasky.R
 @Composable
 fun AttendanceOption(
     @StringRes title: Int,
+    modifier: Modifier = Modifier,
     selectedColor: Color = Black,
     unselectedColor: Color = Light2,
     selectedTextColor: Color = White,
     unselectedTextColor: Color = DarkGray,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier,
+    onClick: (Boolean) -> Unit
 ) {
 
-    var colors by remember {
+    var colors by remember(key1 = isSelected) {
         mutableStateOf(
             getColors(
                 isSelected = isSelected,
@@ -48,13 +49,7 @@ fun AttendanceOption(
     Card(
         modifier = modifier
             .clickable {
-                colors = getColors(
-                    isSelected = isSelected,
-                    selectedColor = selectedColor,
-                    unselectedColor = unselectedColor,
-                    selectedTextColor = selectedTextColor,
-                    unselectedTextColor = unselectedTextColor
-                )
+                onClick.invoke(isSelected)
             },
         shape = RoundedCornerShape(100.dp),
         elevation = 0.dp
@@ -90,17 +85,25 @@ private fun getColors(
 @Preview(showBackground = true)
 @Composable
 private fun VisitorItemPreview() {
+
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         AttendanceOption(
             title = R.string.app_name,
             modifier = Modifier
                 .height(30.dp)
-                .width(100.dp)
+                .width(100.dp),
+            onClick = {
+
+            }
         )
         AttendanceOption(
             title = R.string.app_name,
             isSelected = true,
             modifier = Modifier
-                .height(30.dp))
+                .height(30.dp),
+            onClick = {
+
+            }
+        )
     }
 }

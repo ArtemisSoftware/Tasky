@@ -98,13 +98,6 @@ fun AssignmentTime(
                 }
             }
         }
-
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 28.dp),
-            color = Light
-        )
     }
 }
 

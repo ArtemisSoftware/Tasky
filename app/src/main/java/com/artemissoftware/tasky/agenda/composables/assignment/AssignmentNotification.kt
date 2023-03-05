@@ -67,15 +67,7 @@ fun AssignmentNotification(
                     )
                 }
             }
-
         }
-
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
-            color = Light
-        )
     }
 }
 

@@ -59,19 +59,22 @@ fun VisitorsHeader(
                 title = R.string.all,
                 modifier = Modifier
                     .height(30.dp)
-                    .width(100.dp)
+                    .width(100.dp),
+                onClick = {}
             )
             AttendanceOption(
                 title = R.string.going,
                 modifier = Modifier
                     .height(30.dp)
-                    .width(100.dp)
+                    .width(100.dp),
+                onClick = {}
             )
             AttendanceOption(
                 title = R.string.not_going,
                 modifier = Modifier
                     .height(30.dp)
-                    .width(100.dp)
+                    .width(100.dp),
+                onClick = {}
             )
         }
     }
