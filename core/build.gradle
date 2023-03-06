@@ -1,0 +1,61 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.artemissoftware.core'
+    compileSdk rootProject.androidconfig.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.androidconfig.minSdk
+        targetSdk rootProject.androidconfig.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion rootProject.versions.compose
+    }
+
+    with flavorConfig
+}
+
+dependencies {
+
+    implementation rootProject.libraries.coreKtx
+
+    implementation rootProject.libraries.composeUi
+    implementation rootProject.libraries.composeUiTooling
+    implementation rootProject.libraries.composeMaterial
+
+    testImplementation rootProject.tests.junit
+    androidTestImplementation rootProject.tests.junitExtension
+    androidTestImplementation rootProject.tests.espressoCore
+
+    implementation rootProject.libraries.composeFoundation
+
+    implementation rootProject.libraries.lottie
+
+    //Retrofit
+    implementation rootProject.libraries.retrofit
+    implementation rootProject.libraries.retrofitConverterMoshi
+
+}

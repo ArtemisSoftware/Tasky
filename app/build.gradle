@@ -45,6 +45,8 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+    with flavorConfig
 }
 
 dependencies {
@@ -65,7 +67,7 @@ dependencies {
 
     //Retrofit
     implementation rootProject.libraries.retrofit
-    implementation rootProject.libraries.retrofitConverterGson
+    implementation rootProject.libraries.retrofitConverterMoshi
 
     //okhttp
     implementation rootProject.libraries.okhttpBom
@@ -76,4 +78,6 @@ dependencies {
     api rootProject.libraries.roomRuntime
     kapt rootProject.libraries.roomCompiler
     implementation rootProject.libraries.roomKtx
+
+    implementation project(':core')
 }
