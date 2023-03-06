@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
 }
 
 android {
@@ -64,20 +63,6 @@ dependencies {
     androidTestImplementation rootProject.tests.uiTestJunit4
     debugImplementation rootProject.libraries.composeUiTooling
     debugImplementation rootProject.tests.uiTestManifest
-
-    //Retrofit
-    implementation rootProject.libraries.retrofit
-    implementation rootProject.libraries.retrofitConverterMoshi
-
-    //okhttp
-    implementation rootProject.libraries.okhttpBom
-    implementation rootProject.libraries.okhttp
-    implementation rootProject.libraries.okhttpLoggingInterceptor
-
-    //room
-    api rootProject.libraries.roomRuntime
-    kapt rootProject.libraries.roomCompiler
-    implementation rootProject.libraries.roomKtx
 
     implementation project(':core')
 }

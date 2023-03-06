@@ -1,9 +1,9 @@
-package com.artemissoftware.tasky.data.database
+package com.artemissoftware.core.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.artemissoftware.tasky.data.database.dao.ReminderTimeDao
-import com.artemissoftware.tasky.data.database.entities.ReminderTimeEntity
+import com.artemissoftware.core.data.database.dao.ReminderTimeDao
+import com.artemissoftware.core.data.database.entities.ReminderTimeEntity
 
 @Database(
     entities = [ReminderTimeEntity::class],
