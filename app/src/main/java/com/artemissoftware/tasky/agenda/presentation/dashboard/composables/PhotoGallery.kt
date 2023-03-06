@@ -46,7 +46,9 @@ fun PhotoGallery(
     ) {
 
         if(photos.isEmpty()){
-            PhotoPlaceHolder()
+            PhotoPlaceHolder(
+                modifier = Modifier.fillMaxWidth()
+            )
         }
         else{
             PhotoGalleryDisplay(
