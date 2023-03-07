@@ -2,7 +2,7 @@ package com.artemissoftware.core.util
 
 object StringUtil {
 
-    fun getInitials(name: String, limit: Int = 3): String {
+    fun getInitials(name: String): String {
 
         val listOfNames = name
             .trim()
