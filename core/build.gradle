@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -55,8 +56,20 @@ dependencies {
     implementation rootProject.libraries.lottie
 
     //Retrofit
-    implementation rootProject.libraries.retrofit
-    implementation rootProject.libraries.retrofitConverterMoshi
+    api rootProject.libraries.retrofit
+    api rootProject.libraries.retrofitConverterMoshi
+
+
+    //okhttp
+    implementation rootProject.libraries.okhttpBom
+    implementation rootProject.libraries.okhttp
+    implementation rootProject.libraries.okhttpLoggingInterceptor
+
+
+    //room
+    api rootProject.libraries.roomRuntime
+    kapt rootProject.libraries.roomCompiler
+    implementation rootProject.libraries.roomKtx
 
     implementation rootProject.libraries.coilCompose
 }
