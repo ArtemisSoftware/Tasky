@@ -20,6 +20,7 @@ import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Gray
 import com.artemissoftware.core.presentation.theme.Light2
 import com.artemissoftware.core.presentation.theme.LightBlue
+import com.artemissoftware.tasky.BuildConfig
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.Photo
 import com.artemissoftware.tasky.util.VisibilityTransitions
@@ -29,16 +30,17 @@ fun PhotoGallery(
     photos: List<Photo>,
     onAddPhotoClick: ()->Unit,
     modifier: Modifier = Modifier,
+    maxPictures: Int = BuildConfig.DEFAULT_MAX_PICTURES_PER_EVENT,
     backgroundColor: Color = Light2,
     isEditing: Boolean = false
 ) {
 
-    val display = Modifier.padding(vertical = 20.dp).then(modifier)
-    val placeHolder = Modifier.clickable { onAddPhotoClick() }.then(modifier)
+    val display = Modifier.padding(vertical = 20.dp)
+    val placeHolder = Modifier.clickable { onAddPhotoClick() }
 
     val galleryModifier = Modifier
         .background(color = backgroundColor)
-        .then(if (photos.isEmpty()) placeHolder  else display)
+        .then(if (photos.isEmpty()) placeHolder  else display).then(modifier)
 
     Row(
         modifier = galleryModifier,
@@ -46,14 +48,15 @@ fun PhotoGallery(
     ) {
 
         if(photos.isEmpty()){
-            PhotoPlaceHolder(
+            AddPhotoPlaceHolder(
                 modifier = Modifier.fillMaxWidth()
             )
         }
         else{
             PhotoGalleryDisplay(
                 photos = photos,
-                isEditing = isEditing
+                isEditing = isEditing,
+                maxPictures = maxPictures
             )
         }
 
@@ -88,7 +91,7 @@ private fun PhotoGalleryPreview() {
 
 
 @Composable
-private fun PhotoPlaceHolder(
+private fun AddPhotoPlaceHolder(
     modifier: Modifier = Modifier
 ) {
 
@@ -113,8 +116,8 @@ private fun PhotoPlaceHolder(
 
 @Preview(showBackground = true)
 @Composable
-private fun PhotoPlaceHolderPreview() {
-    PhotoPlaceHolder(
+private fun AddPhotoPlaceHolderPreview() {
+    AddPhotoPlaceHolder(
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -127,6 +130,7 @@ private fun PhotoPlaceHolderPreview() {
 private fun PhotoGalleryDisplay(
     photos: List<Photo>,
     modifier: Modifier = Modifier,
+    maxPictures: Int,
     isEditing: Boolean = false
 ) {
 
@@ -165,20 +169,22 @@ private fun PhotoGalleryDisplay(
 
             item {
 
-                AnimatedVisibility(
-                    visible = isEditing,
-                    enter = VisibilityTransitions.enterEdition(),
-                    exit = VisibilityTransitions.exitEdition()
-                ) {
+                if(photos.size <= maxPictures) {
+                    AnimatedVisibility(
+                        visible = isEditing,
+                        enter = VisibilityTransitions.enterEdition(),
+                        exit = VisibilityTransitions.exitEdition()
+                    ) {
 
-                    TaskySquareIcon(
-                        icon = R.drawable.ic_add,
-                        borderWidth = 2.dp,
-                        iconColor = LightBlue,
-                        borderColor = LightBlue,
-                        padding = 20.dp,
-                        size = 60.dp
-                    )
+                        TaskySquareIcon(
+                            icon = R.drawable.ic_add,
+                            borderWidth = 2.dp,
+                            iconColor = LightBlue,
+                            borderColor = LightBlue,
+                            padding = 20.dp,
+                            size = 60.dp
+                        )
+                    }
                 }
             }
         }
@@ -192,6 +198,7 @@ private fun PhotoGalleryDisplay(
 @Composable
 private fun PhotoGalleryDisplayPreview() {
     PhotoGalleryDisplay(
-        photos = Photo.mockPhotos
+        photos = Photo.mockPhotos,
+        maxPictures = 2
     )
 }
