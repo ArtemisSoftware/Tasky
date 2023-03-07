@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.database.entities
+package com.artemissoftware.core.data.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
