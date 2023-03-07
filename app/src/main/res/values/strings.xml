@@ -19,4 +19,6 @@
     <string name="all">All</string>
     <string name="going">Going</string>
     <string name="not_going">Not going</string>
+    <string name="add_photos">Add photos</string>
+    <string name="photos">Photos</string>
 </resources>

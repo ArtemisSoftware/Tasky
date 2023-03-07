@@ -58,4 +58,5 @@ dependencies {
     implementation rootProject.libraries.retrofit
     implementation rootProject.libraries.retrofitConverterMoshi
 
+    implementation rootProject.libraries.coilCompose
 }
