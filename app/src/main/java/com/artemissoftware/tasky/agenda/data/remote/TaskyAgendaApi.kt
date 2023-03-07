@@ -37,7 +37,7 @@ interface TaskyAgendaApi {
     suspend fun createReminder(@Body reminder: ReminderDto): ResponseBody
 
     @PUT("reminder")
-    suspend fun updateReminder(@Body task: ReminderDto): ResponseBody
+    suspend fun updateReminder(@Body reminder: ReminderDto): ResponseBody
 
     @DELETE("reminder")
     suspend fun deleteReminder(@Query(value = "reminderId") reminderId: String): ResponseBody
