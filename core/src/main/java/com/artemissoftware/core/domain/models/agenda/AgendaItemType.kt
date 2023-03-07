@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.domain.models
+package com.artemissoftware.core.domain.models.agenda
 
 enum class AgendaItemType {
 
