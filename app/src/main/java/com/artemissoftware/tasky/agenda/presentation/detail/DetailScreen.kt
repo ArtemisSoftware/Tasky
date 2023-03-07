@@ -1,41 +1,32 @@
-package com.artemissoftware.tasky.agenda.detail
+package com.artemissoftware.tasky.agenda.presentation.detail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
-import com.artemissoftware.core.presentation.composables.button.TaskyButton
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
-import com.artemissoftware.core.presentation.composables.text.TaskyText
-import com.artemissoftware.core.presentation.composables.textfield.TaskyOutlinedTextField
-import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldType
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
-import com.artemissoftware.core.presentation.theme.Link
-import com.artemissoftware.core.presentation.theme.White
-import com.artemissoftware.tasky.Greeting
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.*
-import com.artemissoftware.tasky.ui.theme.TaskyTheme
+import com.artemissoftware.tasky.agenda.domain.models.Photo
+import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
+import com.artemissoftware.tasky.authentication.presentation.register.RegisterEvents
 
 @Composable
 fun DetailScreen(
-    state: DetailState
+    state: DetailState,
+    events: (DetailEvents) -> Unit
 ) {
 
     TaskyScaffold(
@@ -44,7 +35,7 @@ fun DetailScreen(
         topBar = {
             TaskyTopBar(
                 onBackClicked = {
-                    //events(PhotoEvents.PopBackStack)
+                    events(DetailEvents.PopBackStack)
                 },
                 backGroundColor = Black,
                 title = "Date",
@@ -55,7 +46,7 @@ fun DetailScreen(
                             text = stringResource(id = R.string.save),
                             tint = color,
                             onClicked = {
-                                //events(PhotoEvents.DeletePhoto(""))
+                                events(DetailEvents.Save)
                             }
                         )
                     }
@@ -64,7 +55,7 @@ fun DetailScreen(
                             iconId = R.drawable.ic_edit,
                             tint = color,
                             onClicked = {
-                                //events(PhotoEvents.DeletePhoto(""))
+                                events(DetailEvents.Edit)
                             }
                         )
                     }
@@ -108,6 +99,15 @@ fun DetailScreen(
                                     isEditing = state.isEditing,
                                     description = "Second description of a really long one to prove that size is important for the space available",
                                     modifier = Modifier.fillMaxWidth()
+                                )
+
+                                PhotoGallery(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(112.dp),
+                                    isEditing = true,
+                                    onAddPhotoClick = {},
+                                    photos = Photo.mockPhotos
                                 )
 
                                 TaskyDivider(top = 20.dp, bottom = 28.dp)

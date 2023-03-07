@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.detail
+package com.artemissoftware.tasky.agenda.presentation.detail
 
 import com.artemissoftware.tasky.agenda.AgendaItemType
 
