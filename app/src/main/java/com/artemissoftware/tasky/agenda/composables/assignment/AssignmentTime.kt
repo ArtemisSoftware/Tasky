@@ -28,7 +28,7 @@ fun AssignmentTime(
 ) {
 
     Column(
-        modifier = modifier.padding(horizontal = 8.dp)
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -39,7 +39,8 @@ fun AssignmentTime(
             ){
 
                 Row(
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     TaskyText(
                         text = stringResource(id = title),
@@ -47,10 +48,10 @@ fun AssignmentTime(
                     )
                     TaskyText(
                         text = hour,
-                        modifier = Modifier.weight(0.4F)
+                        modifier = Modifier.weight(0.3F)
                     )
                     Column(
-                        modifier = Modifier.weight(0.1F),
+                        modifier = Modifier.weight(0.2F),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         AnimatedVisibility(
@@ -73,15 +74,16 @@ fun AssignmentTime(
             ){
 
                 Row(
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     TaskyText(
                         textAlign = TextAlign.Center,
                         text = day,
-                        modifier = Modifier.weight(0.9F)
+                        modifier = Modifier.weight(0.8F)
                     )
                     Column(
-                        modifier = Modifier.weight(0.1F),
+                        modifier = Modifier.weight(0.2F),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         AnimatedVisibility(

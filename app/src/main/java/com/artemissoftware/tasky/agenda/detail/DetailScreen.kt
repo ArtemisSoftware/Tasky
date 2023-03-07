@@ -13,6 +13,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyButton
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
@@ -20,6 +21,8 @@ import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.composables.textfield.TaskyOutlinedTextField
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldType
+import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
+import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.Link
@@ -27,10 +30,7 @@ import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.Greeting
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
-import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentDescription
-import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
-import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
-import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentTime
+import com.artemissoftware.tasky.agenda.composables.assignment.*
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 
 @Composable
@@ -41,6 +41,39 @@ fun DetailScreen(
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
+        topBar = {
+            TaskyTopBar(
+                onBackClicked = {
+                    //events(PhotoEvents.PopBackStack)
+                },
+                backGroundColor = Black,
+                title = "Date",
+                toolbarActions = { color->
+
+                    if(state.isEditing){
+                        TaskyToolBarAction(
+                            text = stringResource(id = R.string.save),
+                            tint = color,
+                            onClicked = {
+                                //events(PhotoEvents.DeletePhoto(""))
+                            }
+                        )
+                    }
+                    else {
+                        TaskyToolBarAction(
+                            iconId = R.drawable.ic_edit,
+                            tint = color,
+                            onClicked = {
+                                //events(PhotoEvents.DeletePhoto(""))
+                            }
+                        )
+                    }
+
+
+
+                }
+            )
+        },
         content = {
 
             TaskyContentSurface(
@@ -66,13 +99,13 @@ fun DetailScreen(
                                     agendaItemType = item,
                                     title = "First title",
                                     modifier = Modifier.fillMaxWidth(),
-                                    isEditing = true,
+                                    isEditing = state.isEditing,
                                 )
 
                                 TaskyDivider(top = 20.dp, bottom = 20.dp)
 
                                 AssignmentDescription(
-                                    isEditing = true,
+                                    isEditing = state.isEditing,
                                     description = "Second description of a really long one to prove that size is important for the space available",
                                     modifier = Modifier.fillMaxWidth()
                                 )
@@ -80,6 +113,7 @@ fun DetailScreen(
                                 TaskyDivider(top = 20.dp, bottom = 28.dp)
 
                                 AssignmentTime(
+                                    isEditing = state.isEditing,
                                     title = R.string.from,
                                     day = "Jul 21 2022",
                                     hour = "08:00",
@@ -89,9 +123,23 @@ fun DetailScreen(
                                 TaskyDivider(top = 20.dp, bottom = 20.dp)
 
                                 AssignmentNotification(
+                                    isEditing = state.isEditing,
                                     description = "First description",
                                     modifier = Modifier.fillMaxWidth()
                                 )
+
+                                TaskyDivider(top = 20.dp, bottom = 30.dp)
+
+                                VisitorsHeader(
+                                    isEditing = state.isEditing,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+
+                                VisitorList(
+                                    modifier = Modifier.padding(top = 20.dp),
+                                    isEditing = state.isEditing
+                                )
+
 
                             }
 
@@ -133,6 +181,17 @@ private fun TaskyDivider (top: Dp, bottom: Dp = 0.dp) {
 fun DetailScreenPreview() {
     DetailScreen(
         state = DetailState(
+            agendaItemType = AgendaItemType.Reminder()
+        )
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailScreenEditingPreview() {
+    DetailScreen(
+        state = DetailState(
+            isEditing = true,
             agendaItemType = AgendaItemType.Reminder()
         )
     )
