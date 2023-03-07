@@ -2,7 +2,7 @@ package com.artemissoftware.tasky.agenda.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
+import com.artemissoftware.core.domain.models.agenda.AgendaItemType
 
 @Entity
 data class AgendaItemEntity(
