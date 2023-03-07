@@ -6,6 +6,9 @@
     <string name="password">Password</string>
     <string name="dont_have_an_account">Dont\'t have an account?</string>
     <string name="sign_up">Sign up</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="name">Name</string>
+    <string name="get_started">Get started</string>
     <string name="reminder">Reminder</string>
     <string name="task">Task</string>
     <string name="event">Event</string>
@@ -17,4 +20,6 @@
     <string name="going">Going</string>
     <string name="not_going">Not going</string>
     <string name="save">Save</string>
+    <string name="add_photos">Add photos</string>
+    <string name="photos">Photos</string>
 </resources>
