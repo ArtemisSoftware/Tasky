@@ -4,9 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class ReminderTimeEntity(
+data class NotificationWarningEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val description: String,
-    val durationInMinutes: Long
+    val minutesBefore: Long
 )
