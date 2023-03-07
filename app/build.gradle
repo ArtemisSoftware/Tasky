@@ -64,14 +64,5 @@ dependencies {
     debugImplementation rootProject.libraries.composeUiTooling
     debugImplementation rootProject.tests.uiTestManifest
 
-    //Retrofit
-    implementation rootProject.libraries.retrofit
-    implementation rootProject.libraries.retrofitConverterMoshi
-
-    //okhttp
-    implementation rootProject.libraries.okhttpBom
-    implementation rootProject.libraries.okhttp
-    implementation rootProject.libraries.okhttpLoggingInterceptor
-
     implementation project(':core')
 }
