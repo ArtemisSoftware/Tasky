@@ -71,5 +71,5 @@ dependencies {
     kapt rootProject.libraries.roomCompiler
     implementation rootProject.libraries.roomKtx
 
-    implementation rootProject.libraries.coilCompose
+    api rootProject.libraries.coilCompose
 }
