@@ -42,7 +42,7 @@ fun PhotoScreen(
                         iconId = R.drawable.ic_trash,
                         tint = color,
                         onClicked = {
-                            events(PhotoEvents.DeletePhoto(""))
+                            events(PhotoEvents.DeletePhoto("")) // TODO: add photo ID
                         }
                     )
                 }
