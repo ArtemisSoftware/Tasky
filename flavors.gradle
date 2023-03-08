@@ -9,6 +9,7 @@ ext.flavorConfig = { // 1
             buildConfigField "int", "MAX_CHARACTERS_FOR_NAME", "50"
 
             buildConfigField "int", "MIN_CHARACTERS_FOR_PASSWORD", "9"
+            buildConfigField "int", "DEFAULT_MAX_PICTURES_PER_EVENT", "10"
         }
 
         prod {
@@ -18,6 +19,7 @@ ext.flavorConfig = { // 1
             buildConfigField "int", "MAX_CHARACTERS_FOR_NAME", "50"
 
             buildConfigField "int", "MIN_CHARACTERS_FOR_PASSWORD", "9"
+            buildConfigField "int", "DEFAULT_MAX_PICTURES_PER_EVENT", "10"
         }
     }
 }
