@@ -8,13 +8,13 @@ import com.artemissoftware.core.domain.models.agenda.AgendaItemType
 interface AgendaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(agendaItemType: AgendaItemType)
+    suspend fun insert(agendaItemEntity: AgendaItemEntity)
 
     @Query("SELECT * FROM agendaItemEntity WHERE id = :id")
     fun getAgendaItem(id: String): AgendaItemEntity?
 
     @Update
-    fun update(agendaItemType: AgendaItemType)
+    fun update(agendaItemEntity: AgendaItemEntity)
 
     @Query("DELETE FROM agendaItemEntity WHERE id = :id")
     suspend fun delete(id: String)
