@@ -6,11 +6,11 @@ import androidx.room.TypeConverters
 import com.artemissoftware.core.data.database.converters.AgendaItemTypeConverter
 import com.artemissoftware.core.data.database.dao.AgendaDao
 import com.artemissoftware.core.data.database.dao.NotificationWarningDao
-import com.artemissoftware.core.data.database.entities.AgendaItemEntity
 import com.artemissoftware.core.data.database.entities.NotificationWarningEntity
+import com.artemissoftware.core.data.database.entities.ReminderEntity
 
 @Database(
-    entities = [NotificationWarningEntity::class, AgendaItemEntity::class],
+    entities = [NotificationWarningEntity::class, ReminderEntity::class],
     version = 1
 )
 @TypeConverters(AgendaItemTypeConverter::class)

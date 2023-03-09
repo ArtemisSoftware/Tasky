@@ -1,21 +1,20 @@
 package com.artemissoftware.core.data.database.dao
 
 import androidx.room.*
-import com.artemissoftware.core.data.database.entities.AgendaItemEntity
-import com.artemissoftware.core.domain.models.agenda.AgendaItemType
+import com.artemissoftware.core.data.database.entities.ReminderEntity
 
 @Dao
 interface AgendaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(agendaItemEntity: AgendaItemEntity)
+    suspend fun insert(reminderEntity: ReminderEntity)
 
-    @Query("SELECT * FROM agendaItemEntity WHERE id = :id")
-    fun getAgendaItem(id: String): AgendaItemEntity?
+    @Query("SELECT * FROM reminderEntity WHERE id = :id")
+    fun getReminder(id: String): ReminderEntity?
 
     @Update
-    fun update(agendaItemEntity: AgendaItemEntity)
+    fun update(reminderEntity: ReminderEntity)
 
-    @Query("DELETE FROM agendaItemEntity WHERE id = :id")
-    suspend fun delete(id: String)
+    @Query("DELETE FROM reminderEntity WHERE id = :id")
+    suspend fun deleteReminder(id: String)
 }

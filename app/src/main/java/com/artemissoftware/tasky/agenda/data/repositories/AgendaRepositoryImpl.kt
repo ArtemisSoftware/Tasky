@@ -15,20 +15,20 @@ class AgendaRepositoryImpl constructor(
 
     private val agendaDao = taskyDatabase.agendaDao
 
-    override suspend fun getAgendaItem(id: String): AgendaItem? {
-        return agendaDao.getAgendaItem(id)?.toAgendaItem()
+    override suspend fun getReminder(id: String): AgendaItem.Reminder? {
+        return agendaDao.getReminder(id)?.toAgendaItem()
     }
 
-    override suspend fun delete(id: String) {
-        agendaDao.delete(id = id)
+    override suspend fun deleteReminder(id: String) {
+        agendaDao.deleteReminder(id = id)
     }
 
-    override suspend fun register(agendaItem: AgendaItem) {
+    override suspend fun register(reminder: AgendaItem.Reminder) {
 
-        val entity = agendaItem.toEntity(id = UUID.randomUUID().toString())
+        val entity = reminder.toEntity(id = UUID.randomUUID().toString())
 
         with(agendaDao){
-            agendaItem.id?.let {
+            reminder.id?.let {
                 insert(entity)
             } ?: run {
                 update(entity)

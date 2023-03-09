@@ -1,39 +1,36 @@
 package com.artemissoftware.tasky.agenda.data.mappers
 
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
-import com.artemissoftware.core.data.database.entities.AgendaItemEntity
-import com.artemissoftware.core.domain.models.agenda.AgendaItemType
+import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 
-fun ReminderDto.toAgendaItemEntity(): AgendaItemEntity {
-    return AgendaItemEntity(
+fun ReminderDto.toEntity(): ReminderEntity {
+    return ReminderEntity(
         title = title,
         description = description,
         id = id,
         remindAt = remindAt,
-        time = time,
-        type = AgendaItemType.REMINDER
+        time = time
     )
 }
 
-fun AgendaItemEntity.toAgendaItem(): AgendaItem {
-    return AgendaItem(
+fun ReminderEntity.toAgendaItem(): AgendaItem.Reminder {
+    return AgendaItem.Reminder(
         title = title,
         description = description,
         id = id,
         remindAt = remindAt,
-        time = time,
-        type = type
+        time = time
     )
 }
 
-fun AgendaItem.toEntity(id: String): AgendaItemEntity {
-    return AgendaItemEntity(
+fun AgendaItem.Reminder.toEntity(id: String): ReminderEntity {
+
+    return ReminderEntity(
         title = title,
         description = description,
-        id = this.id?: id,
+        id = this.id ?: id,
         remindAt = remindAt,
-        time = time,
-        type = type
+        time = time
     )
 }
