@@ -31,6 +31,8 @@ ext.versions = [
         lifecycleRuntimeKtx     : '2.3.1',
         lottie                  : '6.0.0',
 
+        navigationCompose       : '2.5.3',
+
         junit                   : '4.13.2',
         junitExtension          : '1.1.4',
 
@@ -58,6 +60,8 @@ ext.libraries = [
 
         lifecycleViewmodelKtx           :"androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycleViewmodelKtx",
         lottie                          :"com.airbnb.android:lottie-compose:$versions.lottie",
+
+        navigationCompose               : "androidx.navigation:navigation-compose:$versions.navigationCompose",
 
         retrofit                        : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitConverterGson           : "com.squareup.retrofit2:converter-gson:$versions.retrofit",

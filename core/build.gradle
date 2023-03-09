@@ -72,4 +72,6 @@ dependencies {
     implementation rootProject.libraries.roomKtx
 
     api rootProject.libraries.coilCompose
+
+    api rootProject.libraries.navigationCompose
 }
