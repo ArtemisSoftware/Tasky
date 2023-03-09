@@ -17,10 +17,7 @@ import com.artemissoftware.core.presentation.theme.Green
 import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
-import com.artemissoftware.tasky.authentication.presentation.login.LoginEvents
-import com.artemissoftware.core.R as CoreR
 
 @Composable
 fun EditScreen(
