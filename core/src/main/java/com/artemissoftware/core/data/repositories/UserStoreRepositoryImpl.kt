@@ -1,8 +1,9 @@
-package com.artemissoftware.core.data
+package com.artemissoftware.core.data.repositories
 
 import android.content.Context
 import com.artemissoftware.core.util.extensions.userStore
 import com.artemissoftware.core.domain.models.authentication.User
+import com.artemissoftware.core.domain.repositories.UserStoreRepository
 import kotlinx.coroutines.flow.Flow
 
 class UserStoreRepositoryImpl(private val context: Context) : UserStoreRepository {
