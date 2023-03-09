@@ -4,7 +4,7 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 
 interface AgendaRepository {
 
-    suspend fun getReminder(id: String): AgendaItem.Reminder?
+    suspend fun getReminder(id: String): AgendaItem.Reminder
 
     suspend fun deleteReminder(id: String)
 

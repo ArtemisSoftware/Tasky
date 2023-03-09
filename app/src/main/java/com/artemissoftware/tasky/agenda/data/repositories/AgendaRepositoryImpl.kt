@@ -15,8 +15,8 @@ class AgendaRepositoryImpl constructor(
 
     private val agendaDao = taskyDatabase.agendaDao
 
-    override suspend fun getReminder(id: String): AgendaItem.Reminder? {
-        return agendaDao.getReminder(id)?.toAgendaItem()
+    override suspend fun getReminder(id: String): AgendaItem.Reminder {
+        return agendaDao.getReminder(id).toAgendaItem()
     }
 
     override suspend fun deleteReminder(id: String) {

@@ -1,7 +1,5 @@
 package com.artemissoftware.tasky.agenda.domain.models
 
-import com.artemissoftware.core.domain.models.agenda.AgendaItemType
-
 sealed class AgendaItem(
     val itemId: String? = null,
     val itemTitle: String,

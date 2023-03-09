@@ -10,7 +10,7 @@ interface AgendaDao {
     suspend fun insert(reminderEntity: ReminderEntity)
 
     @Query("SELECT * FROM reminderEntity WHERE id = :id")
-    fun getReminder(id: String): ReminderEntity?
+    fun getReminder(id: String): ReminderEntity
 
     @Update
     fun update(reminderEntity: ReminderEntity)
