@@ -22,4 +22,7 @@
     <string name="add_photos">Add photos</string>
     <string name="photos">Photos</string>
     <string name="photo">Photo</string>
+    <string name="save">Save</string>
+    <string name="edit_title">Edit title</string>
+    <string name="edit_description">Edit description</string>
 </resources>
