@@ -44,7 +44,11 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
+    sourceSets {
+        test {
+            java.srcDir project(":core").file("src/test/java")
+        }
+    }
     with flavorConfig
 }
 

@@ -13,20 +13,18 @@ class LoginUseCase constructor(
     private val authenticationRepository: AuthenticationRepository
 ){
 
-    operator fun invoke(email: String, password: String): Flow<Resource<Boolean>> = flow {
-
-        emit(Resource.Loading())
+    suspend operator fun invoke(email: String, password: String): Resource<Boolean> {
 
         val result = authenticationRepository.loginUser(email = email, password = password)
 
-        when(result){
+        return when(result){
             is ApiNetworkResponse.Error -> {
                 val error = result.exception?.description ?: UiText.DynamicString(LOGIN_ERROR)
-                emit(Resource.Error(error))
+                Resource.Error(error)
             }
             is ApiNetworkResponse.Success -> {
                 result.data?.let { userStoreRepository.saveUser(it) }
-                emit(Resource.Success(true))
+                Resource.Success(true)
             }
         }
     }
