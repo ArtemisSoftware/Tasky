@@ -13,5 +13,5 @@ interface NotificationWarningDao {
     suspend fun insert(times: List<NotificationWarningEntity>)
 
     @Query("SELECT * FROM notificationWarningEntity ORDER BY minutesBefore ASC")
-    fun getReminderTimes(): List<NotificationWarningEntity>
+    fun getNotificationWarnings(): List<NotificationWarningEntity>
 }

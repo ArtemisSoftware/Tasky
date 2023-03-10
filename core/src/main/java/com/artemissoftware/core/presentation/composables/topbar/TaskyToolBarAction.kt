@@ -45,6 +45,7 @@ fun TaskyToolBarAction(
 fun TaskyToolBarAction(
     text: String,
     modifier: Modifier = Modifier,
+    allCaps: Boolean = false,
     tint: Color = Black,
     style: TextStyle = MaterialTheme.typography.subtitle1,
     onClicked: () -> Unit = {}
@@ -52,8 +53,8 @@ fun TaskyToolBarAction(
 
     TaskyTextButton(
         modifier = modifier,
-        allCaps = false,
         text = text,
+        allCaps = allCaps,
         color = tint,
         style = style,
         onClick = onClicked

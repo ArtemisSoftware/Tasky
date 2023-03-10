@@ -1,5 +1,6 @@
 package com.artemissoftware.core.presentation.composables.topbar
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -15,12 +16,13 @@ import com.artemissoftware.core.presentation.theme.White
 
 @Composable
 fun TaskyTopBar(
+    modifier: Modifier = Modifier,
+    @DrawableRes leftIcon: Int = R.drawable.ic_close,
     toolbarActions: @Composable RowScope.(Color) -> Unit = {},
     contentColor: Color = White,
     backGroundColor: Color = Green,
     onBackClicked: (() -> Unit)? = null,
-    title: String? = null,
-    modifier: Modifier = Modifier
+    title: String? = null
 ) {
 
     TopAppBar(
@@ -29,7 +31,7 @@ fun TaskyTopBar(
         navigationIcon = {
             onBackClicked?.let {
                 TaskyToolBarAction(
-                    iconId = R.drawable.ic_visibility,
+                    iconId = leftIcon,
                     onClicked = it,
                     tint = contentColor
                 )
