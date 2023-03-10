@@ -18,58 +18,54 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LoginUseCaseTest: BaseUseCaseTest() {
+class RegisterUserUseCaseTest: BaseUseCaseTest() {
 
-
-    private lateinit var loginUseCase: LoginUseCase
-
-    private lateinit var userStoreRepository: UserStoreRepository
+    private lateinit var registerUserUseCase: RegisterUserUseCase
     private lateinit var authenticationRepository: AuthenticationRepository
 
     @Before
     fun setUp() {
-        userStoreRepository = mock()
         authenticationRepository = mock()
-        loginUseCase = LoginUseCase(userStoreRepository = userStoreRepository, authenticationRepository = authenticationRepository)
+        registerUserUseCase = RegisterUserUseCase(authenticationRepository = authenticationRepository)
     }
 
     @Test
-    fun `Login user with success`() = runTest {
+    fun `Register user with success`() = runTest {
 
         val email = "batman@waynetech.com"
         val password = "Iambatman123"
+        val fullName = "Bruce Wayne"
 
-        whenever(authenticationRepository.loginUser(email = email, password = password)).thenReturn(
-            ApiNetworkResponse.Success(data = FakeData.user)
+        whenever(authenticationRepository.registerUser(email = email, password = password, fullName = fullName)).thenReturn(
+            ApiNetworkResponse.Success(true)
         )
 
-        val emissions = loginUseCase(email = email, password = password).toList()
+        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName).toList()
 
         assert(emissions[0] is Resource.Loading)
         assert(emissions[1] is Resource.Success)
 
-        verify(authenticationRepository, times(1)).loginUser(email = email, password = password)
-        verify(userStoreRepository, times(1)).saveUser(user = FakeData.user)
+        verify(authenticationRepository, times(1)).registerUser(email = email, password = password, fullName = fullName)
     }
 
 
     @Test
-    fun `Login user with failure`() = runTest {
+    fun `Register user with failure`() = runTest {
 
         val email = "batman@waynetech.com"
         val password = "Iambatman123"
+        val fullName = "Bruce Wayne"
 
-        whenever(authenticationRepository.loginUser(email = email, password = password)).thenReturn(
+        whenever(authenticationRepository.registerUser(email = email, password = password, fullName = fullName)).thenReturn(
             ApiNetworkResponse.Error(exception = TaskyNetworkException())
         )
 
-        val emissions = loginUseCase(email = email, password = password).toList()
+        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName).toList()
 
         assert(emissions[0] is Resource.Loading)
         assert(emissions[1] is Resource.Error)
 
-        verify(authenticationRepository, times(1)).loginUser(email = email, password = password)
-        verify(userStoreRepository, times(0)).saveUser(user = FakeData.user)
+        verify(authenticationRepository, times(1)).registerUser(email = email, password = password, fullName = fullName)
     }
 
 }
