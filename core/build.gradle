@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
     id 'kotlin-kapt'
 }
 
@@ -72,4 +73,8 @@ dependencies {
     implementation rootProject.libraries.roomKtx
 
     api rootProject.libraries.coilCompose
+
+    //datastore
+    implementation rootProject.libraries.datastore
+    implementation rootProject.libraries.kotlinxSerializationJson
 }
