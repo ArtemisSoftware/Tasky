@@ -34,9 +34,9 @@ class LoginUseCaseTest: BaseUseCaseTest() {
         val email = "batman@waynetech.com"
         val password = "Iambatman123"
 
-        val emissions = loginUseCase(email = email, password = password)
+        val result = loginUseCase(email = email, password = password)
 
-        assert(emissions is Resource.Success)
+        assert(result is Resource.Success)
     }
 
 
@@ -47,9 +47,9 @@ class LoginUseCaseTest: BaseUseCaseTest() {
         val email = "batman@waynetech.com"
         val password = "Iambatman123"
 
-        val emissions = loginUseCase(email = email, password = password)
+        val result = loginUseCase(email = email, password = password)
 
-        assert(emissions is Resource.Error)
+        assert(result is Resource.Error)
     }
 
 }

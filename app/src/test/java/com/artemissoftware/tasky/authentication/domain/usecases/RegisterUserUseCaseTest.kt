@@ -35,9 +35,9 @@ class RegisterUserUseCaseTest: BaseUseCaseTest() {
         val password = "Iambatman123"
         val fullName = "Bruce Wayne"
 
-        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName)
+        val result = registerUserUseCase(email = email, password = password, fullName = fullName)
 
-        assert(emissions is Resource.Success)
+        assert(result is Resource.Success)
     }
 
 
@@ -49,9 +49,9 @@ class RegisterUserUseCaseTest: BaseUseCaseTest() {
         val password = "Iambatman123"
         val fullName = "Bruce Wayne"
 
-        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName)
+        val result = registerUserUseCase(email = email, password = password, fullName = fullName)
 
-        assert(emissions is Resource.Error)
+        assert(result is Resource.Error)
     }
 
 }
