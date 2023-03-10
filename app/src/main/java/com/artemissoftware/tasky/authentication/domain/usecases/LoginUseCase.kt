@@ -19,7 +19,7 @@ class LoginUseCase constructor(
 
         return when(result){
             is ApiNetworkResponse.Error -> {
-                val error = result.exception?.description ?: UiText.DynamicString(LOGIN_ERROR)
+                val error = result.exception?.description ?: UiText.DynamicString("An error occurred while doing login in")
                 Resource.Error(error)
             }
             is ApiNetworkResponse.Success -> {
@@ -27,10 +27,5 @@ class LoginUseCase constructor(
                 Resource.Success(true)
             }
         }
-    }
-
-
-    companion object{
-        private const val LOGIN_ERROR = "An error occurred while doing login in"
     }
 }

@@ -12,25 +12,18 @@ class RegisterUserUseCase constructor(
     private val authenticationRepository: AuthenticationRepository
 ){
 
-    operator fun invoke(email: String, password: String, fullName: String): Flow<Resource<Boolean>> = flow {
-
-        emit(Resource.Loading())
+    suspend operator fun invoke(email: String, password: String, fullName: String): Resource<Boolean> {
 
         val result = authenticationRepository.registerUser(email = email, password = password, fullName = fullName)
 
-        when(result){
+        return when(result){
             is ApiNetworkResponse.Error -> {
-                val error = result.exception?.description ?: UiText.DynamicString(REGISTER_ERROR)
-                emit(Resource.Error(error))
+                val error = result.exception?.description ?: UiText.DynamicString("An error occurred while doing registering")
+                Resource.Error(error)
             }
             is ApiNetworkResponse.Success -> {
-                emit(Resource.Success(true))
+                Resource.Success(true)
             }
         }
-    }
-
-
-    companion object{
-        private const val REGISTER_ERROR = "An error occurred while doing registering"
     }
 }

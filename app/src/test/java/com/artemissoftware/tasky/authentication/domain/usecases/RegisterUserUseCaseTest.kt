@@ -3,10 +3,9 @@ package com.artemissoftware.tasky.authentication.domain.usecases
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
-import com.artemissoftware.core.domain.repositories.UserStoreRepository
+import com.artemissoftware.tasky.authentication.data.repositories.FakeAuthenticationRepository
 import com.artemissoftware.tasky.authentication.domain.repositories.AuthenticationRepository
 import com.artemissoftware.tasky.util.BaseUseCaseTest
-import com.artemissoftware.tasky.util.FakeData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -25,7 +24,7 @@ class RegisterUserUseCaseTest: BaseUseCaseTest() {
 
     @Before
     fun setUp() {
-        authenticationRepository = mock()
+        authenticationRepository = FakeAuthenticationRepository()
         registerUserUseCase = RegisterUserUseCase(authenticationRepository = authenticationRepository)
     }
 
@@ -36,36 +35,23 @@ class RegisterUserUseCaseTest: BaseUseCaseTest() {
         val password = "Iambatman123"
         val fullName = "Bruce Wayne"
 
-        whenever(authenticationRepository.registerUser(email = email, password = password, fullName = fullName)).thenReturn(
-            ApiNetworkResponse.Success(true)
-        )
+        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName)
 
-        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName).toList()
-
-        assert(emissions[0] is Resource.Loading)
-        assert(emissions[1] is Resource.Success)
-
-        verify(authenticationRepository, times(1)).registerUser(email = email, password = password, fullName = fullName)
+        assert(emissions is Resource.Success)
     }
 
 
     @Test
     fun `Register user with failure`() = runTest {
 
+        (authenticationRepository as FakeAuthenticationRepository).returnNetworkError = true
         val email = "batman@waynetech.com"
         val password = "Iambatman123"
         val fullName = "Bruce Wayne"
 
-        whenever(authenticationRepository.registerUser(email = email, password = password, fullName = fullName)).thenReturn(
-            ApiNetworkResponse.Error(exception = TaskyNetworkException())
-        )
+        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName)
 
-        val emissions = registerUserUseCase(email = email, password = password, fullName = fullName).toList()
-
-        assert(emissions[0] is Resource.Loading)
-        assert(emissions[1] is Resource.Error)
-
-        verify(authenticationRepository, times(1)).registerUser(email = email, password = password, fullName = fullName)
+        assert(emissions is Resource.Error)
     }
 
 }
