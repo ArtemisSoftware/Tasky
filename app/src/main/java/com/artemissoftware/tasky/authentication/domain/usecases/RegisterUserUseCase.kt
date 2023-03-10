@@ -8,24 +8,22 @@ import com.artemissoftware.tasky.authentication.domain.repositories.Authenticati
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class LoginUseCase constructor(
-    private val userStoreRepository: UserStoreRepository,
+class RegisterUserUseCase constructor(
     private val authenticationRepository: AuthenticationRepository
 ){
 
-    operator fun invoke(email: String, password: String): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(email: String, password: String, fullName: String): Flow<Resource<Boolean>> = flow {
 
         emit(Resource.Loading())
 
-        val result = authenticationRepository.loginUser(email = email, password = password)
+        val result = authenticationRepository.registerUser(email = email, password = password, fullName = fullName)
 
         when(result){
             is ApiNetworkResponse.Error -> {
-                val error = result.exception?.description ?: UiText.DynamicString(LOGIN_ERROR)
+                val error = result.exception?.description ?: UiText.DynamicString(REGISTER_ERROR)
                 emit(Resource.Error(error))
             }
             is ApiNetworkResponse.Success -> {
-                result.data?.let { userStoreRepository.saveUser(it) }
                 emit(Resource.Success(true))
             }
         }
@@ -33,6 +31,6 @@ class LoginUseCase constructor(
 
 
     companion object{
-        private const val LOGIN_ERROR = "An error occurred while doing login in"
+        private const val REGISTER_ERROR = "An error occurred while doing registering"
     }
 }
