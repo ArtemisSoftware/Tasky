@@ -3,8 +3,11 @@ package com.artemissoftware.tasky.agenda.presentation.detail
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -16,18 +19,42 @@ import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarActi
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
+import com.artemissoftware.core.util.safeLet
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.*
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Photo
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
-import com.artemissoftware.tasky.authentication.presentation.register.RegisterEvents
 
 @Composable
 fun DetailScreen(
     state: DetailState,
     events: (DetailEvents) -> Unit
 ) {
+
+    val resources = LocalContext.current.resources
+
+
+    val title = remember(state.isEditing) {
+
+        val screenTitle = state.agendaItemType?.let{
+            String.format(resources.getString(R.string.edit_title_with_argument), resources.getString(it.title))
+        } ?: run {
+            "Date"
+        }
+        mutableStateOf(screenTitle)
+    }
+
+    val buttonTitle = remember {
+
+        val title = state.agendaItemType?.let{
+            String.format(resources.getString(R.string.delete_title_with_argument), resources.getString(it.title))
+        } ?: run {
+            ""
+        }
+        mutableStateOf(title)
+    }
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -38,7 +65,7 @@ fun DetailScreen(
                     events(DetailEvents.PopBackStack)
                 },
                 backGroundColor = Black,
-                title = "Date",
+                title = title.value,
                 toolbarActions = { color->
 
                     if(state.isEditing){
@@ -59,9 +86,6 @@ fun DetailScreen(
                             }
                         )
                     }
-
-
-
                 }
             )
         },
@@ -71,7 +95,8 @@ fun DetailScreen(
 
                 content = {
 
-                    state.agendaItemType?.let{ item->
+                    safeLet(state.agendaItemType, state.agendaItem) { type, item ->
+
 
                         Box(
                             modifier = Modifier
@@ -87,8 +112,8 @@ fun DetailScreen(
                             ) {
 
                                 AssignmentHeader(
-                                    agendaItemType = item,
-                                    title = "First title",
+                                    agendaItemType = type,
+                                    title = item.itemTitle,
                                     modifier = Modifier.fillMaxWidth(),
                                     isEditing = state.isEditing,
                                 )
@@ -97,30 +122,26 @@ fun DetailScreen(
 
                                 AssignmentDescription(
                                     isEditing = state.isEditing,
-                                    description = "Second description of a really long one to prove that size is important for the space available",
+                                    description = item.itemDescription,
                                     modifier = Modifier.fillMaxWidth()
                                 )
 
-                                PhotoGallery(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(112.dp),
-                                    isEditing = true,
-                                    onAddPhotoClick = {},
-                                    photos = Photo.mockPhotos
-                                )
+                                if(type is AgendaItemType.Event) {
+                                    PhotoGallery(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(112.dp),
+                                        isEditing = state.isEditing,
+                                        onAddPhotoClick = {},
+                                        photos = Photo.mockPhotos
+                                    )
+                                }
 
                                 TaskyDivider(top = 20.dp, bottom = 28.dp)
 
-                                AssignmentTime(
-                                    isEditing = state.isEditing,
-                                    title = R.string.from,
-                                    day = "Jul 21 2022",
-                                    hour = "08:00",
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                                TimeInterval(type, state.isEditing)
 
-                                TaskyDivider(top = 20.dp, bottom = 20.dp)
+                                TaskyDivider(top = 28.dp, bottom = 20.dp)
 
                                 AssignmentNotification(
                                     isEditing = state.isEditing,
@@ -130,28 +151,28 @@ fun DetailScreen(
 
                                 TaskyDivider(top = 20.dp, bottom = 30.dp)
 
-                                VisitorsHeader(
-                                    isEditing = state.isEditing,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                                if(type is AgendaItemType.Event) {
+                                    VisitorsHeader(
+                                        isEditing = state.isEditing,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
 
-                                VisitorList(
-                                    modifier = Modifier.padding(top = 20.dp),
-                                    isEditing = state.isEditing
-                                )
-
-
+                                    VisitorList(
+                                        modifier = Modifier.padding(top = 20.dp),
+                                        isEditing = state.isEditing
+                                    )
+                                }
                             }
-
-
-
                             Column(
                                 modifier = Modifier.align(Alignment.BottomCenter),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
 
                                 TaskyDivider(top = 20.dp, bottom = 20.dp)
-                                TaskyTextButton(text = stringResource(id = item.title), onClick = {})
+                                TaskyTextButton(
+                                    text = buttonTitle.value,
+                                    onClick = {}
+                                )
                             }
 
                         }
@@ -176,23 +197,113 @@ private fun TaskyDivider (top: Dp, bottom: Dp = 0.dp) {
     )
 }
 
+@Composable
+private fun TimeInterval(item: AgendaItemType, isEditing: Boolean) {
+
+    when(item){
+        is AgendaItemType.Event -> {
+            AssignmentTime(
+                isEditing = isEditing,
+                title = R.string.from,
+                day = "Jul 21 2022",
+                hour = "08:00",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            TaskyDivider(top = 28.dp, bottom = 28.dp)
+
+            AssignmentTime(
+                isEditing = isEditing,
+                title = R.string.to,
+                day = "Jul 21 2022",
+                hour = "08:00",
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        is AgendaItemType.Reminder, is AgendaItemType.Task-> {
+            AssignmentTime(
+                isEditing = isEditing,
+                title = R.string.at,
+                day = "Jul 21 2022",
+                hour = "08:00",
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
-fun DetailScreenPreview() {
+fun DetailScreenReminderPreview() {
     DetailScreen(
         state = DetailState(
-            agendaItemType = AgendaItemType.Reminder()
-        )
+            agendaItemType = AgendaItemType.Reminder(),
+            agendaItem = AgendaItem.mockReminder
+        ),
+        events = {}
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DetailScreenEditingPreview() {
+fun DetailScreenReminderEditingPreview() {
     DetailScreen(
         state = DetailState(
             isEditing = true,
-            agendaItemType = AgendaItemType.Reminder()
-        )
+            agendaItemType = AgendaItemType.Reminder(),
+            agendaItem = AgendaItem.mockReminder
+        ),
+        events = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailScreenTaskPreview() {
+    DetailScreen(
+        state = DetailState(
+            agendaItemType = AgendaItemType.Task(),
+            agendaItem = AgendaItem.mockReminder
+        ),
+        events = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailScreenTaskEditingPreview() {
+    DetailScreen(
+        state = DetailState(
+            isEditing = true,
+            agendaItemType = AgendaItemType.Task(),
+            agendaItem = AgendaItem.mockReminder
+        ),
+        events = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailScreenEventPreview() {
+    DetailScreen(
+        state = DetailState(
+            agendaItemType = AgendaItemType.Event(),
+            agendaItem = AgendaItem.mockReminder
+        ),
+        events = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailScreenEventEditingPreview() {
+    DetailScreen(
+        state = DetailState(
+            isEditing = true,
+            agendaItemType = AgendaItemType.Event(),
+            agendaItem = AgendaItem.mockReminder
+        ),
+        events = {}
     )
 }

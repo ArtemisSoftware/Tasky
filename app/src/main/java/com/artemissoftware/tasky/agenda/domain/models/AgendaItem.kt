@@ -20,9 +20,19 @@ sealed class AgendaItem(
         itemDescription = description,
         itemRemindAt = remindAt,
         itemTime = time
-    )
+    ){
+
+    }
 
 
-
+    companion object{
+        val mockReminder = Reminder(
+            id = "fdfgdf",
+            title = "This is a reminder",
+            description =  "This is the description of the reminder",
+            remindAt = 33L,
+            time = 333L
+        )
+    }
 
 }

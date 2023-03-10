@@ -18,8 +18,8 @@ import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun AssignmentDescription(
-    description: String,
     modifier: Modifier = Modifier,
+    description: String? = null,
     isEditing: Boolean = false
 ) {
 
@@ -36,7 +36,7 @@ fun AssignmentDescription(
             ) {
                 TaskyText(
                     style = MaterialTheme.typography.body1,
-                    text = description
+                    text = description ?: ""
                 )
             }
 
