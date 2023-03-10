@@ -64,5 +64,12 @@ dependencies {
     debugImplementation rootProject.libraries.composeUiTooling
     debugImplementation rootProject.tests.uiTestManifest
 
+
+    testImplementation rootProject.tests.kotlinTestJunit
+    testImplementation rootProject.tests.junit
+    testImplementation rootProject.tests.mockito
+    testImplementation rootProject.tests.kotlinxCoroutinesTest
+
+
     implementation project(':core')
 }
