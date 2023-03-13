@@ -21,7 +21,7 @@ class GetReminderUseCaseTest: BaseUseCaseTest() {
 
     private lateinit var getReminderUseCase: GetReminderUseCase
 
-    private lateinit var agendaRepository: AgendaRepository
+    private lateinit var agendaRepository: FakeAgendaRepository
 
     @Before
     fun setUp() {
@@ -33,7 +33,6 @@ class GetReminderUseCaseTest: BaseUseCaseTest() {
     fun `Get user with success`() = runTest {
 
         val id = FakeData.reminder.id
-
         val result = getReminderUseCase(id = id)
 
         assertEquals(result, FakeData.reminder)
