@@ -1,11 +1,12 @@
 package com.artemissoftware.tasky.agenda.presentation.detail
 
+import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.widget.DatePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +28,9 @@ import com.artemissoftware.tasky.agenda.composables.assignment.*
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Photo
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
@@ -35,7 +39,8 @@ fun DetailScreen(
     events: (DetailEvents) -> Unit
 ) {
 
-    val resources = LocalContext.current.resources
+    val context = LocalContext.current
+    val resources = context.resources
 
 
     val title = remember(state.isEditing) {
@@ -58,32 +63,36 @@ fun DetailScreen(
         mutableStateOf(title)
     }
 
-    val mContext = LocalContext.current
-    val mCalendar = Calendar.getInstance()
-    val mHour = mCalendar[Calendar.HOUR_OF_DAY]
-    val mMinute = mCalendar[Calendar.MINUTE]
+    val startDate = remember { mutableStateOf(LocalDate.now()) }
+    val formattedStartDate by remember {
+        derivedStateOf {
+            DateTimeFormatter.ofPattern("MMM dd yyyy").format(startDate.value)
+        }
+    }
 
-    val startTime = remember { mutableStateOf("$mHour:$mMinute") }
-    val startTimePickerDialog = TimePickerDialog(
-        mContext,
-        {_, mHour : Int, mMinute: Int ->
-            startTime.value = "$mHour:$mMinute"
-        },
-        mHour,
-        mMinute,
-        false
-    )
+    val endDate = remember { mutableStateOf(LocalDate.now()) }
+    val formattedEndDate by remember {
+        derivedStateOf {
+            DateTimeFormatter.ofPattern("MMM dd yyyy").format(endDate.value)
+        }
+    }
 
-    val endTime = remember { mutableStateOf("$mHour:$mMinute") }
-    val endTimePickerDialog = TimePickerDialog(
-        mContext,
-        {_, mHour : Int, mMinute: Int ->
-            endTime.value = "$mHour:$mMinute"
-        },
-        mHour,
-        mMinute,
-        false
-    )
+
+
+
+    val startTime = remember { mutableStateOf(LocalTime.now()) }
+    val formattedStartTime by remember {
+        derivedStateOf {
+            DateTimeFormatter.ofPattern("HH:mm").format(startTime.value)
+        }
+    }
+
+    val endTime = remember { mutableStateOf(LocalTime.now()) }
+    val formattedEndTime by remember {
+        derivedStateOf {
+            DateTimeFormatter.ofPattern("HH:mm").format(endTime.value)
+        }
+    }
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -170,15 +179,23 @@ fun DetailScreen(
                                 TaskyDivider(top = 20.dp, bottom = 28.dp)
 
                                 TimeInterval(
-                                    type,
-                                    state.isEditing,
-                                    startTime = startTime.value,
+                                    type = type,
+                                    isEditing = state.isEditing,
+                                    startTime = formattedStartTime,
                                     onStartTimeClick = {
-                                        startTimePickerDialog.show()
+                                        getTimePickerDialog(context = context, time = startTime).show()
                                     },
-                                    endTime = endTime.value,
+                                    startDate = formattedStartDate,
+                                    onStartDateTimeClick = {
+                                        getDatePickerDialog(context = context, date = startDate).show()
+                                    },
+                                    endTime = formattedEndTime,
                                     onEndTimeClick = {
-                                        endTimePickerDialog.show()
+                                        getTimePickerDialog(context = context, time = endTime).show()
+                                    },
+                                    endDate = formattedEndDate,
+                                    onEndDateTimeClick = {
+                                        getDatePickerDialog(context = context, date = endDate).show()
                                     }
                                 )
 
@@ -240,24 +257,31 @@ private fun TaskyDivider (top: Dp, bottom: Dp = 0.dp) {
 
 @Composable
 private fun TimeInterval(
-    item: AgendaItemType,
+    type: AgendaItemType,
     isEditing: Boolean,
     startTime: String,
     onStartTimeClick: () -> Unit,
+    startDate: String,
+    onStartDateTimeClick: () -> Unit,
     endTime: String,
-    onEndTimeClick: () -> Unit
+    onEndTimeClick: () -> Unit,
+    endDate: String,
+    onEndDateTimeClick: () -> Unit,
 ) {
 
-    when(item){
+    when(type){
         is AgendaItemType.Event -> {
             AssignmentTime(
                 isEditing = isEditing,
                 title = R.string.from,
-                day = "Jul 21 2022",
+                day = startDate,
                 hour = startTime,
                 modifier = Modifier.fillMaxWidth(),
                 onTimeClick = {
                     onStartTimeClick()
+                },
+                onDateClick = {
+                    onStartDateTimeClick()
                 }
             )
 
@@ -266,11 +290,14 @@ private fun TimeInterval(
             AssignmentTime(
                 isEditing = isEditing,
                 title = R.string.to,
-                day = "Jul 21 2022",
+                day = endDate,
                 hour = endTime,
                 modifier = Modifier.fillMaxWidth(),
                 onTimeClick = {
                     onEndTimeClick()
+                },
+                onDateClick = {
+                    onEndDateTimeClick()
                 }
             )
         }
@@ -278,15 +305,48 @@ private fun TimeInterval(
             AssignmentTime(
                 isEditing = isEditing,
                 title = R.string.at,
-                day = "Jul 21 2022",
+                day = startDate,
                 hour = startTime,
                 modifier = Modifier.fillMaxWidth(),
                 onTimeClick = {
                     onStartTimeClick()
+                },
+                onDateClick = {
+                    onStartDateTimeClick()
                 }
             )
         }
     }
+}
+
+
+private fun getDatePickerDialog(context: Context, date: MutableState<LocalDate>): DatePickerDialog{
+
+    return DatePickerDialog(
+        context,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+
+            date.value = LocalDate.of(mYear, mMonth + 1, mDayOfMonth)
+        },
+        date.value.year,
+        date.value.monthValue - 1,
+        date.value.dayOfMonth
+    )
+
+}
+
+private fun getTimePickerDialog(context: Context, time: MutableState<LocalTime>): TimePickerDialog{
+
+    return TimePickerDialog(
+        context,
+        {_, mHour : Int, mMinute: Int ->
+            time.value = LocalTime.of(mHour, mMinute)
+        },
+        time.value.hour,
+        time.value.minute,
+        true
+    )
+
 }
 
 
@@ -301,7 +361,7 @@ fun DetailScreenReminderPreview() {
         events = {}
     )
 }
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenReminderEditingPreview() {
@@ -314,7 +374,7 @@ fun DetailScreenReminderEditingPreview() {
         events = {}
     )
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenTaskPreview() {

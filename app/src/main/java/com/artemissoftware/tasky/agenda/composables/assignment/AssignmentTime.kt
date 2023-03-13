@@ -25,6 +25,7 @@ fun AssignmentTime(
     hour: String,
     day: String,
     onTimeClick: () -> Unit,
+    onDateClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false
 ) {
@@ -42,8 +43,7 @@ fun AssignmentTime(
 
                 Row(
                     modifier = modifier
-                        .fillMaxWidth()
-                        .clickable(enabled = isEditing, onClick = { onTimeClick() }),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TaskyText(
@@ -52,7 +52,9 @@ fun AssignmentTime(
                     )
                     TaskyText(
                         text = hour,
-                        modifier = Modifier.weight(0.3F)
+                        modifier = Modifier
+                            .weight(0.3F)
+                            .clickable(enabled = isEditing, onClick = { onTimeClick() })
                     )
                     Column(
                         modifier = Modifier.weight(0.2F),
@@ -84,7 +86,9 @@ fun AssignmentTime(
                     TaskyText(
                         textAlign = TextAlign.Center,
                         text = day,
-                        modifier = Modifier.weight(0.8F)
+                        modifier = Modifier
+                            .weight(0.8F)
+                            .clickable(enabled = isEditing, onClick = { onDateClick() })
                     )
                     Column(
                         modifier = Modifier.weight(0.2F),
@@ -111,7 +115,7 @@ fun AssignmentTime(
 @Composable
 private fun AssignmentTimePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentTime(title = R.string.from, day = "Jul 21 2022", hour = "08:00", modifier = Modifier.fillMaxWidth(), onTimeClick = {})
-        AssignmentTime(isEditing = true, title = R.string.to, day = "Jul 21 2022", hour = "08:30", modifier = Modifier.fillMaxWidth(), onTimeClick = {})
+        AssignmentTime(title = R.string.from, day = "Jul 21 2022", hour = "08:00", modifier = Modifier.fillMaxWidth(), onTimeClick = {}, onDateClick = {})
+        AssignmentTime(isEditing = true, title = R.string.to, day = "Jul 21 2022", hour = "08:30", modifier = Modifier.fillMaxWidth(), onTimeClick = {}, onDateClick = {})
     }
 }
