@@ -4,9 +4,9 @@ import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
 import com.artemissoftware.core.domain.repositories.UserStoreRepository
 import com.artemissoftware.core.util.UiText
+import com.artemissoftware.core.domain.AuthenticationException
+import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.tasky.authentication.domain.repositories.AuthenticationRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class LoginUseCase constructor(
     private val userStoreRepository: UserStoreRepository,
@@ -19,8 +19,8 @@ class LoginUseCase constructor(
 
         return when(result){
             is ApiNetworkResponse.Error -> {
-                val error = result.exception?.description ?: UiText.DynamicString("An error occurred while doing login in")
-                Resource.Error(error)
+                val exception = result.exception?.description?.let { ValidationException.DataError(it) } ?: AuthenticationException.LoginError
+                Resource.Error(exception)
             }
             is ApiNetworkResponse.Success -> {
                 result.data?.let { userStoreRepository.saveUser(it) }

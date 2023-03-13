@@ -1,5 +1,7 @@
 package com.artemissoftware.tasky.authentication.domain.usecases
 
+import com.artemissoftware.core.domain.AuthenticationException
+import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
 import com.artemissoftware.core.domain.repositories.UserStoreRepository
@@ -18,8 +20,8 @@ class RegisterUserUseCase constructor(
 
         return when(result){
             is ApiNetworkResponse.Error -> {
-                val error = result.exception?.description ?: UiText.DynamicString("An error occurred while doing registering")
-                Resource.Error(error)
+                val exception = result.exception?.description?.let { ValidationException.DataError(it) } ?: AuthenticationException.RegisterError
+                Resource.Error(exception)
             }
             is ApiNetworkResponse.Success -> {
                 Resource.Success(true)
