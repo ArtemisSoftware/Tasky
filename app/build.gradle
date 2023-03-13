@@ -44,7 +44,11 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
+    sourceSets {
+        test {
+            java.srcDir project(":core").file("src/test/java")
+        }
+    }
     with flavorConfig
 }
 
@@ -63,6 +67,13 @@ dependencies {
     androidTestImplementation rootProject.tests.uiTestJunit4
     debugImplementation rootProject.libraries.composeUiTooling
     debugImplementation rootProject.tests.uiTestManifest
+
+
+    testImplementation rootProject.tests.kotlinTestJunit
+    testImplementation rootProject.tests.junit
+    testImplementation rootProject.tests.mockito
+    testImplementation rootProject.tests.kotlinxCoroutinesTest
+
 
     implementation project(':core')
 }

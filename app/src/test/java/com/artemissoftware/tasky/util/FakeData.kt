@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.util
 
+import com.artemissoftware.core.domain.models.authentication.User
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
 
 object FakeData {
@@ -10,5 +11,9 @@ object FakeData {
         userId="DarkKnight"
     )
 
-
+    val user = User(
+        fullName = "Bruce Wayne",
+        token = "IamBatman",
+        id = "DarkKnight"
+    )
 }
