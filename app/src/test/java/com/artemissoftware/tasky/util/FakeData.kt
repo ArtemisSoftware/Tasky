@@ -1,7 +1,9 @@
 package com.artemissoftware.tasky.util
 
 import com.artemissoftware.core.domain.models.authentication.User
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
+import java.time.LocalDateTime
 
 object FakeData {
 
@@ -15,5 +17,13 @@ object FakeData {
         fullName = "Bruce Wayne",
         token = "IamBatman",
         id = "DarkKnight"
+    )
+
+    val reminder = AgendaItem.Reminder(
+        id = "bat",
+        title = "batarang",
+        description = "Build a new gadget",
+        remindAt = 12L,
+        time = LocalDateTime.now()
     )
 }
