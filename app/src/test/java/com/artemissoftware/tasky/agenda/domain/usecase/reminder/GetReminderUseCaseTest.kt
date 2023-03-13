@@ -32,7 +32,7 @@ class GetReminderUseCaseTest: BaseUseCaseTest() {
     @Test
     fun `Get user with success`() = runTest {
 
-        val id = FakeData.reminder.id!!
+        val id = FakeData.reminder.id
 
         val result = getReminderUseCase(id = id)
 

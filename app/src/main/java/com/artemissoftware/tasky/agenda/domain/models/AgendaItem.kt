@@ -7,8 +7,7 @@ sealed class AgendaItem(
     val itemTitle: String,
     val itemDescription: String? = null,
     val itemRemindAt: LocalDateTime,
-    val itemTime: LocalDateTime,
-    val itemSync: Boolean = false
+    val itemTime: LocalDateTime
 ){
 
     data class Reminder(
@@ -16,15 +15,13 @@ sealed class AgendaItem(
         val title: String,
         val description: String? = null,
         val remindAt: LocalDateTime,
-        val time: LocalDateTime,
-        val sync: Boolean = false
+        val time: LocalDateTime
     ) : AgendaItem(
         itemId = id,
         itemTitle = title,
         itemDescription = description,
         itemRemindAt = remindAt,
-        itemTime = time,
-        itemSync = sync
+        itemTime = time
     )
 
 
