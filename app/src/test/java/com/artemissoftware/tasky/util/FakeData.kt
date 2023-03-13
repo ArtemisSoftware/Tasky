@@ -23,7 +23,7 @@ object FakeData {
         id = "bat",
         title = "batarang",
         description = "Build a new gadget",
-        remindAt = 12L,
+        remindAt = LocalDateTime.now().minusMinutes(10),
         time = LocalDateTime.now()
     )
 }

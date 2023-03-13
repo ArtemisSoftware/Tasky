@@ -1,11 +1,16 @@
 package com.artemissoftware.tasky.agenda.data
 
+import com.artemissoftware.core.data.SyncType
+import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
+import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
+import com.artemissoftware.core.domain.models.authentication.User
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import com.artemissoftware.tasky.util.FakeData
 
 class FakeAgendaRepository : AgendaRepository{
 
+    var returnNetworkError = false
     private var reminders = mutableListOf(FakeData.reminder)
 
     override suspend fun getReminder(id: String): AgendaItem.Reminder {
@@ -16,7 +21,28 @@ class FakeAgendaRepository : AgendaRepository{
         reminders.removeAt(0)
     }
 
-    override suspend fun register(reminder: AgendaItem.Reminder) {
+    override suspend fun register(reminder: AgendaItem.Reminder, isUpdate: Boolean) {
         reminders.add(reminder)
     }
+
+    override suspend fun sync(reminder: AgendaItem.Reminder, isUpdate: Boolean): ApiNetworkResponse<Boolean> {
+        return if(returnNetworkError) {
+            ApiNetworkResponse.Error(TaskyNetworkException())
+        } else {
+            ApiNetworkResponse.Success(true)
+        }
+    }
+
+    override suspend fun syncDelete(reminder: AgendaItem.Reminder): ApiNetworkResponse<Boolean> {
+        return if(returnNetworkError) {
+            ApiNetworkResponse.Error(TaskyNetworkException())
+        } else {
+            ApiNetworkResponse.Success(true)
+        }
+    }
+
+    override suspend fun updateSyncState(id: String, syncType: SyncType) {
+        // TODO("Not yet implemented")
+    }
+
 }
