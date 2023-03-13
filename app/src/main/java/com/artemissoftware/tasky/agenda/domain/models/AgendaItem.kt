@@ -1,11 +1,13 @@
 package com.artemissoftware.tasky.agenda.domain.models
 
+import java.time.LocalDateTime
+
 sealed class AgendaItem(
     val itemId: String? = null,
     val itemTitle: String,
     val itemDescription: String? = null,
     val itemRemindAt: Long,
-    val itemTime: Long
+    val itemTime: LocalDateTime
 ){
 
     data class Reminder(
@@ -13,7 +15,7 @@ sealed class AgendaItem(
         val title: String,
         val description: String? = null,
         val remindAt: Long,
-        val time: Long
+        val time: LocalDateTime
     ) : AgendaItem(
         itemId = id,
         itemTitle = title,
