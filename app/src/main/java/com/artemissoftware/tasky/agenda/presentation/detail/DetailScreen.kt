@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.detail
 
+import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import com.artemissoftware.tasky.agenda.composables.assignment.*
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Photo
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
+import java.util.*
 
 @Composable
 fun DetailScreen(
@@ -56,6 +58,33 @@ fun DetailScreen(
         mutableStateOf(title)
     }
 
+    val mContext = LocalContext.current
+    val mCalendar = Calendar.getInstance()
+    val mHour = mCalendar[Calendar.HOUR_OF_DAY]
+    val mMinute = mCalendar[Calendar.MINUTE]
+
+    val startTime = remember { mutableStateOf("$mHour:$mMinute") }
+    val startTimePickerDialog = TimePickerDialog(
+        mContext,
+        {_, mHour : Int, mMinute: Int ->
+            startTime.value = "$mHour:$mMinute"
+        },
+        mHour,
+        mMinute,
+        false
+    )
+
+    val endTime = remember { mutableStateOf("$mHour:$mMinute") }
+    val endTimePickerDialog = TimePickerDialog(
+        mContext,
+        {_, mHour : Int, mMinute: Int ->
+            endTime.value = "$mHour:$mMinute"
+        },
+        mHour,
+        mMinute,
+        false
+    )
+
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -65,6 +94,7 @@ fun DetailScreen(
                     events(DetailEvents.PopBackStack)
                 },
                 backGroundColor = Black,
+                allCaps = true,
                 title = title.value,
                 toolbarActions = { color->
 
@@ -139,7 +169,18 @@ fun DetailScreen(
 
                                 TaskyDivider(top = 20.dp, bottom = 28.dp)
 
-                                TimeInterval(type, state.isEditing)
+                                TimeInterval(
+                                    type,
+                                    state.isEditing,
+                                    startTime = startTime.value,
+                                    onStartTimeClick = {
+                                        startTimePickerDialog.show()
+                                    },
+                                    endTime = endTime.value,
+                                    onEndTimeClick = {
+                                        endTimePickerDialog.show()
+                                    }
+                                )
 
                                 TaskyDivider(top = 28.dp, bottom = 20.dp)
 
@@ -198,7 +239,14 @@ private fun TaskyDivider (top: Dp, bottom: Dp = 0.dp) {
 }
 
 @Composable
-private fun TimeInterval(item: AgendaItemType, isEditing: Boolean) {
+private fun TimeInterval(
+    item: AgendaItemType,
+    isEditing: Boolean,
+    startTime: String,
+    onStartTimeClick: () -> Unit,
+    endTime: String,
+    onEndTimeClick: () -> Unit
+) {
 
     when(item){
         is AgendaItemType.Event -> {
@@ -206,8 +254,11 @@ private fun TimeInterval(item: AgendaItemType, isEditing: Boolean) {
                 isEditing = isEditing,
                 title = R.string.from,
                 day = "Jul 21 2022",
-                hour = "08:00",
-                modifier = Modifier.fillMaxWidth()
+                hour = startTime,
+                modifier = Modifier.fillMaxWidth(),
+                onTimeClick = {
+                    onStartTimeClick()
+                }
             )
 
             TaskyDivider(top = 28.dp, bottom = 28.dp)
@@ -216,8 +267,11 @@ private fun TimeInterval(item: AgendaItemType, isEditing: Boolean) {
                 isEditing = isEditing,
                 title = R.string.to,
                 day = "Jul 21 2022",
-                hour = "08:00",
-                modifier = Modifier.fillMaxWidth()
+                hour = endTime,
+                modifier = Modifier.fillMaxWidth(),
+                onTimeClick = {
+                    onEndTimeClick()
+                }
             )
         }
         is AgendaItemType.Reminder, is AgendaItemType.Task-> {
@@ -225,8 +279,11 @@ private fun TimeInterval(item: AgendaItemType, isEditing: Boolean) {
                 isEditing = isEditing,
                 title = R.string.at,
                 day = "Jul 21 2022",
-                hour = "08:00",
-                modifier = Modifier.fillMaxWidth()
+                hour = startTime,
+                modifier = Modifier.fillMaxWidth(),
+                onTimeClick = {
+                    onStartTimeClick()
+                }
             )
         }
     }
@@ -244,7 +301,7 @@ fun DetailScreenReminderPreview() {
         events = {}
     )
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenReminderEditingPreview() {
@@ -307,3 +364,4 @@ fun DetailScreenEventEditingPreview() {
         events = {}
     )
 }
+*/

@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -23,6 +24,7 @@ fun AssignmentTime(
     @StringRes title: Int,
     hour: String,
     day: String,
+    onTimeClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false
 ) {
@@ -39,7 +41,9 @@ fun AssignmentTime(
             ){
 
                 Row(
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .clickable(enabled = isEditing, onClick = { onTimeClick() }),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TaskyText(
@@ -107,7 +111,7 @@ fun AssignmentTime(
 @Composable
 private fun AssignmentTimePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentTime(title = R.string.from, day = "Jul 21 2022", hour = "08:00", modifier = Modifier.fillMaxWidth())
-        AssignmentTime(isEditing = true, title = R.string.to, day = "Jul 21 2022", hour = "08:30", modifier = Modifier.fillMaxWidth())
+        AssignmentTime(title = R.string.from, day = "Jul 21 2022", hour = "08:00", modifier = Modifier.fillMaxWidth(), onTimeClick = {})
+        AssignmentTime(isEditing = true, title = R.string.to, day = "Jul 21 2022", hour = "08:30", modifier = Modifier.fillMaxWidth(), onTimeClick = {})
     }
 }
