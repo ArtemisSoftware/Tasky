@@ -9,6 +9,7 @@ import com.artemissoftware.tasky.util.FakeData
 class FakeAuthenticationRepository : AuthenticationRepository {
 
     var returnNetworkError = false
+    var errorWithBackendMessage = false
 
     override suspend fun registerUser(
         email: String,
@@ -17,6 +18,8 @@ class FakeAuthenticationRepository : AuthenticationRepository {
     ): ApiNetworkResponse<Boolean> {
         return if(returnNetworkError) {
             ApiNetworkResponse.Error(TaskyNetworkException())
+        } else if(errorWithBackendMessage){
+            ApiNetworkResponse.Error(TaskyNetworkException(code = 0, description = BACKEND_ERROR))
         } else {
             ApiNetworkResponse.Success(true)
         }
@@ -25,7 +28,10 @@ class FakeAuthenticationRepository : AuthenticationRepository {
     override suspend fun loginUser(email: String, password: String): ApiNetworkResponse<User> {
         return if(returnNetworkError) {
             ApiNetworkResponse.Error(TaskyNetworkException())
-        } else {
+        } else if(errorWithBackendMessage){
+            ApiNetworkResponse.Error(TaskyNetworkException(code = 0, description = BACKEND_ERROR))
+        }
+        else {
             ApiNetworkResponse.Success(FakeData.user)
         }
     }
@@ -44,5 +50,9 @@ class FakeAuthenticationRepository : AuthenticationRepository {
         } else {
             ApiNetworkResponse.Success(true)
         }
+    }
+
+    companion object{
+        const val BACKEND_ERROR = "Backend error"
     }
 }

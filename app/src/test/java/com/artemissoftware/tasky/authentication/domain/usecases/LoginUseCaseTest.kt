@@ -1,24 +1,25 @@
 package com.artemissoftware.tasky.authentication.domain.usecases
 
 import com.artemissoftware.core.data.repositories.FakeUserStoreRepository
+import com.artemissoftware.core.domain.AuthenticationException
+import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
-import com.artemissoftware.core.domain.repositories.UserStoreRepository
+import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.authentication.data.repositories.FakeAuthenticationRepository
-import com.artemissoftware.tasky.authentication.domain.repositories.AuthenticationRepository
 import com.artemissoftware.tasky.util.BaseUseCaseTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.mock
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginUseCaseTest: BaseUseCaseTest() {
 
     private lateinit var loginUseCase: LoginUseCase
 
-    private lateinit var userStoreRepository: UserStoreRepository
-    private lateinit var authenticationRepository: AuthenticationRepository
+    private lateinit var userStoreRepository: FakeUserStoreRepository
+    private lateinit var authenticationRepository: FakeAuthenticationRepository
 
     @Before
     fun setUp() {
@@ -41,15 +42,30 @@ class LoginUseCaseTest: BaseUseCaseTest() {
 
 
     @Test
-    fun `Login user with failure`() = runTest {
+    fun `Login user with failure and error message from backend`() = runTest {
 
-        (authenticationRepository as FakeAuthenticationRepository).returnNetworkError = true
+        authenticationRepository.errorWithBackendMessage = true
         val email = "batman@waynetech.com"
         val password = "Iambatman123"
 
         val result = loginUseCase(email = email, password = password)
 
         assert(result is Resource.Error)
+        assert(result.exception is ValidationException.DataError)
+        assertEquals(UiText.DynamicString(FakeAuthenticationRepository.BACKEND_ERROR), (result.exception as ValidationException.DataError).uiText)
     }
 
+
+    @Test
+    fun `Login user with failure with custom exception`() = runTest {
+
+        authenticationRepository.returnNetworkError = true
+        val email = "batman@waynetech.com"
+        val password = "Iambatman123"
+
+        val result = loginUseCase(email = email, password = password)
+
+        assert(result is Resource.Error)
+        assert(result.exception is AuthenticationException.LoginError)
+    }
 }

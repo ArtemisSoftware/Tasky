@@ -38,7 +38,7 @@ object HandleApi {
                     throw TaskyNetworkException(TaskyNetworkError.UnknownHost)
                 }
                 else ->{
-                    throw TaskyNetworkException( )
+                    throw TaskyNetworkException()
                 }
             }
         }
