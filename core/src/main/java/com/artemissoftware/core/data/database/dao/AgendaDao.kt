@@ -1,6 +1,7 @@
 package com.artemissoftware.core.data.database.dao
 
 import androidx.room.*
+import com.artemissoftware.core.data.SyncType
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 
 @Dao
@@ -17,4 +18,7 @@ interface AgendaDao {
 
     @Query("DELETE FROM reminderEntity WHERE id = :id")
     suspend fun deleteReminder(id: String)
+
+    @Query("UPDATE reminderEntity SET syncType = :syncType WHERE id = :id")
+    suspend fun updateReminderSync(id: String, syncType: SyncType)
 }
