@@ -21,18 +21,20 @@ fun ReminderEntity.toAgendaItem(): AgendaItem.Reminder {
         title = title,
         description = description,
         id = id,
-        remindAt = remindAt,
+        remindAt = remindAt.toLocalDateTime(),
         time = time.toLocalDateTime()
     )
 }
 
-fun AgendaItem.Reminder.toEntity(id: String): ReminderEntity {
+fun AgendaItem.Reminder.toEntity(): ReminderEntity {
+
 
     return ReminderEntity(
         title = title,
         description = description,
-        id = this.id ?: id,
-        remindAt = remindAt,
-        time = time.toLong()
+        id = this.id,
+        remindAt = remindAt.toLong(),
+        time = time.toLong(),
+        sync = sync
     )
 }

@@ -10,5 +10,6 @@ data class ReminderEntity (
     val title: String,
     val description: String? = null,
     val remindAt: Long,
-    val time: Long
+    val time: Long,
+    val sync: Boolean = false
 )

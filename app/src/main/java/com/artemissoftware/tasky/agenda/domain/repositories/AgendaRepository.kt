@@ -8,5 +8,5 @@ interface AgendaRepository {
 
     suspend fun deleteReminder(id: String)
 
-    suspend fun register(reminder: AgendaItem.Reminder)
+    suspend fun register(reminder: AgendaItem.Reminder, isUpdate: Boolean)
 }

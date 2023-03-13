@@ -23,16 +23,10 @@ class AgendaRepositoryImpl constructor(
         agendaDao.deleteReminder(id = id)
     }
 
-    override suspend fun register(reminder: AgendaItem.Reminder) {
-
-        val entity = reminder.toEntity(id = UUID.randomUUID().toString())
+    override suspend fun register(reminder: AgendaItem.Reminder, isUpdate: Boolean) {
 
         with(agendaDao){
-            reminder.id?.let {
-                insert(entity)
-            } ?: run {
-                update(entity)
-            }
+            if(isUpdate)  update(reminder.toEntity()) else insert(reminder.toEntity())
         }
     }
 }
