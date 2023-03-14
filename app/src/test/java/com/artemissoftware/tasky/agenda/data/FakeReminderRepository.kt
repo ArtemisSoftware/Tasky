@@ -1,14 +1,13 @@
 package com.artemissoftware.tasky.agenda.data
 
-import com.artemissoftware.core.data.SyncType
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
-import com.artemissoftware.core.domain.models.authentication.User
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import com.artemissoftware.tasky.util.FakeData
 
-class FakeAgendaRepository : AgendaRepository{
+class FakeReminderRepository : ReminderRepository{
 
     var returnNetworkError = false
     private var reminders = mutableListOf(FakeData.reminder)

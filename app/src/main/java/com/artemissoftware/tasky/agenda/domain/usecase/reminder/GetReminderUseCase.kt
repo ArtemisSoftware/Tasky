@@ -1,12 +1,12 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 
 class GetReminderUseCase constructor(
-    private val agendaRepository: AgendaRepository
+    private val reminderRepository: ReminderRepository
 ) {
 
     suspend operator fun invoke(id: String): AgendaItem.Reminder =
-        agendaRepository.getReminder(id = id)
+        reminderRepository.getReminder(id = id)
 }

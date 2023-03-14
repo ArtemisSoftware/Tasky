@@ -1,47 +1,33 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
+import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.agenda.domain.models.Notification
-import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import java.util.*
 
 class SaveReminderUseCase constructor(
-    private val agendaRepository: AgendaRepository
+    private val reminderRepository: ReminderRepository
 ){
 
     suspend operator fun invoke(
-        id: String?,
-        title: String,
-        description: String,
-        date: LocalDate,
-        time: LocalTime,
-        notification: Notification
+        reminder: AgendaItem.Reminder
     ) {
 
-        val isUpdate = id != null
-        val reminderTime = LocalDateTime.of(date, time)
+        val syncType = if(reminder.id == null) SyncType.CREATED else SyncType.UPDATED
+        val id = reminder.id ?: UUID.randomUUID().toString()
+        reminder.id = id
 
-        val reminder = AgendaItem.Reminder(
-            id =  id ?: UUID.randomUUID().toString(),
-            title = title,
-            description = description,
-            remindAt = reminderTime.minusMinutes(notification.minutesBefore),
-            time = reminderTime
-        )
-
-        agendaRepository.register(reminder = reminder, isUpdate = isUpdate)
-        val result = agendaRepository.sync(reminder = reminder, isUpdate = isUpdate)
+        reminderRepository.save(reminder = reminder, syncType)
+        val result = reminderRepository.syncReminder(reminder = reminder, syncType = syncType)
 
         when(result){
             is ApiNetworkResponse.Error -> {
                 // TODO: should send message to the ui saying the sync failed?
             }
             is ApiNetworkResponse.Success -> {
-                agendaRepository.updateSyncState(reminder.id)
+                // TODO: should send message to the ui saying the everything went well?
             }
         }
     }
