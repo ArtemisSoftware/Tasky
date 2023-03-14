@@ -1,7 +1,7 @@
 package com.artemissoftware.tasky.agenda.data.repositories
 
 import com.artemissoftware.core.domain.SyncType
-import com.artemissoftware.core.data.database.TaskyDatabase
+import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
@@ -12,12 +12,10 @@ import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 
-class ReminderReminderImpl constructor(
-    private val taskyDatabase: TaskyDatabase,
+class ReminderRepositoryImpl constructor(
+    private val reminderDao: ReminderDao,
     private val agendaApiSource: AgendaApiSource
 ): ReminderRepository {
-
-    private val reminderDao = taskyDatabase.reminderDao
 
 
     override suspend fun getReminder(id: String): AgendaItem.Reminder {
@@ -44,7 +42,7 @@ class ReminderReminderImpl constructor(
                 SyncType.UPDATED -> {
                     agendaApiSource.updateReminder(reminder.toDto())
                 }
-                else ->{}
+                else -> Unit
             }
             reminderDao.upsertReminderSync(ReminderSyncEntity(id = reminder.id!!, syncType = SyncType.SYNCED))
             ApiNetworkResponse.Success(data = true)
