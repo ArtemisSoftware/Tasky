@@ -35,7 +35,7 @@ fun AgendaItem.Reminder.toEntity(): ReminderEntity {
     return ReminderEntity(
         title = title,
         description = description,
-        id = this.id!!,
+        id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong()
     )
@@ -46,7 +46,7 @@ fun AgendaItem.Reminder.toDto(): ReminderDto {
     return ReminderDto(
         title = title,
         description = description,
-        id = this.id!!,
+        id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),
     )

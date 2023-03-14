@@ -7,6 +7,6 @@ class GetReminderUseCase constructor(
     private val reminderRepository: ReminderRepository
 ) {
 
-    suspend operator fun invoke(id: String): AgendaItem.Reminder =
+    suspend operator fun invoke(id: String): AgendaItem.Reminder? =
         reminderRepository.getReminder(id = id)
 }

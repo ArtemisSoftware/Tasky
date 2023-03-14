@@ -1,7 +1,5 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
-import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
-import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 
@@ -10,8 +8,8 @@ class DeleteReminderUseCase constructor(
 ) {
     suspend operator fun invoke(id: String){
 
-        reminderRepository.deleteAndUpdateSyncState(id = id)
-        val result = reminderRepository.syncDelete(id)
+
+        val result = reminderRepository.deleteReminderAndSync(id)
 
         when(result){
             is ApiNetworkResponse.Error -> {

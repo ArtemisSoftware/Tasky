@@ -18,50 +18,42 @@ class ReminderRepositoryImpl constructor(
 ): ReminderRepository {
 
 
-    override suspend fun getReminder(id: String): AgendaItem.Reminder {
-        return reminderDao.getReminderAndSyncState(id).toAgendaItem()
+    override suspend fun getReminder(id: String): AgendaItem.Reminder? {
+        return reminderDao.getReminderAndSyncState(id)?.toAgendaItem()
     }
 
-    override suspend fun save(reminder: AgendaItem.Reminder, syncType: SyncType) {
 
-        if(syncType == SyncType.SYNCED){
-            reminderDao.upsertSyncStateAndReminder(reminder.toEntity(), ReminderSyncEntity(id = reminder.id!!, syncType = syncType))
-        }
-        else{
-            reminderDao.upsert(reminder.toEntity())
-        }
-    }
+    override suspend fun saveReminderAndSync(reminder: AgendaItem.Reminder): ApiNetworkResponse<Unit> {
 
-    override suspend fun syncReminder(reminder: AgendaItem.Reminder, syncType: SyncType): ApiNetworkResponse<Boolean> {
+        val syncType = if(reminder.syncState == SyncType.SYNCED) SyncType.UPDATE else reminder.syncState
+        reminderDao.upsertSyncStateAndReminder(reminder.toEntity(), ReminderSyncEntity(id = reminder.id, syncType = syncType))
 
         return try {
             when(syncType){
-                SyncType.CREATED -> {
+                SyncType.CREATE -> {
                     agendaApiSource.createReminder(reminder.toDto())
                 }
-                SyncType.UPDATED -> {
+                SyncType.UPDATE -> {
                     agendaApiSource.updateReminder(reminder.toDto())
                 }
                 else -> Unit
             }
-            reminderDao.upsertReminderSync(ReminderSyncEntity(id = reminder.id!!, syncType = SyncType.SYNCED))
-            ApiNetworkResponse.Success(data = true)
+            reminderDao.upsertReminderSync(ReminderSyncEntity(id = reminder.id, syncType = SyncType.SYNCED))
+            ApiNetworkResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             ApiNetworkResponse.Error(exception = ex)
         }
     }
 
-    override suspend fun deleteAndUpdateSyncState(id: String) {
-        reminderDao.upsertSyncStateAndDelete(id = id, ReminderSyncEntity(id = id, syncType = SyncType.DELETED))
-    }
+    override suspend fun deleteReminderAndSync(id: String): ApiNetworkResponse<Unit> {
 
-    override suspend fun syncDelete(id: String): ApiNetworkResponse<Boolean> {
+        reminderDao.upsertSyncStateAndDelete(id = id, ReminderSyncEntity(id = id, syncType = SyncType.DELETE))
 
         return try {
 
             agendaApiSource.deleteReminder(reminderId = id)
             reminderDao.upsertReminderSync(ReminderSyncEntity(id = id, syncType = SyncType.SYNCED))
-            ApiNetworkResponse.Success(data = true)
+            ApiNetworkResponse.Success(Unit)
 
         } catch (ex: TaskyNetworkException) {
             ApiNetworkResponse.Error(exception = ex)

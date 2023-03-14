@@ -10,7 +10,7 @@ import com.artemissoftware.core.domain.SyncType
 interface ReminderDao {
 
     @Query("SELECT * FROM reminderEntity WHERE id = :id")
-    fun getReminderAndSyncState(id: String): ReminderAndSyncState
+    fun getReminderAndSyncState(id: String): ReminderAndSyncState?
 
 
     @Upsert
@@ -35,5 +35,8 @@ interface ReminderDao {
         deleteReminder(id)
         upsertReminderSync(reminderSyncEntity)
     }
+
+    @Query("SELECT EXISTS(SELECT * FROM reminderEntity WHERE id = :id)")
+    fun reminderExists(id : String) : Boolean
 
 }
