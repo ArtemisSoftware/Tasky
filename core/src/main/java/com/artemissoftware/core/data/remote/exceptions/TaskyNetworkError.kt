@@ -9,4 +9,5 @@ sealed class TaskyNetworkError(
     object UnknownHost : TaskyNetworkError(code = 1, description = R.string.unknown_host)
     object GenericApiError : TaskyNetworkError(code = 2, description = R.string.an_error_occorred)
     object Cancellation : TaskyNetworkError(code = 3, description = R.string.coroutine_cancelled)
+
 }

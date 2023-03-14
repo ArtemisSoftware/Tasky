@@ -5,11 +5,8 @@ import androidx.room.PrimaryKey
 import com.artemissoftware.core.domain.SyncType
 
 @Entity
-data class ReminderEntity (
+data class ReminderSyncEntity (
     @PrimaryKey
     val id: String,
-    val title: String,
-    val description: String? = null,
-    val remindAt: Long,
-    val time: Long
+    val syncType: SyncType
 )
