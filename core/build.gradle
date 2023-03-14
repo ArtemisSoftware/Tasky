@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -55,8 +57,24 @@ dependencies {
     implementation rootProject.libraries.lottie
 
     //Retrofit
-    implementation rootProject.libraries.retrofit
-    implementation rootProject.libraries.retrofitConverterMoshi
+    api rootProject.libraries.retrofit
+    api rootProject.libraries.retrofitConverterMoshi
 
-    implementation rootProject.libraries.coilCompose
+
+    //okhttp
+    implementation rootProject.libraries.okhttpBom
+    implementation rootProject.libraries.okhttp
+    implementation rootProject.libraries.okhttpLoggingInterceptor
+
+
+    //room
+    api rootProject.libraries.roomRuntime
+    kapt rootProject.libraries.roomCompiler
+    implementation rootProject.libraries.roomKtx
+
+    api rootProject.libraries.coilCompose
+
+    //datastore
+    implementation rootProject.libraries.datastore
+    implementation rootProject.libraries.kotlinxSerializationJson
 }

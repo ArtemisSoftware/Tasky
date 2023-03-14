@@ -44,7 +44,11 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
+    sourceSets {
+        test {
+            java.srcDir project(":core").file("src/test/java")
+        }
+    }
     with flavorConfig
 }
 
@@ -64,14 +68,12 @@ dependencies {
     debugImplementation rootProject.libraries.composeUiTooling
     debugImplementation rootProject.tests.uiTestManifest
 
-    //Retrofit
-    implementation rootProject.libraries.retrofit
-    implementation rootProject.libraries.retrofitConverterMoshi
 
-    //okhttp
-    implementation rootProject.libraries.okhttpBom
-    implementation rootProject.libraries.okhttp
-    implementation rootProject.libraries.okhttpLoggingInterceptor
+    testImplementation rootProject.tests.kotlinTestJunit
+    testImplementation rootProject.tests.junit
+    testImplementation rootProject.tests.mockito
+    testImplementation rootProject.tests.kotlinxCoroutinesTest
+
 
     implementation project(':core')
 }

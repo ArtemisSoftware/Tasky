@@ -3,6 +3,7 @@ package com.artemissoftware.tasky.agenda.domain.models
 data class Photo(
     val key: String,
     val url: String
+    //val localImages: String // TODO: must support this too
 ){
 
     companion object{
