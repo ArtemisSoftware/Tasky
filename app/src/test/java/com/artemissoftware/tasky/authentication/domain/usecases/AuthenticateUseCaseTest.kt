@@ -49,7 +49,7 @@ class AuthenticateUseCaseTest: BaseUseCaseTest() {
 
 
     @Test
-    fun `Login user with failure with custom exception`() = runTest {
+    fun `Authenticate user with failure with custom exception`() = runTest {
 
         authenticationRepository.returnNetworkError = true
 
