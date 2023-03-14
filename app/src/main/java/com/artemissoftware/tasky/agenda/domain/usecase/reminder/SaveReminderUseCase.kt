@@ -7,7 +7,6 @@ import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 class SaveReminderUseCase constructor(
     private val reminderRepository: ReminderRepository
 ){
-
     suspend operator fun invoke(
         reminder: AgendaItem.Reminder
     ) {
