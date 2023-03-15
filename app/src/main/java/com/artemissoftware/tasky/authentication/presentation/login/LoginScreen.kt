@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,15 +30,21 @@ import com.artemissoftware.tasky.authentication.presentation.register.RegisterEv
 import com.artemissoftware.tasky.authentication.presentation.register.composables.RegisterForm
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LoginScreen(
+fun LoginScreen(viewModel: LoginViewModel /* TODO : init viewmodel with Hilt when dependency is included on the project */) {
+
+    LoginScreenContent(
+        state = viewModel.state.collectAsState().value,
+        events = viewModel::onTriggerEvent
+    )
+}
+
+
+@Composable
+private fun LoginScreenContent(
     state: LoginState,
-    email: String,
-    password: String,
     events: (LoginEvents) -> Unit
 ) {
-
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -65,9 +72,9 @@ fun LoginScreen(
 
                             LoginForm(
                                 modifier = Modifier.align(Alignment.TopCenter),
-                                email = email,
+                                email = state.email,
                                 emailValidationStateType = state.emailValidationStateType,
-                                password = password,
+                                password = state.password,
                                 passwordValidationStateType = state.passwordValidationStateType,
                                 events = events
                             )
@@ -102,6 +109,6 @@ fun LoginScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun LoginScreenPreview() {
-    LoginScreen(state = LoginState(), "email", "password", events = {})
+private fun LoginScreenContentPreview() {
+    LoginScreenContent(state = LoginState(), events = {})
 }

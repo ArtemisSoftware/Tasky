@@ -30,14 +30,12 @@ class LoginViewModel constructor(
     val state: StateFlow<LoginState> = _state
 
     fun onTriggerEvent(event: LoginEvents){
-
         when(event){
             LoginEvents.Login -> { login() }
             LoginEvents.SignUp -> { signUp() }
             is LoginEvents.ValidateEmail -> { validateEmail(email = event.email) }
             is LoginEvents.ValidatePassword ->  { validatePassword(password = event.password) }
         }
-
     }
 
     private fun validateEmail(email: String) {
