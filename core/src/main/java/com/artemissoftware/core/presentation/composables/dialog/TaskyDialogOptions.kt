@@ -1,13 +1,13 @@
 package com.artemissoftware.core.presentation.composables.dialog
 
-import androidx.annotation.StringRes
+import com.artemissoftware.core.util.UiText
 
 sealed class TaskyDialogOptions(
-    @StringRes val optionText: Int,
+    val optionText: UiText,
     val confirmationOption: () -> Unit = {},
 ) {
     data class SingleOption(
-        @StringRes val confirmationText: Int,
+        val confirmationText: UiText,
         val confirmation: () -> Unit = {}
     ) : TaskyDialogOptions(
         optionText = confirmationText,
@@ -15,9 +15,9 @@ sealed class TaskyDialogOptions(
     )
 
     data class DoubleOption(
-        @StringRes val confirmationText: Int,
+        val confirmationText: UiText,
         val confirmation: () -> Unit = {},
-        @StringRes val cancelText: Int,
+        val cancelText: UiText,
         val cancel: () -> Unit = {},
     ) : TaskyDialogOptions(
         optionText = confirmationText,
