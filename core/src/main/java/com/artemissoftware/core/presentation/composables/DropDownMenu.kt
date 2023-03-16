@@ -2,7 +2,6 @@ package com.artemissoftware.core.presentation.composables
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,20 +11,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core.R
 import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.text.TaskyText
@@ -35,10 +29,11 @@ import com.artemissoftware.core.presentation.theme.*
 fun <T>TaskyDropDown(
     options: List<T>,
     defaultOption: String,
-    option: @Composable (T) -> Unit,
+    menuOption: @Composable (T) -> Unit,
     onOptionSelected: (T) -> Unit,
     modifier: Modifier = Modifier,
     allCaps: Boolean = false,
+    addDivider: Boolean = false,
     textStyle: TextStyle = MaterialTheme.typography.subtitle2,
     height: Dp = 36.dp,
     backgroundColor: Color = White,
@@ -75,8 +70,10 @@ fun <T>TaskyDropDown(
         TaskyIcon(
             size = 24.dp,
             modifier = Modifier
+                .graphicsLayer {
+                    rotationX = angle
+                }
                 .alpha(ContentAlpha.medium)
-                .rotate(degrees = angle)
                 .weight(weight = 1.5f),
             icon = Icons.Filled.ArrowDropDown,
             color = textColor
@@ -88,15 +85,28 @@ fun <T>TaskyDropDown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { priority ->
+            options.forEachIndexed { index, item ->
+
+                val isLast = (index == options.size -1)
+
                 DropdownMenuItem(
-                    modifier = Modifier.height(44.dp).padding(horizontal = 0.dp),
                     onClick = {
                         expanded = false
-                        onOptionSelected(priority)
+                        onOptionSelected(item)
                     }
                 ) {
-                    option(priority)
+                    menuOption(item)
+                }
+
+                if(addDivider && !isLast) {
+
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(9.dp)
+                            .padding(top = 8.dp),
+                        color = Light
+                    )
                 }
             }
         }
@@ -116,8 +126,9 @@ private fun TaskyDropDownPreview() {
             options = listOf("Tasky 1", "Tasky 2", "Tasky 3"),
             defaultOption = "priority",
             onOptionSelected = {},
+            addDivider = true,
             modifier = Modifier.width(140.dp),
-            option = {
+            menuOption = {
 
                 TaskyDropDownItem(text = "Tasky")
 
@@ -131,7 +142,7 @@ private fun TaskyDropDownPreview() {
             backgroundColor = Black,
             onOptionSelected = {},
             modifier = Modifier.fillMaxWidth(),
-            option = {
+            menuOption = {
                 Text(
                     modifier = Modifier,
                     text = it,

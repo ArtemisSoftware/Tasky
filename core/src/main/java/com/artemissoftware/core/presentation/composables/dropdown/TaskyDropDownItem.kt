@@ -1,18 +1,16 @@
 package com.artemissoftware.core.presentation.composables.dropdown
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Green
-import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.White
 
 @Composable
@@ -35,13 +33,7 @@ fun TaskyDropDownItem(
             text = text,
             style = textStyle
         )
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(9.dp)
-                .padding(top = 8.dp),
-            color = Light
-        )
+
     }
 }
 
