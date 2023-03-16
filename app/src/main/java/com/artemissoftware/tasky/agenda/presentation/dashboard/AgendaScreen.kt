@@ -31,49 +31,33 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.mappers.toAgendaItemType
+import com.artemissoftware.tasky.authentication.presentation.login.LoginEvents
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Composable
 fun AgendaScreen(
-    state: AgendaState
+    state: AgendaState,
+    events: (AgendaEvents) -> Unit
 ) {
 
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
         topBar = {
-            TaskyTopBar(
-                onBackClicked = {
-
-                },
-                backGroundColor = Black,
-                toolbarActions = { color->
-
-                    TaskyAvatar(
-                        text =  StringUtil.getInitials(state.userName ?: ""),
-                        size = 34.dp,
-                        circleColor = Light,
-                        textColor = LightBlue,
-                        modifier = Modifier
-                            .clickable {
-
-                            }
-                    )
-                }
-            )
+            //TODO: add top bar here. will need to do some changes on the Taskytopbar
         },
         content = {
 
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
                 TaskyContentSurface(
                     content = {
 
                         Column(
-
+                            modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
 
                             LazyRow(
@@ -93,7 +77,10 @@ fun AgendaScreen(
                                             modifier = Modifier
                                                 .size(width = 40.dp, height = 60.dp),
                                             weekDay = item.description,
-                                            dayOfTheWeek = item.day
+                                            dayOfTheWeek = item.day,
+                                            onClick = {
+                                                events(AgendaEvents.ChangeDate(item.date))
+                                            }
                                         )
 
                                     }
@@ -103,7 +90,7 @@ fun AgendaScreen(
 
                             TaskyText(
                                 modifier = Modifier
-                                    .padding(bottom = 20.dp, top = 20.dp),
+                                    .padding(vertical = 20.dp),
                                 color = Black,
                                 style = MaterialTheme.typography.h6,
                                 text = if(state.selectedDayOfTheWeek == LocalDate.now()) stringResource(id = R.string.today) else state.selectedDayOfTheWeek.format()
@@ -126,10 +113,10 @@ fun AgendaScreen(
                                             description = item.itemDescription,
                                             date = item.itemTime.format(),
                                             onCheckedChange = {
-
+                                                events(AgendaEvents.CompleteAssignment(item.itemId))
                                             },
                                             onOptionClick = {
-
+                                                //TODO : show options
                                             }
                                         )
                                     }
@@ -151,6 +138,7 @@ fun AgendaScreen(
 @Composable
 private fun AgendaScreenPreview() {
     AgendaScreen(
+        events = {},
         state = AgendaState(
             userName = "Bruce Wayne",
             daysOfTheWeek = listOf(
