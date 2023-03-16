@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,12 +20,19 @@ import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.authentication.presentation.register.composables.RegisterForm
 
+
 @Composable
-fun RegisterScreen(
+fun RegisterScreen(viewModel: RegisterViewModel /* TODO : init viewmodel with Hilt when dependency is included on the project */) {
+
+    RegisterScreenContent(
+        state = viewModel.state.collectAsState().value,
+        events = viewModel::onTriggerEvent
+    )
+}
+
+@Composable
+fun RegisterScreenContent(
     state: RegisterState,
-    name: String,
-    email: String,
-    password: String,
     events: (RegisterEvents) -> Unit
 ) {
 
@@ -55,11 +63,11 @@ fun RegisterScreen(
 
                             RegisterForm(
                                 modifier = Modifier.align(Alignment.TopCenter),
-                                name = name,
+                                name = state.name,
                                 nameValidationStateType = state.nameValidationStateType,
-                                email = email,
+                                email = state.email,
                                 emailValidationStateType = state.emailValidationStateType,
-                                password = password,
+                                password = state.password,
                                 passwordValidationStateType = state.passwordValidationStateType,
                                 events = events
                             )
@@ -87,6 +95,6 @@ fun RegisterScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun RegisterScreenPreview() {
-    RegisterScreen(state = RegisterState(), name = "", email = "", password = "", events = {})
+private fun RegisterScreenContentPreview() {
+    RegisterScreenContent(state = RegisterState(), events = {})
 }
