@@ -53,7 +53,7 @@ class LoginViewModel constructor(
         _state.update {
             it.copy(
                 password = password,
-                emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password))
+                passwordValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password))
             )
         }
     }
