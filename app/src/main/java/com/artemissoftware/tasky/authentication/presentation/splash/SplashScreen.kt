@@ -14,12 +14,18 @@ import com.artemissoftware.core.presentation.theme.Green
 import com.artemissoftware.core.presentation.theme.White
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(viewModel: SplashViewModel /* TODO : init viewmodel with Hilt when dependency is included on the project */) {
+
+    SplashScreenContent(
+    )
+}
+
+@Composable
+private fun SplashScreenContent() {
 
     TaskyScaffold(
         backgroundColor = Green,
         content = {
-
 
             Box(modifier = Modifier.fillMaxSize()){
                 
@@ -38,6 +44,6 @@ fun SplashScreen() {
 
 @Preview(showBackground = true)
 @Composable
-private fun SplashScreenPreview() {
-    SplashScreen()
+private fun SplashScreenContentPreview() {
+    SplashScreenContent()
 }
