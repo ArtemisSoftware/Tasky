@@ -23,6 +23,7 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
+import com.artemissoftware.core.util.DateTimePatternsConstants
 import com.artemissoftware.core.util.StringUtil
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
@@ -34,6 +35,7 @@ import com.artemissoftware.tasky.agenda.presentation.mappers.toAgendaItemType
 import com.artemissoftware.tasky.authentication.presentation.login.LoginEvents
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun AgendaScreen(
@@ -93,7 +95,9 @@ fun AgendaScreen(
                                     .padding(vertical = 20.dp),
                                 color = Black,
                                 style = MaterialTheme.typography.h6,
-                                text = if(state.selectedDayOfTheWeek == LocalDate.now()) stringResource(id = R.string.today) else state.selectedDayOfTheWeek.format()
+                                text = if(state.selectedDayOfTheWeek == LocalDate.now()) stringResource(id = R.string.today) else state.selectedDayOfTheWeek.format(
+                                    DateTimePatternsConstants.DATE_PATTERN_dd_MMM_YYYY
+                                )
                             )
 
 
@@ -111,7 +115,7 @@ fun AgendaScreen(
                                             agendaItemType = item.toAgendaItemType(),
                                             title = item.itemTitle,
                                             description = item.itemDescription,
-                                            date = item.itemTime.format(),
+                                            date = item.itemTime.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
                                             onCheckedChange = {
                                                 events(AgendaEvents.CompleteAssignment(item.itemId))
                                             },

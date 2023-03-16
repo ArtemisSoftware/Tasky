@@ -14,12 +14,12 @@ fun LocalDateTime.toLong(): Long {
     return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
 
-fun LocalDateTime.format(): String {
-    val formatter = DateTimeFormatter.ofPattern("MMM d, HH:mm")
+fun LocalDateTime.format(pattern: String): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern)
     return this.format(formatter)
 }
 
-fun LocalDate.format(): String {
-    val formatter = DateTimeFormatter.ofPattern("dd MMM YYYY")
+fun LocalDate.format(pattern: String): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern)
     return this.format(formatter)
 }
