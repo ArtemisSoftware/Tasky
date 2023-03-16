@@ -86,7 +86,9 @@ class LoginViewModel constructor(
                         }
                         is Resource.Error -> {
                             result.exception?.let {
-                                _uiEvent.send(getUiEvent(ex = it, reloadEvent = { login() }))
+                                _uiEvent.send(
+                                    UiEvent.ShowDialog(getDialgData(ex = it, reloadEvent = { login() }))
+                                )
                             }
                         }
                         is Resource.Loading -> Unit
@@ -97,22 +99,18 @@ class LoginViewModel constructor(
     }
 
 
-    private fun getUiEvent(ex: ValidationException, reloadEvent: () -> Unit): UiEvent.ShowDialog {
+    private fun getDialgData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
 
-        return UiEvent.ShowDialog(
-            TaskyDialogType.Error(
-                title = UiText.StringResource(R.string.log_in),
-                description = ex.toUiText(),
-                dialogOptions = TaskyDialogOptions.DoubleOption(
-                    confirmationText = UiText.StringResource(R.string.retry),
-                    confirmation = {
-                        reloadEvent.invoke()
-                    },
-                    cancelText = UiText.StringResource(CoreR.string.cancel)
-                )
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.log_in),
+            description = ex.toUiText(),
+            dialogOptions = TaskyDialogOptions.DoubleOption(
+                confirmationText = UiText.StringResource(R.string.retry),
+                confirmation = {
+                    reloadEvent.invoke()
+                },
+                cancelText = UiText.StringResource(CoreR.string.cancel)
             )
         )
-
-
     }
 }
