@@ -3,6 +3,9 @@
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <string name="unknown_host">Unknown Host</string>
-    <string name="an_error_occorred">An error has occurred</string>
+    <string name="an_error_occurred">An error has occurred</string>
     <string name="coroutine_cancelled">The coroutine was cancelled</string>
+    <string name="error_occurred_during_login">An error occurred while performing log in</string>
+    <string name="error_occurred_during_user_registration">An error occurred while performing user registration</string>
+    <string name="user_not_currently_authenticated">User is not currently authenticated</string>
 </resources>

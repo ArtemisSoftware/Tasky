@@ -17,6 +17,7 @@ import com.artemissoftware.core.R
 import com.artemissoftware.core.presentation.composables.animations.TaskyLottieLoader
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.text.TaskyText
+import com.artemissoftware.core.util.UiText
 
 
 @Composable
@@ -95,19 +96,19 @@ private fun TaskyDialogContent(
 private fun TaskyDialogContentPreview(){
 
     val dialogTypeSuccess = TaskyDialogType.Success(
-        title = "Get updates",
-        description = "Allow permission to send notifications every day of the year",
+        title = UiText.DynamicString("Get updates"),
+        description = UiText.DynamicString("Allow permission to send notifications every day of the year"),
         dialogOptions = TaskyDialogOptions.DoubleOption(
-            confirmationText = R.string.ok,
-            cancelText = R.string.cancel
+            confirmationText = UiText.StringResource(R.string.ok),
+            cancelText = UiText.StringResource(R.string.cancel)
         )
     )
 
     val dialogTypError = TaskyDialogType.Error(
-        title = "Get updates",
-        description = "Allow permission to send notifications every day of the year",
+        title = UiText.DynamicString("Get updates"),
+        description = UiText.DynamicString("Allow permission to send notifications every day of the year"),
         dialogOptions = TaskyDialogOptions.SingleOption(
-            confirmationText = R.string.ok,
+            confirmationText = UiText.StringResource(R.string.ok),
         )
     )
 
@@ -151,7 +152,7 @@ private fun DialogMessage(
         modifier = modifier
     ) {
         TaskyText(
-            text = dialogType.title,
+            text = dialogType.title.asString(),
             style = MaterialTheme.typography.h6,
             modifier = Modifier
                 .padding(top = 5.dp)
@@ -160,7 +161,7 @@ private fun DialogMessage(
             overflow = TextOverflow.Ellipsis
         )
         TaskyText(
-            text = dialogType.description,
+            text = dialogType.description.asString(),
             style = MaterialTheme.typography.subtitle2,
             modifier = Modifier
                 .padding(top = 10.dp)
@@ -175,11 +176,11 @@ private fun DialogMessage(
 private fun DialogMessagePreview(){
 
     val dialogTypeSuccess = TaskyDialogType.Success(
-        title = "Get updates",
-        description = "Allow permission to send notifications every day of the year",
+        title = UiText.DynamicString("Get updates"),
+        description = UiText.DynamicString("Allow permission to send notifications every day of the year"),
         dialogOptions = TaskyDialogOptions.DoubleOption(
-            confirmationText = R.string.ok,
-            cancelText = R.string.cancel
+            confirmationText = UiText.StringResource(R.string.ok),
+            cancelText = UiText.StringResource(R.string.cancel)
         )
     )
 
@@ -214,7 +215,7 @@ private fun DialogOptions(
 
         if(dialogOptions is TaskyDialogOptions.DoubleOption){
             TaskyTextButton(
-                text = stringResource(id = dialogOptions.cancelText ?: R.string.cancel),
+                text = dialogOptions.cancelText.asString(),
                 onClick = {
                     dialogOptions.cancel()
                     onDialogDismiss.invoke()
@@ -224,7 +225,7 @@ private fun DialogOptions(
 
         TaskyTextButton(
             modifier = confirmModifier,
-            text = stringResource(id = dialogOptions.optionText),
+            text = dialogOptions.optionText.asString(),
             onClick = {
                 dialogOptions.confirmationOption()
                 onDialogDismiss.invoke()
@@ -239,19 +240,19 @@ private fun DialogOptions(
 private fun DialogOptionsPreview(){
 
     val dialogTypeSuccess = TaskyDialogType.Success(
-        title = "Get updates",
-        description = "Allow permission to send notifications every day of the year",
+        title = UiText.DynamicString("Get updates"),
+        description = UiText.DynamicString("Allow permission to send notifications every day of the year"),
         dialogOptions = TaskyDialogOptions.DoubleOption(
-            confirmationText = R.string.ok,
-            cancelText = R.string.cancel
+            confirmationText = UiText.StringResource(R.string.ok),
+            cancelText = UiText.StringResource(R.string.cancel)
         )
     )
 
     val dialogTypError = TaskyDialogType.Error(
-        title = "Get updates",
-        description = "Allow permission to send notifications every day of the year",
+        title = UiText.DynamicString("Get updates"),
+        description = UiText.DynamicString("Allow permission to send notifications every day of the year"),
         dialogOptions = TaskyDialogOptions.SingleOption(
-            confirmationText = R.string.ok,
+            confirmationText = UiText.StringResource(R.string.ok),
         )
     )
 
