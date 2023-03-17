@@ -15,8 +15,10 @@ import com.artemissoftware.core.R as CoreR
 import com.artemissoftware.tasky.authentication.domain.usecases.LoginUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateEmailUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidatePasswordUseCase
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,6 +27,9 @@ class LoginViewModel constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase
 ) : ViewModel() {
+
+    private val _uiEvent =  Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state
@@ -80,7 +85,11 @@ class LoginViewModel constructor(
                             // TODO : send uiEvent to navigate to agenda + close login screen
                         }
                         is Resource.Error -> {
-                            result.exception?.let { sendUiEvent(ex = it, reloadEvent = { login() }) }
+                            result.exception?.let {
+                                _uiEvent.send(
+                                    UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { login() }))
+                                )
+                            }
                         }
                         is Resource.Loading -> Unit
                     }
@@ -90,23 +99,18 @@ class LoginViewModel constructor(
     }
 
 
-    private fun sendUiEvent(ex: ValidationException, reloadEvent: () -> Unit) {
+    private fun getDialogData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
 
-        val uiEvent = UiEvent.ShowDialog(
-            TaskyDialogType.Error(
-                title = UiText.StringResource(R.string.log_in),
-                description = ex.toUiText(),
-                dialogOptions = TaskyDialogOptions.DoubleOption(
-                    confirmationText = UiText.StringResource(R.string.retry),
-                    confirmation = {
-                        reloadEvent.invoke()
-                    },
-                    cancelText = UiText.StringResource(CoreR.string.cancel)
-                )
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.log_in),
+            description = ex.toUiText(),
+            dialogOptions = TaskyDialogOptions.DoubleOption(
+                confirmationText = UiText.StringResource(R.string.retry),
+                confirmation = {
+                    reloadEvent.invoke()
+                },
+                cancelText = UiText.StringResource(CoreR.string.cancel)
             )
         )
-
-        // TODO: create method to send to ui this event. Use a channel for this
-        // sendUiEvent(uiEvent)
     }
 }
