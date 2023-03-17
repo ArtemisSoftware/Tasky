@@ -87,7 +87,7 @@ class LoginViewModel constructor(
                         is Resource.Error -> {
                             result.exception?.let {
                                 _uiEvent.send(
-                                    UiEvent.ShowDialog(getDialgData(ex = it, reloadEvent = { login() }))
+                                    UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { login() }))
                                 )
                             }
                         }
@@ -99,7 +99,7 @@ class LoginViewModel constructor(
     }
 
 
-    private fun getDialgData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
+    private fun getDialogData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
 
         return TaskyDialogType.Error(
             title = UiText.StringResource(R.string.log_in),
