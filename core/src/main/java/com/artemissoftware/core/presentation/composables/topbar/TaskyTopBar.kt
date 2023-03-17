@@ -10,6 +10,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.composables.TaskyDropDown
+import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Green
 import com.artemissoftware.core.presentation.theme.White
@@ -37,6 +39,42 @@ fun TaskyTopBar(
                 )
             }
         },
+        title = {
+            title?.let {
+                TaskyText(
+                    style = MaterialTheme.typography.subtitle1,
+                    text = it,
+                    color = contentColor,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+        },
+        backgroundColor =  backGroundColor,
+        actions = {
+            toolbarActions(contentColor)
+        }
+    )
+}
+
+
+@Composable
+fun TaskyTopBar_(
+    modifier: Modifier = Modifier,
+    navigationIcon: @Composable (() -> Unit)? = null,
+    toolbarActions: @Composable RowScope.(Color) -> Unit = {},
+    contentColor: Color = White,
+    backGroundColor: Color = Green,
+    onBackClicked: (() -> Unit)? = null,
+    title: String? = null
+) {
+
+    TopAppBar(
+        modifier = modifier,
+        elevation = 0.dp,
+        navigationIcon = navigationIcon,
         title = {
             title?.let {
                 TaskyText(
@@ -100,6 +138,35 @@ private fun TaskyTopBarPreview() {
             toolbarActions = { color->
                 TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
                 TaskyToolBarAction(iconId = R.drawable.ic_visibility)
+            }
+        )
+
+        TaskyTopBar(
+            onBackClicked = {},
+            title = text,
+            toolbarActions = { color->
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+            }
+        )
+
+        TaskyTopBar_(
+            navigationIcon = {
+                TaskyDropDown<String>(
+                    options = listOf("Tasky 1", "Tasky 2", "Tasky 3"),
+                    defaultOption = "priority",
+                    onOptionSelected = {},
+                    addDivider = true,
+                    modifier = Modifier.width(140.dp),
+                    menuOption = {
+
+                        TaskyDropDownItem(text = "Tasky")
+
+                    }
+                )
+            },
+            title = text,
+            toolbarActions = { color->
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
             }
         )
     }
