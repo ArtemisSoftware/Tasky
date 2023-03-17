@@ -19,21 +19,19 @@ fun TaskyDropDownItem(
     modifier: Modifier = Modifier,
     backgroundColor: Color = White,
     allCaps: Boolean = false,
-    textStyle: TextStyle = MaterialTheme.typography.subtitle2
+    textStyle: TextStyle = MaterialTheme.typography.subtitle2,
 ) {
-
     Column(
         modifier = modifier
             .wrapContentHeight()
-            .background(color = backgroundColor)
+            .background(color = backgroundColor),
     ) {
         TaskyText(
             allCaps = allCaps,
             modifier = Modifier,
             text = text,
-            style = textStyle
+            style = textStyle,
         )
-
     }
 }
 

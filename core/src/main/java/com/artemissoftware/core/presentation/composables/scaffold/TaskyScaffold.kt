@@ -20,7 +20,6 @@ import com.artemissoftware.core.R
 import com.artemissoftware.core.presentation.composables.TaskyDropDown
 import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
-import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar_
 import com.artemissoftware.core.presentation.theme.Black
 
 @Composable
@@ -125,36 +124,11 @@ private fun TaskyScaffoldTopBarPreview() {
 
     TaskyScaffold(
         topBar = {
-            TaskyTopBar_(
-                navigationIcon = {
-                    TaskyDropDown<String>(
-                        options = listOf("Tasky 1", "Tasky 2", "Tasky 3"),
-                        defaultOption = "priority",
-                        onOptionSelected = {},
-                        addDivider = true,
-                        modifier = Modifier.width(300.dp),
-                        menuOption = {
-
-                            TaskyDropDownItem(text = "Tasky")
-
-                        }
-                    )
-                },
-                title = "text",
+            TaskyTopBar(
+                title = "Title",
                 toolbarActions = { color->
-                    //TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
-                    TaskyDropDown<String>(
-                        options = listOf("Tasky 1", "Tasky 2", "Tasky 3"),
-                        defaultOption = "priority",
-                        onOptionSelected = {},
-                        addDivider = true,
-                        modifier = Modifier.width(300.dp),
-                        menuOption = {
-
-                            TaskyDropDownItem(text = "Tasky")
-
-                        }
-                    )
+                    TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                    TaskyToolBarAction(iconId = R.drawable.ic_visibility)
                 }
             )
         },

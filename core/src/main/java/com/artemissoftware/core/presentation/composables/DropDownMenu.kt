@@ -78,7 +78,7 @@ fun <T>TaskyDropDown(
             icon = Icons.Filled.ArrowDropDown,
             color = textColor
         )
-
+    }
         DropdownMenu(
             modifier = Modifier
                 .width(with(LocalDensity.current) { parentSize.width.toDp() }),
@@ -109,7 +109,7 @@ fun <T>TaskyDropDown(
                     )
                 }
             }
-        }
+
     }
 }
 
