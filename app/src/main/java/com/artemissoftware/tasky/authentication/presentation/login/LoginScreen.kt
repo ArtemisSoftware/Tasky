@@ -11,6 +11,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
@@ -28,7 +29,7 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun LoginScreen(viewModel: LoginViewModel /* TODO : init viewmodel with Hilt when dependency is included on the project */) {
 
-    val state = viewModel.state.collectAsState().value
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     LoginScreenContent(
         state = state,
