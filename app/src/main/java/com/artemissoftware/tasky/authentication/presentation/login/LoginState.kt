@@ -12,4 +12,13 @@ data class LoginState(
     val passwordValidationStateType: TaskyTextFieldValidationStateType = NOT_VALIDATED,
     val isLoading: Boolean = false,
     val scaffoldState: TaskyScaffoldState = TaskyScaffoldState()
-)
+){
+
+    fun allLoginFieldsValid(): Boolean {
+
+        return (emailValidationStateType == VALID
+                &&
+                passwordValidationStateType == VALID)
+    }
+}
+

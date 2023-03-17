@@ -1,9 +1,9 @@
 package com.artemissoftware.tasky.authentication.presentation.login
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
+import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
@@ -15,10 +15,8 @@ import com.artemissoftware.core.R as CoreR
 import com.artemissoftware.tasky.authentication.domain.usecases.LoginUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateEmailUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidatePasswordUseCase
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -26,10 +24,7 @@ class LoginViewModel constructor(
     private val loginUseCase: LoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase
-) : ViewModel() {
-
-    private val _uiEvent =  Channel<UiEvent>()
-    val uiEvent = _uiEvent.receiveAsFlow()
+) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state
@@ -73,9 +68,13 @@ class LoginViewModel constructor(
 
         with(_state.value){
 
-            if(emailValidationStateType == TaskyTextFieldValidationStateType.VALID && passwordValidationStateType == TaskyTextFieldValidationStateType.VALID){
+            if(allLoginFieldsValid()){
 
                 viewModelScope.launch {
+
+                    _state.update {
+                        it.copy(isLoading = true)
+                    }
 
                     val result = loginUseCase(email = email, password = password)
 
@@ -86,18 +85,19 @@ class LoginViewModel constructor(
                         }
                         is Resource.Error -> {
                             result.exception?.let {
-                                _uiEvent.send(
-                                    UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { login() }))
-                                )
+                                sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { login() })))
                             }
                         }
                         is Resource.Loading -> Unit
+                    }
+
+                    _state.update {
+                        it.copy(isLoading = false)
                     }
                 }
             }
         }
     }
-
 
     private fun getDialogData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
 
