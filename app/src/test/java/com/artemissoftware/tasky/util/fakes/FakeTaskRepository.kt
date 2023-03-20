@@ -6,11 +6,10 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import com.artemissoftware.tasky.util.FakeData
 
-class FakeTaskRepository: TaskRepository {
+class FakeTaskRepository : TaskRepository {
 
     var returnNetworkError = false
     private var tasks = mutableListOf(FakeData.task)
-
 
     override suspend fun getTask(id: String): AgendaItem.Task? {
         return tasks.find { it.id == id }
@@ -19,7 +18,7 @@ class FakeTaskRepository: TaskRepository {
     override suspend fun saveTaskAndSync(task: AgendaItem.Task): ApiNetworkResponse<Unit> {
         tasks.add(task)
 
-        return if(returnNetworkError) {
+        return if (returnNetworkError) {
             ApiNetworkResponse.Error(TaskyNetworkException())
         } else {
             ApiNetworkResponse.Success(Unit)
@@ -31,7 +30,7 @@ class FakeTaskRepository: TaskRepository {
             tasks.removeAt(tasks.indexOf(it))
         }
 
-        return if(returnNetworkError) {
+        return if (returnNetworkError) {
             ApiNetworkResponse.Error(TaskyNetworkException())
         } else {
             ApiNetworkResponse.Success(Unit)
