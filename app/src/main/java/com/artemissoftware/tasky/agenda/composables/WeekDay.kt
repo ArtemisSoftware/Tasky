@@ -28,29 +28,28 @@ fun WeekDay(
     isSelected: Boolean = false,
     onClick: () -> Unit = {},
 ) {
-
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(100.dp))
-            .background(if(isSelected) Orange else Color.Transparent)
+            .background(if (isSelected) Orange else Color.Transparent)
             .clickable {
                 onClick.invoke()
-            }
-    ){
+            },
+    ) {
         Column(
             modifier = Modifier
                 .align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TaskyText(
-                color = if(isSelected) DarkGray else Gray,
+                color = if (isSelected) DarkGray else Gray,
                 text = weekDay,
-                style = MaterialTheme.typography.overline
+                style = MaterialTheme.typography.overline,
             )
             TaskyText(
                 color = DarkGray,
                 text = dayOfTheWeek,
-                style = MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.subtitle1,
             )
         }
     }
@@ -59,33 +58,32 @@ fun WeekDay(
 @Preview(showBackground = true)
 @Composable
 private fun WeekDayPreview() {
-
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         WeekDay(
             modifier = Modifier
-            .size(width = 40.dp, height = 60.dp),
+                .size(width = 40.dp, height = 60.dp),
             weekDay = "M",
-            dayOfTheWeek = "1"
+            dayOfTheWeek = "1",
         )
         WeekDay(
             modifier = Modifier
                 .size(width = 40.dp, height = 60.dp),
             weekDay = "T",
             dayOfTheWeek = "2",
-            isSelected = true
+            isSelected = true,
         )
         WeekDay(
             modifier = Modifier
                 .size(width = 40.dp, height = 60.dp),
             weekDay = "W",
-            dayOfTheWeek = "13"
+            dayOfTheWeek = "13",
         )
         WeekDay(
             modifier = Modifier
                 .size(width = 40.dp, height = 60.dp),
             weekDay = "F",
             dayOfTheWeek = "23",
-            isSelected = true
+            isSelected = true,
         )
     }
 }
