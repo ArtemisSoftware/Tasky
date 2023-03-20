@@ -20,11 +20,11 @@ import com.artemissoftware.core.presentation.theme.Green
 @Composable
 fun TaskyAvatar(
     text: String,
+    modifier: Modifier = Modifier,
     textColor: Color = Black,
     circleColor: Color = Green,
     size: Dp = 45.dp,
-    textStyle: TextStyle = MaterialTheme.typography.caption,
-    modifier: Modifier = Modifier,
+    textStyle: TextStyle = MaterialTheme.typography.caption
 ) {
 
     Box(
