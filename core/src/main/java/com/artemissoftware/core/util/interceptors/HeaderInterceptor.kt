@@ -1,7 +1,7 @@
 package com.artemissoftware.core.util.interceptors
 
 import com.artemissoftware.core.BuildConfig
-import com.artemissoftware.core.util.annotations.NoHeaderRequest
+import com.artemissoftware.core.util.annotations.NoApiKeyHeaderRequest
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -13,7 +13,7 @@ class HeaderInterceptor() : Interceptor {
         val original: Request = chain.request()
 
         original.tag(Invocation::class.java)?.let { invocation ->
-            if (invocation.method().isAnnotationPresent(NoHeaderRequest::class.java)) {
+            if (invocation.method().isAnnotationPresent(NoApiKeyHeaderRequest::class.java)) {
                 return chain.proceed(original)
             } else {
                 val request: Request = original.newBuilder()
