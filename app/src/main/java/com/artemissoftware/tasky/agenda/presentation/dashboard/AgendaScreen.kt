@@ -23,7 +23,6 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.util.DateTimePatternsConstants
-import com.artemissoftware.core.util.StringUtil
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
@@ -32,17 +31,14 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
-import com.artemissoftware.tasky.agenda.presentation.mappers.toAgendaItemType
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun AgendaScreen(
     state: AgendaState,
-    events: (AgendaEvents) -> Unit
+    events: (AgendaEvents) -> Unit,
 ) {
-
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -98,7 +94,6 @@ fun AgendaScreen(
                                     },
                                 )
                             }
-
 
                             TaskyText(
                                 modifier = Modifier
