@@ -1,6 +1,5 @@
 package com.artemissoftware.tasky.authentication.presentation.register
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
@@ -25,15 +24,15 @@ class RegisterViewModel constructor(
     private val registerUserUseCase: RegisterUserUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val validateUserNameUseCase: ValidateUserNameUseCase
+    private val validateUserNameUseCase: ValidateUserNameUseCase,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState> = _state
 
-    fun onTriggerEvent(event: RegisterEvents){
-        when(event){
-            RegisterEvents.PopBackStack -> { popBackStack()  }
+    fun onTriggerEvent(event: RegisterEvents) {
+        when (event) {
+            RegisterEvents.PopBackStack -> { popBackStack() }
             RegisterEvents.Register -> { register() }
             is RegisterEvents.ValidateEmail -> { validateEmail(email = event.email) }
             is RegisterEvents.ValidateName -> { validateName(name = event.name) }
@@ -48,51 +47,42 @@ class RegisterViewModel constructor(
     }
 
     private fun validateEmail(email: String) {
-
         _state.update {
             it.copy(
                 email = email,
-                emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateEmailUseCase(email))
+                emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateEmailUseCase(email)),
             )
         }
     }
 
     private fun validateName(name: String) {
-
         _state.update {
             it.copy(
                 name = name,
-                nameValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateUserNameUseCase(name))
+                nameValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateUserNameUseCase(name)),
             )
         }
     }
 
     private fun validatePassword(password: String) {
-
         _state.update {
             it.copy(
                 password = password,
-                passwordValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password))
+                passwordValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password)),
             )
         }
     }
 
     private fun register() {
-
-        with(_state.value){
-
-            if(allRegisterFieldsValid()){
-
-                viewModelScope.launch {
-
-                    _state.update {
-                        it.copy(isLoading = true)
-                    }
-
+        if (_state.value.allRegisterFieldsValid()) {
+            viewModelScope.launch {
+                _state.update {
+                    it.copy(isLoading = true)
+                }
+                with(_state.value) {
                     val result = registerUserUseCase(email = email, password = password, fullName = name)
 
                     when (result) {
-
                         is Resource.Success -> {
                             // TODO : send uiEvent to navigate to login + close register screen
                         }
@@ -112,11 +102,7 @@ class RegisterViewModel constructor(
         }
     }
 
-
-
-
     private fun getDialogData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
-
         return TaskyDialogType.Error(
             title = UiText.StringResource(R.string.register),
             description = ex.toUiText(),
@@ -125,8 +111,8 @@ class RegisterViewModel constructor(
                 confirmation = {
                     reloadEvent.invoke()
                 },
-                cancelText = UiText.StringResource(com.artemissoftware.core.R.string.cancel)
-            )
+                cancelText = UiText.StringResource(com.artemissoftware.core.R.string.cancel),
+            ),
         )
     }
 }
