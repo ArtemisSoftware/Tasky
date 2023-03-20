@@ -1,7 +1,10 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -12,61 +15,46 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core.domain.models.authentication.User
-import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
-import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
-import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
-import com.artemissoftware.core.presentation.theme.Light
-import com.artemissoftware.core.presentation.theme.LightBlue
-import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.core.util.DateTimePatternsConstants
-import com.artemissoftware.core.util.StringUtil
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
+import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
-import com.artemissoftware.tasky.agenda.presentation.mappers.toAgendaItemType
-import com.artemissoftware.tasky.authentication.presentation.login.LoginEvents
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun AgendaScreen(
     state: AgendaState,
-    events: (AgendaEvents) -> Unit
+    events: (AgendaEvents) -> Unit,
 ) {
-
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
         topBar = {
-            //TODO: add top bar here. will need to do some changes on the Taskytopbar
+            // TODO: add top bar here. will need to do some changes on the Taskytopbar
         },
         content = {
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
                 TaskyContentSurface(
                     content = {
-
                         Column(
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp),
                         ) {
-
                             LazyRow(
                                 modifier = Modifier
                                     .padding(top = 20.dp)
                                     .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
                             ) {
                                 items(
                                     items = state.daysOfTheWeek,
@@ -82,28 +70,29 @@ fun AgendaScreen(
                                             dayOfTheWeek = item.day,
                                             onClick = {
                                                 events(AgendaEvents.ChangeDate(item.date))
-                                            }
+                                            },
                                         )
-
-                                    }
+                                    },
                                 )
                             }
-
 
                             TaskyText(
                                 modifier = Modifier
                                     .padding(vertical = 20.dp),
                                 color = Black,
                                 style = MaterialTheme.typography.h6,
-                                text = if(state.selectedDayOfTheWeek == LocalDate.now()) stringResource(id = R.string.today) else state.selectedDayOfTheWeek.format(
-                                    DateTimePatternsConstants.DATE_PATTERN_dd_MMM_YYYY
-                                )
+                                text = if (state.selectedDayOfTheWeek == LocalDate.now()) {
+                                    stringResource(id = R.string.today)
+                                } else {
+                                    state.selectedDayOfTheWeek.format(
+                                        DateTimePatternsConstants.DATE_PATTERN_dd_MMM_YYYY,
+                                    )
+                                },
                             )
-
 
                             LazyColumn(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
                                 items(
                                     items = state.agendaItems,
@@ -112,7 +101,7 @@ fun AgendaScreen(
                                     },
                                     itemContent = { item ->
                                         AssignmentCard(
-                                            agendaItemType = item.toAgendaItemType(),
+                                            agendaItemType = getAgendaItemType(item),
                                             title = item.itemTitle,
                                             description = item.itemDescription,
                                             date = item.itemTime.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
@@ -120,22 +109,28 @@ fun AgendaScreen(
                                                 events(AgendaEvents.CompleteAssignment(item.itemId))
                                             },
                                             onOptionClick = {
-                                                //TODO : show options
-                                            }
+                                                // TODO : show options
+                                            },
                                         )
-                                    }
+                                    },
                                 )
                             }
-
                         }
-                    }
+                    },
                 )
             }
-
-
-
-        }
+        },
     )
+}
+
+private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
+    return when (item) {
+        is AgendaItem.Reminder -> {
+            AgendaItemType.Reminder()
+        }
+
+        // TODO: add other types likes task and events in the future
+    }
 }
 
 @Preview(showBackground = true)
@@ -162,8 +157,8 @@ private fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
-                )
-            )
-        )
+                ),
+            ),
+        ),
     )
 }
