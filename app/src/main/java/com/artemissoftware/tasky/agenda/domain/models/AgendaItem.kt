@@ -10,8 +10,8 @@ sealed class AgendaItem(
     val itemDescription: String? = null,
     val itemRemindAt: LocalDateTime,
     val itemTime: LocalDateTime,
-    val itemSyncState: SyncType
-){
+    val itemSyncState: SyncType,
+) {
 
     data class Reminder(
         val id: String = UUID.randomUUID().toString(),
@@ -19,17 +19,30 @@ sealed class AgendaItem(
         var description: String? = null,
         var remindAt: LocalDateTime,
         var time: LocalDateTime,
-        val syncState: SyncType = SyncType.CREATE
+        val syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
         itemTitle = title,
         itemDescription = description,
         itemRemindAt = remindAt,
         itemTime = time,
-        itemSyncState = syncState
+        itemSyncState = syncState,
     )
 
-
-
-
+    data class Task(
+        val id: String = UUID.randomUUID().toString(),
+        var title: String,
+        var description: String? = null,
+        var remindAt: LocalDateTime,
+        var time: LocalDateTime,
+        var isDone: Boolean = false,
+        val syncState: SyncType = SyncType.CREATE,
+    ) : AgendaItem(
+        itemId = id,
+        itemTitle = title,
+        itemDescription = description,
+        itemRemindAt = remindAt,
+        itemTime = time,
+        itemSyncState = syncState,
+    )
 }

@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.data
+package com.artemissoftware.tasky.util.fakes
 
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
