@@ -39,6 +39,8 @@ class FakeAuthenticationRepository : AuthenticationRepository {
     override suspend fun authenticate(): ApiNetworkResponse<Boolean> {
         return if(returnNetworkError) {
             ApiNetworkResponse.Error(TaskyNetworkException())
+        } else if(errorWithBackendMessage){
+            ApiNetworkResponse.Error(TaskyNetworkException(code = 0, description = BACKEND_ERROR))
         } else {
             ApiNetworkResponse.Success(true)
         }
