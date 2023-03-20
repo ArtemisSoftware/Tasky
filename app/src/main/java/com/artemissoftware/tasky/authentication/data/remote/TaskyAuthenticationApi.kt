@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.authentication.data.remote
 
+import com.artemissoftware.core.util.annotations.NoHeaderRequest
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
 import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
@@ -10,9 +11,11 @@ import retrofit2.http.POST
 
 interface TaskyAuthenticationApi {
 
+    @NoHeaderRequest
     @POST("register")
     suspend fun registerUser(@Body registrationBodyDto: RegistrationBodyDto): ResponseBody
 
+    @NoHeaderRequest
     @POST("login")
     suspend fun loginUser(@Body loginBodyDto: LoginBodyDto): LoginResponseDto
 
