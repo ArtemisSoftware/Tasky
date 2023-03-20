@@ -1,6 +1,10 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
-import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -19,8 +23,10 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.util.DateTimePatternsConstants
+import com.artemissoftware.core.util.StringUtil
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
+import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -29,12 +35,14 @@ import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.Agend
 import com.artemissoftware.tasky.agenda.presentation.mappers.toAgendaItemType
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun AgendaScreen(
     state: AgendaState,
-    events: (AgendaEvents) -> Unit,
+    events: (AgendaEvents) -> Unit
 ) {
+
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -91,6 +99,7 @@ fun AgendaScreen(
                                 )
                             }
 
+
                             TaskyText(
                                 modifier = Modifier
                                     .padding(vertical = 20.dp),
@@ -116,7 +125,7 @@ fun AgendaScreen(
                                     },
                                     itemContent = { item ->
                                         AssignmentCard(
-                                            agendaItemType = item.toAgendaItemType(),
+                                            agendaItemType = getAgendaItemType(item),
                                             title = item.itemTitle,
                                             description = item.itemDescription,
                                             date = item.itemTime.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
@@ -136,6 +145,16 @@ fun AgendaScreen(
             }
         },
     )
+}
+
+private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
+    return when (item) {
+        is AgendaItem.Reminder -> {
+            AgendaItemType.Reminder()
+        }
+
+        // TODO: add other types likes task and events in the future
+    }
 }
 
 @Preview(showBackground = true)
