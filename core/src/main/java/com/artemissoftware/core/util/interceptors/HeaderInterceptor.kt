@@ -17,7 +17,7 @@ class HeaderInterceptor() : Interceptor {
                 return chain.proceed(original)
             } else {
                 val request: Request = original.newBuilder()
-                    .header("x-api-key", BuildConfig.API_KEY)
+                    .header(HEADER_X_API_KEY, BuildConfig.API_KEY)
                     .method(original.method, original.body)
                     .build()
 
@@ -26,5 +26,9 @@ class HeaderInterceptor() : Interceptor {
         } ?: kotlin.run {
             return chain.proceed(original)
         }
+    }
+
+    companion object {
+        private const val HEADER_X_API_KEY = "x-api-key"
     }
 }
