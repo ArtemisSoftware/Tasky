@@ -18,7 +18,6 @@ import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvent
 
 @Composable
 fun SplashScreen(viewModel: SplashViewModel /* TODO : init viewmodel with Hilt when dependency is included on the project */) {
-
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     SplashScreenContent(state = state)
