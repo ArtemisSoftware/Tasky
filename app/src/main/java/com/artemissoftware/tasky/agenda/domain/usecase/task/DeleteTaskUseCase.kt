@@ -1,6 +1,6 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.task
 
-import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
+import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 
 class DeleteTaskUseCase constructor(
@@ -10,10 +10,10 @@ class DeleteTaskUseCase constructor(
         val result = taskRepository.deleteTaskAndSync(id)
 
         when (result) {
-            is ApiNetworkResponse.Error -> {
+            is DataResponse.Error -> {
                 // TODO: should send message to the ui saying the sync failed?
             }
-            is ApiNetworkResponse.Success -> {
+            is DataResponse.Success -> {
                 // TODO: should send message to the ui saying the everything went well?
             }
         }

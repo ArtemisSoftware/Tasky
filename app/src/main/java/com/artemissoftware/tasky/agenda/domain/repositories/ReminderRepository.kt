@@ -7,9 +7,7 @@ interface ReminderRepository {
 
     suspend fun getReminder(id: String): AgendaItem.Reminder?
 
-
     suspend fun saveReminderAndSync(reminder: AgendaItem.Reminder): DataResponse<Unit>
 
     suspend fun deleteReminderAndSync(id: String): DataResponse<Unit>
-
 }

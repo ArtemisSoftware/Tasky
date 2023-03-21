@@ -5,15 +5,14 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 
 class SaveReminderUseCase constructor(
-    private val reminderRepository: ReminderRepository
-){
+    private val reminderRepository: ReminderRepository,
+) {
     suspend operator fun invoke(
-        reminder: AgendaItem.Reminder
+        reminder: AgendaItem.Reminder,
     ) {
-
         val result = reminderRepository.saveReminderAndSync(reminder = reminder)
 
-        when(result){
+        when (result) {
             is DataResponse.Error -> {
                 // TODO: should send message to the ui saying the sync failed?
             }
