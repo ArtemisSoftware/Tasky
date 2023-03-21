@@ -1,7 +1,7 @@
 package com.artemissoftware.core.util.interceptors
 
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
-import com.artemissoftware.core.util.annotations.NeedsTokenHeaderRequest
+import com.artemissoftware.core.util.annotations.NoJWTHeaderRequest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -13,20 +13,20 @@ import retrofit2.Invocation
 class JwtInterceptor constructor(private val getUserUseCase: GetUserUseCase) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val original = chain.request()
+        val original: Request = chain.request()
 
         original.tag(Invocation::class.java)?.let { invocation ->
-            if (invocation.method().isAnnotationPresent(NeedsTokenHeaderRequest::class.java)) {
+            if (invocation.method().isAnnotationPresent(NoJWTHeaderRequest::class.java)) {
+                return chain.proceed(original)
+            } else {
                 val request: Request = original.newBuilder()
                     .header(HEADER_AUTHORIZATION, "$BEARER ${getToken()}")
                     .method(original.method, original.body)
                     .build()
 
                 return chain.proceed(request)
-            } else {
-                return chain.proceed(original)
             }
-        } ?: run {
+        } ?: kotlin.run {
             return chain.proceed(original)
         }
     }
