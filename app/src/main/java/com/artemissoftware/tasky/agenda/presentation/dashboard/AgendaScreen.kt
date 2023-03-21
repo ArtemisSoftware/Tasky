@@ -15,10 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Black
+import com.artemissoftware.core.presentation.theme.Light
+import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.util.DateTimePatternsConstants
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
@@ -27,6 +30,7 @@ import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
+import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -39,11 +43,25 @@ fun AgendaScreen(
         isLoading = state.isLoading,
         backgroundColor = Black,
         topBar = {
-            // TODO: add top bar here. will need to do some changes on the Taskytopbar
+            AgendaTopBar(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                backGroundColor = Black,
+                toolbarActionsLeft = {
+                    // TODO : ask about this
+                },
+                toolbarActions = {
+                    TaskyAvatar(
+                        text = state.userName,
+                        circleColor = Light,
+                        textColor = LightBlue,
+                    )
+                },
+            )
         },
         content = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 8.dp),
             ) {
                 TaskyContentSurface(
                     content = {
@@ -54,7 +72,7 @@ fun AgendaScreen(
                                 modifier = Modifier
                                     .padding(top = 20.dp)
                                     .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
                             ) {
                                 items(
                                     items = state.daysOfTheWeek,
@@ -68,6 +86,7 @@ fun AgendaScreen(
                                                 .size(width = 40.dp, height = 60.dp),
                                             weekDay = item.description,
                                             dayOfTheWeek = item.day,
+                                            isSelected = state.selectedDayOfTheWeek == item.date,
                                             onClick = {
                                                 events(AgendaEvents.ChangeDate(item.date))
                                             },
@@ -143,6 +162,10 @@ private fun AgendaScreenPreview() {
             daysOfTheWeek = listOf(
                 DayOfWeek(date = LocalDate.now()),
                 DayOfWeek(date = LocalDate.now().plusDays(1L)),
+                DayOfWeek(date = LocalDate.now().plusDays(2L)),
+                DayOfWeek(date = LocalDate.now().plusDays(3L)),
+                DayOfWeek(date = LocalDate.now().plusDays(4L)),
+                DayOfWeek(date = LocalDate.now().plusDays(5L)),
             ),
             agendaItems = listOf(
                 AgendaItem.Reminder(

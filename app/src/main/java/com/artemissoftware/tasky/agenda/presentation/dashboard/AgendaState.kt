@@ -1,6 +1,5 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
-import com.artemissoftware.core.domain.models.authentication.User
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import java.time.LocalDate
