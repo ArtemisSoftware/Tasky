@@ -1,9 +1,9 @@
 package com.artemissoftware.tasky.agenda.data.repositories
 
-import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
@@ -14,22 +14,19 @@ import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 
 class ReminderRepositoryImpl constructor(
     private val reminderDao: ReminderDao,
-    private val agendaApiSource: AgendaApiSource
-): ReminderRepository {
-
+    private val agendaApiSource: AgendaApiSource,
+) : ReminderRepository {
 
     override suspend fun getReminder(id: String): AgendaItem.Reminder? {
         return reminderDao.getReminderAndSyncState(id)?.toAgendaItem()
     }
 
-
     override suspend fun saveReminderAndSync(reminder: AgendaItem.Reminder): DataResponse<Unit> {
-
-        val syncType = if(reminder.syncState == SyncType.SYNCED) SyncType.UPDATE else reminder.syncState
+        val syncType = if (reminder.syncState == SyncType.SYNCED) SyncType.UPDATE else reminder.syncState
         reminderDao.upsertSyncStateAndReminder(reminder.toEntity(), ReminderSyncEntity(id = reminder.id, syncType = syncType))
 
         return try {
-            when(syncType){
+            when (syncType) {
                 SyncType.CREATE -> {
                     agendaApiSource.createReminder(reminder.toDto())
                 }
@@ -46,18 +43,14 @@ class ReminderRepositoryImpl constructor(
     }
 
     override suspend fun deleteReminderAndSync(id: String): DataResponse<Unit> {
-
         reminderDao.upsertSyncStateAndDelete(id = id, ReminderSyncEntity(id = id, syncType = SyncType.DELETE))
 
         return try {
-
             agendaApiSource.deleteReminder(reminderId = id)
             reminderDao.upsertReminderSync(ReminderSyncEntity(id = id, syncType = SyncType.SYNCED))
             DataResponse.Success(Unit)
-
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
         }
     }
-
 }
