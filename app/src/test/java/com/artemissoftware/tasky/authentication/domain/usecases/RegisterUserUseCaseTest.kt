@@ -1,23 +1,15 @@
 package com.artemissoftware.tasky.authentication.domain.usecases
 
-import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
-import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.authentication.data.repositories.FakeAuthenticationRepository
-import com.artemissoftware.tasky.authentication.domain.repositories.AuthenticationRepository
 import com.artemissoftware.tasky.util.BaseUseCaseTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
