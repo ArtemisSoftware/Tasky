@@ -9,6 +9,5 @@ data class AgendaState(
     val agendaItems: List<AgendaItem> = emptyList(),
     val daysOfTheWeek: List<DayOfWeek> = emptyList(),
     val selectedDayOfTheWeek: LocalDate = LocalDate.now(),
-    val userName: String = "",
-    val selectedMonth: String = "",
+    val userName: String = ""
 )
