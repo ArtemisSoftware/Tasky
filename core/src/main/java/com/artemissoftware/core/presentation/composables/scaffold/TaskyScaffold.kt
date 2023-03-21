@@ -17,6 +17,8 @@ import com.artemissoftware.core.presentation.composables.loading.TaskyLoading
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
 import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.composables.TaskyDropDown
+import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.util.UiText
@@ -124,9 +126,10 @@ private fun TaskyScaffoldTopBarPreview() {
     TaskyScaffold(
         topBar = {
             TaskyTopBar(
-                title = "Top bar title",
+                title = "Title",
                 toolbarActions = { color->
                     TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                    TaskyToolBarAction(iconId = R.drawable.ic_visibility)
                 }
             )
         },

@@ -1,9 +1,9 @@
 package com.artemissoftware.tasky.authentication.presentation.login
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
+import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
@@ -24,7 +24,7 @@ class LoginViewModel constructor(
     private val loginUseCase: LoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase
-) : ViewModel() {
+) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state
@@ -53,7 +53,7 @@ class LoginViewModel constructor(
         _state.update {
             it.copy(
                 password = password,
-                emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password))
+                passwordValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password))
             )
         }
     }
@@ -68,9 +68,13 @@ class LoginViewModel constructor(
 
         with(_state.value){
 
-            if(emailValidationStateType == TaskyTextFieldValidationStateType.VALID && passwordValidationStateType == TaskyTextFieldValidationStateType.VALID){
+            if(allLoginFieldsValid()){
 
                 viewModelScope.launch {
+
+                    _state.update {
+                        it.copy(isLoading = true)
+                    }
 
                     val result = loginUseCase(email = email, password = password)
 
@@ -80,33 +84,33 @@ class LoginViewModel constructor(
                             // TODO : send uiEvent to navigate to agenda + close login screen
                         }
                         is Resource.Error -> {
-                            result.exception?.let { sendUiEvent(ex = it, reloadEvent = { login() }) }
+                            result.exception?.let {
+                                sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { login() })))
+                            }
                         }
                         is Resource.Loading -> Unit
+                    }
+
+                    _state.update {
+                        it.copy(isLoading = false)
                     }
                 }
             }
         }
     }
 
+    private fun getDialogData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
 
-    private fun sendUiEvent(ex: ValidationException, reloadEvent: () -> Unit) {
-
-        val uiEvent = UiEvent.ShowDialog(
-            TaskyDialogType.Error(
-                title = UiText.StringResource(R.string.log_in),
-                description = ex.toUiText(),
-                dialogOptions = TaskyDialogOptions.DoubleOption(
-                    confirmationText = UiText.StringResource(R.string.retry),
-                    confirmation = {
-                        reloadEvent.invoke()
-                    },
-                    cancelText = UiText.StringResource(CoreR.string.cancel)
-                )
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.log_in),
+            description = ex.toUiText(),
+            dialogOptions = TaskyDialogOptions.DoubleOption(
+                confirmationText = UiText.StringResource(R.string.retry),
+                confirmation = {
+                    reloadEvent.invoke()
+                },
+                cancelText = UiText.StringResource(CoreR.string.cancel)
             )
         )
-
-        // TODO: create method to send to ui this event. Use a channel for this
-        // sendUiEvent(uiEvent)
     }
 }
