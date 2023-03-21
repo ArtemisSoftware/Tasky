@@ -4,7 +4,7 @@ import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
-import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
+import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
@@ -23,7 +23,7 @@ class ReminderRepositoryImpl constructor(
     }
 
 
-    override suspend fun saveReminderAndSync(reminder: AgendaItem.Reminder): ApiNetworkResponse<Unit> {
+    override suspend fun saveReminderAndSync(reminder: AgendaItem.Reminder): DataResponse<Unit> {
 
         val syncType = if(reminder.syncState == SyncType.SYNCED) SyncType.UPDATE else reminder.syncState
         reminderDao.upsertSyncStateAndReminder(reminder.toEntity(), ReminderSyncEntity(id = reminder.id, syncType = syncType))
@@ -39,13 +39,13 @@ class ReminderRepositoryImpl constructor(
                 else -> Unit
             }
             reminderDao.upsertReminderSync(ReminderSyncEntity(id = reminder.id, syncType = SyncType.SYNCED))
-            ApiNetworkResponse.Success(Unit)
+            DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 
-    override suspend fun deleteReminderAndSync(id: String): ApiNetworkResponse<Unit> {
+    override suspend fun deleteReminderAndSync(id: String): DataResponse<Unit> {
 
         reminderDao.upsertSyncStateAndDelete(id = id, ReminderSyncEntity(id = id, syncType = SyncType.DELETE))
 
@@ -53,10 +53,10 @@ class ReminderRepositoryImpl constructor(
 
             agendaApiSource.deleteReminder(reminderId = id)
             reminderDao.upsertReminderSync(ReminderSyncEntity(id = id, syncType = SyncType.SYNCED))
-            ApiNetworkResponse.Success(Unit)
+            DataResponse.Success(Unit)
 
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 
