@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -20,10 +21,11 @@ import com.artemissoftware.tasky.agenda.AgendaItemType
 fun AssignmentCard(
     agendaItemType: AgendaItemType,
     title: String,
-    description: String,
     date: String,
-    modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit,
+    onOptionClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    description: String? = null,
     isComplete: Boolean = false,
 ) {
 
@@ -66,7 +68,10 @@ fun AssignmentCard(
 
                         TaskyIcon(
                             modifier = Modifier
-                                .weight(0.1F),
+                                .weight(0.1F)
+                                .clickable {
+                                    onOptionClick()
+                                },
                             icon = R.drawable.ic_more_options,
                             color = agendaItemType.generalTextColor
                         )
@@ -76,7 +81,7 @@ fun AssignmentCard(
                         modifier = Modifier.padding(top = 12.dp),
                         color = agendaItemType.secondaryTextColor,
                         maxLines = 2,
-                        text = description,
+                        text = description ?: "",
                         style = MaterialTheme.typography.caption
                     )
                 }
@@ -104,6 +109,7 @@ private fun AssignmentCardPreview() {
                 .fillMaxWidth(),
             agendaItemType = AgendaItemType.Task(),
             onCheckedChange = {},
+            onOptionClick = {},
             title = "title",
             description = "description",
             date = "date"
@@ -113,6 +119,7 @@ private fun AssignmentCardPreview() {
                 .fillMaxWidth(),
             agendaItemType = AgendaItemType.Event(),
             onCheckedChange = {},
+            onOptionClick = {},
             title = "title",
             description = "description",
             date = "date"
@@ -122,6 +129,7 @@ private fun AssignmentCardPreview() {
                 .fillMaxWidth(),
             agendaItemType = AgendaItemType.Reminder(),
             onCheckedChange = {},
+            onOptionClick = {},
             title = "title",
             description = "description",
             date = "date")

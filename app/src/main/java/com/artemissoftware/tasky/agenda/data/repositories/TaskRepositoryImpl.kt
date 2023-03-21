@@ -4,7 +4,7 @@ import com.artemissoftware.core.data.database.dao.TaskDao
 import com.artemissoftware.core.data.database.entities.TaskSyncEntity
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
-import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
+import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
@@ -21,7 +21,7 @@ class TaskRepositoryImpl constructor(
         return taskDao.getTaskAndSyncState(id)?.toAgendaItem()
     }
 
-    override suspend fun saveTaskAndSync(task: AgendaItem.Task): ApiNetworkResponse<Unit> {
+    override suspend fun saveTaskAndSync(task: AgendaItem.Task): DataResponse<Unit> {
         val syncType = if (task.syncState == SyncType.SYNCED) SyncType.UPDATE else task.syncState
         taskDao.upsertSyncStateAndTask(task.toEntity(), TaskSyncEntity(id = task.id, syncType = syncType))
 
@@ -36,21 +36,21 @@ class TaskRepositoryImpl constructor(
                 else -> Unit
             }
             taskDao.upsertTaskSync(TaskSyncEntity(id = task.id, syncType = SyncType.SYNCED))
-            ApiNetworkResponse.Success(Unit)
+            DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 
-    override suspend fun deleteTaskAndSync(id: String): ApiNetworkResponse<Unit> {
+    override suspend fun deleteTaskAndSync(id: String): DataResponse<Unit> {
         taskDao.upsertSyncStateAndDelete(id = id, TaskSyncEntity(id = id, syncType = SyncType.DELETE))
 
         return try {
             agendaApiSource.deleteTask(taskId = id)
             taskDao.upsertTaskSync(TaskSyncEntity(id = id, syncType = SyncType.SYNCED))
-            ApiNetworkResponse.Success(Unit)
+            DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 }

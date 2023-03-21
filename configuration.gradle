@@ -21,7 +21,7 @@ ext.versions = [
         composeMaterial             : '1.3.1',
         coil                        : '2.2.2',
 
-        lifecycleViewmodelKtx       : '2.5.1',
+        lifecycleViewmodelKtx       : '2.6.0',
 
         retrofitConverterMoshi      : '2.9.0',
 
