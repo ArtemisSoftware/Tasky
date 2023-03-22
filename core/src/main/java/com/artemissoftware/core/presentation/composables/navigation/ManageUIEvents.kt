@@ -1,8 +1,8 @@
-package com.artemissoftware.core.presentation.composables.navigation
+package com.artemissoftware.tasky.authentication.presentation.login
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffoldState
+import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.events.UiEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ManageUIEvents(
     uiEvent: Flow<UiEvent>,
-    scaffoldState: TaskyScaffoldState,
+    showDialog: (TaskyDialogType) -> Unit = {},
     onNavigate: (UiEvent.Navigate) -> Unit = {},
     onPopBackStack: () -> Unit = {},
 ) {
@@ -21,7 +21,7 @@ fun ManageUIEvents(
         uiEvent.collectLatest { event ->
             when(event) {
                 is UiEvent.ShowDialog -> {
-                    scaffoldState.showDialog(event.dialogType)
+                    showDialog.invoke(event.dialogType)
                 }
                 is UiEvent.PopBackStack -> { onPopBackStack.invoke() }
                 is UiEvent.Navigate -> { onNavigate(event) }

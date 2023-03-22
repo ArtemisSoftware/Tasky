@@ -6,6 +6,8 @@ import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import retrofit2.HttpException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.CancellationException
 
@@ -37,8 +39,14 @@ object HandleApi {
                 is UnknownHostException ->{
                     throw TaskyNetworkException(TaskyNetworkError.UnknownHost)
                 }
+                is ConnectException ->{
+                    throw TaskyNetworkException(TaskyNetworkError.GenericApiError)
+                }
+                is SocketTimeoutException ->{
+                    throw TaskyNetworkException(TaskyNetworkError.GenericApiError)
+                }
                 else ->{
-                    throw TaskyNetworkException( )
+                    throw TaskyNetworkException()
                 }
             }
         }

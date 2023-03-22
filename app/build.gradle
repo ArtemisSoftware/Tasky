@@ -44,14 +44,17 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
+    sourceSets {
+        test {
+            java.srcDir project(":core").file("src/test/java")
+        }
+    }
     with flavorConfig
 }
 
 dependencies {
 
     implementation rootProject.libraries.coreKtx
-    implementation rootProject.libraries.lifecycleRuntimeKtx
     implementation rootProject.libraries.activityCompose
     implementation rootProject.libraries.composeUi
     implementation rootProject.libraries.composeUiToolingPreview
@@ -63,6 +66,17 @@ dependencies {
     androidTestImplementation rootProject.tests.uiTestJunit4
     debugImplementation rootProject.libraries.composeUiTooling
     debugImplementation rootProject.tests.uiTestManifest
+
+
+    implementation rootProject.libraries.lifecycleRuntimeKtx
+    implementation rootProject.libraries.lifecycleRuntimeCompose
+
+
+    testImplementation rootProject.tests.kotlinTestJunit
+    testImplementation rootProject.tests.junit
+    testImplementation rootProject.tests.mockito
+    testImplementation rootProject.tests.kotlinxCoroutinesTest
+
 
     implementation project(':core')
 }

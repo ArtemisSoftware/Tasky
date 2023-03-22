@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
     id 'kotlin-kapt'
 }
 
@@ -73,5 +74,9 @@ dependencies {
 
     api rootProject.libraries.coilCompose
 
-    api rootProject.libraries.navigationCompose
+    //datastore
+    implementation rootProject.libraries.datastore
+    implementation rootProject.libraries.kotlinxSerializationJson
+
+    implementation rootProject.libraries.lifecycleViewmodelKtx
 }

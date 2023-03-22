@@ -1,7 +1,7 @@
 package com.artemissoftware.tasky.authentication.data.repositories
 
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
-import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
+import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.authentication.User
 import com.artemissoftware.tasky.authentication.data.mappers.toUser
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
@@ -14,55 +14,55 @@ class AuthenticationRepositoryImpl constructor(
 ): AuthenticationRepository {
 
 
-    override suspend fun registerUser(email: String, password: String, fullName: String): ApiNetworkResponse<Boolean> {
+    override suspend fun registerUser(email: String, password: String, fullName: String): DataResponse<Boolean> {
 
         val registrationBodyDto = RegistrationBodyDto(email = email, password = password, fullName = fullName)
 
         return try {
 
             authenticationApiSource.registerUser(registrationBodyDto)
-            ApiNetworkResponse.Success(data = true)
+            DataResponse.Success(data = true)
 
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 
-    override suspend fun loginUser(email: String, password: String): ApiNetworkResponse<User> {
+    override suspend fun loginUser(email: String, password: String): DataResponse<User> {
 
         val loginBodyDto = LoginBodyDto(email = email, password = password)
 
         return try {
 
             val result = authenticationApiSource.loginUser(loginBodyDto)
-            ApiNetworkResponse.Success(data = result.toUser())
+            DataResponse.Success(data = result.toUser())
 
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 
-    override suspend fun authenticate(): ApiNetworkResponse<Boolean> {
+    override suspend fun authenticate(): DataResponse<Boolean> {
 
         return try {
 
             authenticationApiSource.authenticate()
-            ApiNetworkResponse.Success(data = true)
+            DataResponse.Success(data = true)
 
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 
-    override suspend fun logoutUser(): ApiNetworkResponse<Boolean> {
+    override suspend fun logoutUser(): DataResponse<Boolean> {
 
         return try {
 
             authenticationApiSource.logoutUser()
-            ApiNetworkResponse.Success(data = true)
+            DataResponse.Success(data = true)
 
         } catch (ex: TaskyNetworkException) {
-            ApiNetworkResponse.Error(exception = ex)
+            DataResponse.Error(exception = ex)
         }
     }
 }

@@ -1,16 +1,16 @@
 package com.artemissoftware.tasky.authentication.domain.repositories
 
-import com.artemissoftware.core.domain.models.api.ApiNetworkResponse
+import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.authentication.User
 
 interface AuthenticationRepository {
 
-    suspend fun registerUser(email: String, password: String, fullName: String): ApiNetworkResponse<Boolean>
+    suspend fun registerUser(email: String, password: String, fullName: String): DataResponse<Boolean>
 
-    suspend fun loginUser(email: String, password: String): ApiNetworkResponse<User>
+    suspend fun loginUser(email: String, password: String): DataResponse<User>
 
-    suspend fun authenticate(): ApiNetworkResponse<Boolean>
+    suspend fun authenticate(): DataResponse<Boolean>
 
-    suspend fun logoutUser(): ApiNetworkResponse<Boolean>
+    suspend fun logoutUser(): DataResponse<Boolean>
 
 }
