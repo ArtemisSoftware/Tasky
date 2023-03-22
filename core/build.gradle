@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
 }
 
@@ -72,7 +73,13 @@ dependencies {
     kapt rootProject.libraries.roomCompiler
     implementation rootProject.libraries.roomKtx
 
+    // coil
     api rootProject.libraries.coilCompose
+
+    //hilt
+    api rootProject.libraries.hiltAndroid
+    kapt rootProject.libraries.hiltAndroidCompiler
+    api rootProject.libraries.hiltNavigationCompose
 
     //datastore
     implementation rootProject.libraries.datastore
