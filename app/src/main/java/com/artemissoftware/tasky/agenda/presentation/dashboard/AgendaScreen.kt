@@ -143,13 +143,8 @@ fun AgendaScreen(
 }
 
 private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
-    return when (item) {
-        is AgendaItem.Reminder -> {
-            AgendaItemType.Reminder()
-        }
-
-        // TODO: add other types likes task and events in the future
-    }
+    return AgendaItemType.Reminder()
+    // TODO: add other types likes task and events in the future
 }
 
 @Preview(showBackground = true)

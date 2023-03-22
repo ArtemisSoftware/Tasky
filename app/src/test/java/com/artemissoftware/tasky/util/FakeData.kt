@@ -1,8 +1,6 @@
 package com.artemissoftware.tasky.util
 
 import com.artemissoftware.core.domain.models.authentication.User
-import com.artemissoftware.core.util.extensions.toLong
-import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
 import java.time.LocalDateTime

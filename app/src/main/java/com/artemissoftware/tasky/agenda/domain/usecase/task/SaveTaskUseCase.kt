@@ -1,16 +1,16 @@
-package com.artemissoftware.tasky.agenda.domain.usecase.reminder
+package com.artemissoftware.tasky.agenda.domain.usecase.task
 
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 
-class SaveReminderUseCase constructor(
-    private val reminderRepository: ReminderRepository,
+class SaveTaskUseCase constructor(
+    private val taskRepository: TaskRepository,
 ) {
     suspend operator fun invoke(
-        reminder: AgendaItem.Reminder,
+        task: AgendaItem.Task,
     ) {
-        val result = reminderRepository.saveReminderAndSync(reminder = reminder)
+        val result = taskRepository.saveTaskAndSync(task = task)
 
         when (result) {
             is DataResponse.Error -> {
