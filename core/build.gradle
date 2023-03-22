@@ -63,9 +63,9 @@ dependencies {
 
 
     //okhttp
-    implementation rootProject.libraries.okhttpBom
-    implementation rootProject.libraries.okhttp
-    implementation rootProject.libraries.okhttpLoggingInterceptor
+    api rootProject.libraries.okhttpBom
+    api rootProject.libraries.okhttp
+    api rootProject.libraries.okhttpLoggingInterceptor
 
 
     //room
