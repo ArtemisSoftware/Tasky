@@ -18,7 +18,7 @@ import com.artemissoftware.core.presentation.composables.icon.TaskyIconToggleBut
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
-import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOptionType
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOption
 
 @Composable
 fun AssignmentCard(
@@ -26,9 +26,9 @@ fun AssignmentCard(
     title: String,
     date: String,
     onCheckedChange: (Boolean) -> Unit,
-    onOptionClick: (AgendaItemOptionType) -> Unit,
+    onOptionClick: (AgendaItemOption) -> Unit,
     modifier: Modifier = Modifier,
-    options: Array<AgendaItemOptionType> = AgendaItemOptionType.values(),
+    options: Array<AgendaItemOption> = AgendaItemOption.values(),
     description: String? = null,
     isComplete: Boolean = false,
 ) {
@@ -68,7 +68,7 @@ fun AssignmentCard(
                         )
 
                         TaskyPopupMenu(
-                            options = AgendaItemOptionType.values().toList(),
+                            options = AgendaItemOption.values().toList(),
                             onOptionSelected = {
                                 onOptionClick(it)
                             },

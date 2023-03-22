@@ -36,7 +36,7 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
-import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOptionType
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -77,8 +77,9 @@ fun AgendaScreen(
                 },
                 toolbarActions = {
                     TaskyPopupMenu(
-                        options = AgendaItemOptionType.values().toList(),
+                        options = AgendaUserOption.values().toList(),
                         onOptionSelected = {
+                            events(AgendaEvents.LogOut)
                         },
                         menuOption = {
                             TaskyDropDownItem(text = stringResource(id = it.descriptionId))
