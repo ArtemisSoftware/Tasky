@@ -1,7 +1,9 @@
 package com.artemissoftware.core.di
 
 import com.artemissoftware.core.BuildConfig
+import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.util.interceptors.ApiKeyInterceptor
+import com.artemissoftware.core.util.interceptors.JwtInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,14 +19,14 @@ object TaskyNetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(): OkHttpClient {
+    fun provideHttpClient(getUserUseCase: GetUserUseCase): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(ApiKeyInterceptor())
-            // .addInterceptor(JwtInterceptor())
+            .addInterceptor(JwtInterceptor(getUserUseCase = getUserUseCase))
             .readTimeout(BuildConfig.READ_TIMEOUT, TimeUnit.SECONDS)
             .connectTimeout(BuildConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .build()

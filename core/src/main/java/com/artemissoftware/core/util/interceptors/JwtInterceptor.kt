@@ -8,9 +8,9 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import retrofit2.Invocation
+import javax.inject.Inject
 
-// TODO: add @inject anotation on constructor (when hilt is implemented) to inject usecase
-class JwtInterceptor constructor(private val getUserUseCase: GetUserUseCase) : Interceptor {
+class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseCase) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original: Request = chain.request()
