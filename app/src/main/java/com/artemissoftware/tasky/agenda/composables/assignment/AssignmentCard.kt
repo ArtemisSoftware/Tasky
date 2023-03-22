@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core.presentation.composables.TaskyPopupMenu
+import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.icon.TaskyIconToggleButton
