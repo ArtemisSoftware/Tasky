@@ -9,3 +9,8 @@ enum class AgendaItemOptionType(@StringRes val descriptionId: Int) {
     TASK(descriptionId = R.string.task),
     REMINDER(descriptionId = R.string.reminder),
 }
+
+enum class AgendaUserOption(@StringRes val descriptionId: Int) {
+
+    LOG_OUT(descriptionId = R.string.log_out),
+}

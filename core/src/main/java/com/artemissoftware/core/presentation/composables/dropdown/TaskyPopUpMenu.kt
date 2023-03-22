@@ -37,7 +37,7 @@ fun <T>TaskyPopupMenu(
     menuOption: @Composable (T) -> Unit,
     addDivider: Boolean = false,
 ) {
-    var expanded by remember { mutableStateOf(true) }
+    var expanded by remember { mutableStateOf(false) }
     var parentSize by remember { mutableStateOf(IntSize.Zero) }
 
     Box(
