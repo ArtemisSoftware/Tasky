@@ -31,14 +31,7 @@ class JwtInterceptor constructor(private val getUserUseCase: GetUserUseCase) : I
         }
     }
 
-    private fun getToken(): String {
-        var token = ""
-        runBlocking {
-            token = getUserUseCase.invoke().first().token
-        }
-
-        return token
-    }
+    private fun getToken() = runBlocking { getUserUseCase.invoke().first().token }
 
     companion object {
         private const val HEADER_AUTHORIZATION = "Authorization"

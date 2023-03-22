@@ -11,14 +11,10 @@ class ApiKeyInterceptor() : Interceptor {
         val original: Request = chain.request()
 
         val request: Request = original.newBuilder()
-            .header(HEADER_X_API_KEY, BuildConfig.API_KEY)
+            .header("x-api-key", BuildConfig.API_KEY)
             .method(original.method, original.body)
             .build()
 
         return chain.proceed(request)
-    }
-
-    companion object {
-        private const val HEADER_X_API_KEY = "x-api-key"
     }
 }
