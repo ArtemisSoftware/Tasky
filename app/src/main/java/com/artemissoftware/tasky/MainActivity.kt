@@ -10,8 +10,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.artemissoftware.tasky.agenda.presentation.dashboard.AgendaScreenPreview
+import com.artemissoftware.tasky.authentication.presentation.splash.NavGraphs
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
+import com.ramcosta.composedestinations.DestinationsNavHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,9 +22,9 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background,
+                    color = MaterialTheme.colors.background
                 ) {
-                    AgendaScreenPreview()
+                    DestinationsNavHost(navGraph = NavGraphs.root)
                 }
             }
         }

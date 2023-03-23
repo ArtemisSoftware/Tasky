@@ -12,8 +12,10 @@ import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.theme.Green
 import com.artemissoftware.core.presentation.theme.White
+import com.ramcosta.composedestinations.annotation.Destination
 
 @Composable
+@Destination(start = true)
 fun SplashScreen() {
 
     TaskyScaffold(
