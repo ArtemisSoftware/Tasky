@@ -19,14 +19,14 @@ object TaskyNetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(getUserUseCase: GetUserUseCase): OkHttpClient {
+    fun provideHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(ApiKeyInterceptor())
-            .addInterceptor(JwtInterceptor(getUserUseCase = getUserUseCase))
+            .addInterceptor(JwtInterceptor())
             .readTimeout(BuildConfig.READ_TIMEOUT, TimeUnit.SECONDS)
             .connectTimeout(BuildConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .build()
