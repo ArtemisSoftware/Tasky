@@ -31,4 +31,5 @@
     <string name="today">Today</string>
     <string name="retry">Retry</string>
     <string name="register">Register</string>
+    <string name="log_out">Log out</string>
 </resources>
