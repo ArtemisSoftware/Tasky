@@ -87,6 +87,3 @@ private fun AgendaTopBarPreview() {
         )
     }
 }
-
-
-
