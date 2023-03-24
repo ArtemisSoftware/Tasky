@@ -77,6 +77,6 @@ dependencies {
     testImplementation rootProject.tests.mockito
     testImplementation rootProject.tests.kotlinxCoroutinesTest
 
-
+    implementation rootProject.tests.coreSplashscreen
     implementation project(':core')
 }
