@@ -51,7 +51,12 @@ ext.versions = [
 
         retrofit                    : '2.9.0',
         room                        : '2.5.0',
-        okhttpBom                   : '4.10.0'
+        okhttpBom                   : '4.10.0',
+
+        composeDestinationsCore     : '1.8.36-beta',
+        composeDestinationsKsp      : '1.8.36-beta',
+
+        devtoolsKsp                 : '1.8.10-1.0.9'
 ]
 
 ext.libraries = [
@@ -69,6 +74,10 @@ ext.libraries = [
         composeUiTooling                : "androidx.compose.ui:ui-tooling:$versions.composeUiTooling",
 
         composeFoundation               : "androidx.compose.foundation:foundation:$versions.composeFoundation",
+
+
+        composeDestinationsCore         : "io.github.raamcosta.compose-destinations:core:$versions.composeDestinationsCore",
+        composeDestinationsKsp          : "io.github.raamcosta.compose-destinations:ksp:$versions.composeDestinationsKsp",
 
         coilCompose                     : "io.coil-kt:coil-compose:$versions.coil",
 
