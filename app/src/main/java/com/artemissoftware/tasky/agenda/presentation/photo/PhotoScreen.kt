@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.photo
+package com.artemissoftware.tasky.agenda.presentation.photo
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
