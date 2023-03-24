@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 abstract class TaskyUiEventViewModel : ViewModel() {
 
-    private val _uiEvent =  Channel<UiEvent>()
+    private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     protected suspend fun sendUiEvent(uiEvent: UiEvent) {
