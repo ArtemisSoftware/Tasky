@@ -1,28 +1,39 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
+import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
+import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
+import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Black
-import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.LightBlue
+import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.core.util.DateTimePatternsConstants
+import com.artemissoftware.core.util.DateTimePatternsConstants.DATE_PATTERN_MONTH
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
@@ -31,6 +42,7 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -47,13 +59,40 @@ fun AgendaScreen(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 backGroundColor = Black,
                 toolbarActionsLeft = {
-                    // TODO : ask about this
+                    Row(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .clickable {
+                                // TODO: open selector
+                            },
+                    ) {
+                        TaskyText(
+                            modifier = Modifier,
+                            text = state.selectedDayOfTheWeek.format(pattern = DATE_PATTERN_MONTH).uppercase(),
+                            color = White,
+                        )
+
+                        TaskyIcon(
+                            size = 24.dp,
+                            modifier = Modifier
+                                .alpha(ContentAlpha.medium),
+                            icon = Icons.Filled.ArrowDropDown,
+                            color = White,
+                        )
+                    }
                 },
                 toolbarActions = {
-                    TaskyAvatar(
-                        text = state.userName,
-                        circleColor = Light,
-                        textColor = LightBlue,
+                    TaskyPopupMenu(
+                        options = AgendaUserOption.values().toList(),
+                        onOptionSelected = {
+                            events(AgendaEvents.LogOut)
+                        },
+                        menuOption = {
+                            TaskyDropDownItem(text = stringResource(id = it.descriptionId))
+                        },
+                        placeHolder = {
+                            TaskyAvatar(text = state.userName, circleColor = LightBlue)
+                        },
                     )
                 },
             )
@@ -143,18 +182,13 @@ fun AgendaScreen(
 }
 
 private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
-    return when (item) {
-        is AgendaItem.Reminder -> {
-            AgendaItemType.Reminder()
-        }
-
-        // TODO: add other types likes task and events in the future
-    }
+    return AgendaItemType.Reminder()
+    // TODO: add other types likes task and events in the future
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun AgendaScreenPreview() {
+fun AgendaScreenPreview() {
     AgendaScreen(
         events = {},
         state = AgendaState(

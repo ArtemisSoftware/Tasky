@@ -1,6 +1,18 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp' version "$devtools_ksp_version"
+}
+
+kotlin {
+    sourceSets {
+        debug {
+            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        release {
+            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
 }
 
 android {
@@ -77,6 +89,11 @@ dependencies {
     testImplementation rootProject.tests.mockito
     testImplementation rootProject.tests.kotlinxCoroutinesTest
 
+    // Compose Destinations
+    implementation rootProject.libraries.composeDestinationsCore
+    ksp  rootProject.libraries.composeDestinationsKsp
+
     implementation rootProject.tests.coreSplashscreen
+
     implementation project(':core')
 }

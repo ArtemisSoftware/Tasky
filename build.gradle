@@ -6,7 +6,7 @@ buildscript {
     ext {
         gradle_version = "$rootProject.versions.gradle"
         kotlin_version = "$rootProject.versions.kotlin"
-        compose_ui_version = '1.2.0'
+        devtools_ksp_version = "$rootProject.versions.devtoolsKsp"
     }
     dependencies {
         classpath rootProject.classpath.kotlinSerialization
