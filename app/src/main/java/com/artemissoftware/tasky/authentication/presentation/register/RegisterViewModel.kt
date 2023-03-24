@@ -15,12 +15,15 @@ import com.artemissoftware.tasky.authentication.domain.usecases.RegisterUserUseC
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateEmailUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidatePasswordUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateUserNameUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegisterViewModel constructor(
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,

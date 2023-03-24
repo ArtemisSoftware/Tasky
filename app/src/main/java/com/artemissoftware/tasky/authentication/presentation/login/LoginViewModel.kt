@@ -11,67 +11,63 @@ import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
-import com.artemissoftware.core.R as CoreR
 import com.artemissoftware.tasky.authentication.domain.usecases.LoginUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateEmailUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidatePasswordUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import com.artemissoftware.core.R as CoreR
 
-class LoginViewModel constructor(
+@HiltViewModel
+class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state
 
-    fun onTriggerEvent(event: LoginEvents){
-        when(event){
+    fun onTriggerEvent(event: LoginEvents) {
+        when (event) {
             LoginEvents.Login -> { login() }
             LoginEvents.SignUp -> { signUp() }
             is LoginEvents.ValidateEmail -> { validateEmail(email = event.email) }
-            is LoginEvents.ValidatePassword ->  { validatePassword(password = event.password) }
+            is LoginEvents.ValidatePassword -> { validatePassword(password = event.password) }
         }
     }
 
     private fun validateEmail(email: String) {
-
         _state.update {
             it.copy(
                 email = email,
-                emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateEmailUseCase(email))
+                emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateEmailUseCase(email)),
             )
         }
     }
 
     private fun validatePassword(password: String) {
-
         _state.update {
             it.copy(
                 password = password,
-                passwordValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password))
+                passwordValidationStateType = TaskyTextFieldValidationStateType.getStateType(validatePasswordUseCase(password)),
             )
         }
     }
 
-    private fun signUp(){
-
+    private fun signUp() {
         // TODO : send uiEvent to navigate to sign up screen
-        //// sendUiEvent(UiEvent.Navigate)
+        // // sendUiEvent(UiEvent.Navigate)
     }
 
     private fun login() {
-
-        with(_state.value){
-
-            if(allLoginFieldsValid()){
-
+        with(_state.value) {
+            if (allLoginFieldsValid()) {
                 viewModelScope.launch {
-
                     _state.update {
                         it.copy(isLoading = true)
                     }
@@ -79,7 +75,6 @@ class LoginViewModel constructor(
                     val result = loginUseCase(email = email, password = password)
 
                     when (result) {
-
                         is Resource.Success -> {
                             // TODO : send uiEvent to navigate to agenda + close login screen
                         }
@@ -100,7 +95,6 @@ class LoginViewModel constructor(
     }
 
     private fun getDialogData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
-
         return TaskyDialogType.Error(
             title = UiText.StringResource(R.string.log_in),
             description = ex.toUiText(),
@@ -109,8 +103,8 @@ class LoginViewModel constructor(
                 confirmation = {
                     reloadEvent.invoke()
                 },
-                cancelText = UiText.StringResource(CoreR.string.cancel)
-            )
+                cancelText = UiText.StringResource(CoreR.string.cancel),
+            ),
         )
     }
 }

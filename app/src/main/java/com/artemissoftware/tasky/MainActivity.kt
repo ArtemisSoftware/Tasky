@@ -16,8 +16,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.artemissoftware.tasky.authentication.presentation.NavGraphs
 import com.artemissoftware.tasky.authentication.presentation.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
+import dagger.hilt.android.AndroidEntryPoint
 import com.ramcosta.composedestinations.DestinationsNavHost
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()

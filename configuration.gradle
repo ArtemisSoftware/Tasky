@@ -47,6 +47,9 @@ ext.versions = [
         junit                       : '4.13.2',
         junitExtension              : '1.1.4',
 
+        hilt                        : '2.45',
+        hiltNavigationCompose       : '1.0.0-alpha03',
+
         retrofit                    : '2.9.0',
         room                        : '2.5.0',
         okhttpBom                   : '4.10.0',
@@ -98,6 +101,11 @@ ext.libraries = [
         okhttp                          : "com.squareup.okhttp3:okhttp",
         okhttpLoggingInterceptor        : "com.squareup.okhttp3:logging-interceptor",
 
+        hiltAndroid                     : "com.google.dagger:hilt-android:$versions.hilt",
+        hiltAndroidCompiler             : "com.google.dagger:hilt-android-compiler:$versions.hilt",
+        hiltNavigationCompose           : "androidx.hilt:hilt-navigation-compose:$versions.hiltNavigationCompose",
+
+
         coreSplashscreen                :  "androidx.core:core-splashscreen:$versions.coreSplashscreen"
 
 ]
@@ -124,4 +132,5 @@ ext.tests = [
 ext.classpath = [
 
         kotlinSerialization             : "org.jetbrains.kotlin:kotlin-serialization:$versions.kotlin",
+        hilt                            : "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt",
 ]
