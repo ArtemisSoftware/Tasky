@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.authentication.presentation.splash
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,25 +18,20 @@ import com.ramcosta.composedestinations.annotation.Destination
 @Composable
 @Destination(start = true)
 fun SplashScreen() {
-
     TaskyScaffold(
         backgroundColor = Green,
         content = {
-
-
-            Box(modifier = Modifier.fillMaxSize()){
-                
+            Box(modifier = Modifier.fillMaxSize()) {
                 TaskyIcon(
                     modifier = Modifier.align(Alignment.Center),
                     color = White,
                     size = 140.dp,
-                    icon = R.drawable.ic_tasky_logo
+                    icon = R.drawable.ic_tasky_logo,
                 )
-
+                Text(text = "dfgdfgdfgdfgdfgdfg")
             }
-        }
+       },
     )
-
 }
 
 @Preview(showBackground = true)

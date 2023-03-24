@@ -9,10 +9,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.artemissoftware.tasky.authentication.presentation.splash.NavGraphs
+import com.artemissoftware.tasky.authentication.presentation.NavGraphs
+import com.artemissoftware.tasky.authentication.presentation.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 
@@ -31,9 +33,14 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background,
                 ) {
-                    DestinationsNavHost(navGraph = NavGraphs.root)
+//                    if (!viewModel.isLoading.collectAsState().value) {
+//                        DestinationsNavHost(
+//                            navGraph = NavGraphs.root,
+//                            startRoute = LoginScreenDestination,
+//                        )
+//                    }
                 }
             }
         }

@@ -93,7 +93,7 @@ dependencies {
     implementation rootProject.libraries.composeDestinationsCore
     ksp  rootProject.libraries.composeDestinationsKsp
 
-    implementation rootProject.tests.coreSplashscreen
+    implementation rootProject.libraries.coreSplashscreen
 
     implementation project(':core')
 }
