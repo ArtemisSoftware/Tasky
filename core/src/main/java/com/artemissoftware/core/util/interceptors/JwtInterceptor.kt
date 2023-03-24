@@ -2,7 +2,6 @@ package com.artemissoftware.core.util.interceptors
 
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.util.annotations.NoJWTHeaderRequest
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -11,11 +10,7 @@ import okhttp3.Response
 import retrofit2.Invocation
 import javax.inject.Inject
 
-@AndroidEntryPoint
-class JwtInterceptor : Interceptor {
-
-    @Inject
-    lateinit var getUserUseCase: GetUserUseCase
+class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseCase) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original: Request = chain.request()
