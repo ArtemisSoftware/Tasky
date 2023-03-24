@@ -2,7 +2,7 @@ package com.artemissoftware.tasky.agenda.data.remote.dto
 
 import com.squareup.moshi.Json
 
-data class EventBodyDto(
+data class EventUpdateBodyDto(
     @field:Json(name = "description")
     val description: String,
     @field:Json(name = "from")
@@ -17,4 +17,8 @@ data class EventBodyDto(
     val to: Int,
     @field:Json(name = "attendeeIds")
     val attendeeIds: List<String>,
+    @field:Json(name = "deletedPhotoKeys")
+    val deletedPhotoKeys: List<String>,
+    @field:Json(name = "isGoing")
+    val isGoing: Boolean,
 )
