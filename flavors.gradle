@@ -11,7 +11,11 @@ ext.flavorConfig = { // 1
             buildConfigField "int", "MIN_CHARACTERS_FOR_PASSWORD", "9"
             buildConfigField "int", "DEFAULT_MAX_PICTURES_PER_EVENT", "10"
 
+            buildConfigField "long", "READ_TIMEOUT", "15L"
+            buildConfigField "long", "CONNECT_TIMEOUT", "15L"
+
             buildConfigField("String", "API_KEY", API_KEY)
+            buildConfigField "String", "BASE_URL", "\"https://tasky.pl-coding.com/\""
         }
 
         prod {
@@ -23,7 +27,11 @@ ext.flavorConfig = { // 1
             buildConfigField "int", "MIN_CHARACTERS_FOR_PASSWORD", "9"
             buildConfigField "int", "DEFAULT_MAX_PICTURES_PER_EVENT", "10"
 
+            buildConfigField "long", "READ_TIMEOUT", "15L"
+            buildConfigField "long", "CONNECT_TIMEOUT", "15L"
+
             buildConfigField("String", "API_KEY", API_KEY)
+            buildConfigField "String", "BASE_URL", "\"https://tasky.pl-coding.com/\""
         }
     }
 }

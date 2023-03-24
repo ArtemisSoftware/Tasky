@@ -12,8 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.artemissoftware.tasky.authentication.presentation.splash.NavGraphs
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
+import dagger.hilt.android.AndroidEntryPoint
 import com.ramcosta.composedestinations.DestinationsNavHost
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
