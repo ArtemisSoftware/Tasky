@@ -5,8 +5,9 @@ import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.tasky.authentication.domain.repositories.AuthenticationRepository
+import javax.inject.Inject
 
-class AuthenticateUseCase(
+class AuthenticateUseCase @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) {
 
