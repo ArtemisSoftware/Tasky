@@ -6,15 +6,15 @@ data class EventUpdateBodyDto(
     @field:Json(name = "description")
     val description: String,
     @field:Json(name = "from")
-    val from: Int,
+    val from: Long,
     @field:Json(name = "id")
     val id: String,
     @field:Json(name = "remindAt")
-    val remindAt: Int,
+    val remindAt: Long,
     @field:Json(name = "title")
     val title: String,
     @field:Json(name = "to")
-    val to: Int,
+    val to: Long,
     @field:Json(name = "attendeeIds")
     val attendeeIds: List<String>,
     @field:Json(name = "deletedPhotoKeys")

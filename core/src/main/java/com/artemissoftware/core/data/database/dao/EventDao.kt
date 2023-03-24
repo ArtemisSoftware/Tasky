@@ -20,29 +20,19 @@ interface EventDao {
     fun upsert(eventEntity: EventEntity)
 
     @Upsert
-    fun upsert(eventAttendeeEntity: EventAttendeeEntity)
+    fun upsert(eventAttendeeEntities: List<EventAttendeeEntity>)
 
     @Upsert
-    fun upsert(photoEntity: PhotoEntity)
+    fun upsert(photoEntities: List<PhotoEntity>)
 
     @Upsert
     suspend fun upsertEventSync(eventSyncEntity: EventSyncEntity)
 
     @Transaction
-    suspend fun upsertSyncStateAndTask(eventEntity: EventEntity, eventSyncEntity: EventSyncEntity) {
+    suspend fun upsertSyncStateAndEvent(eventEntity: EventEntity, photoEntities: List<PhotoEntity>, eventAttendeeEntities: List<EventAttendeeEntity>, eventSyncEntity: EventSyncEntity) {
         upsert(eventEntity)
-        upsertEventSync(eventSyncEntity)
-    }
-
-    @Transaction
-    suspend fun upsertSyncStateAndTask(eventAttendeeEntity: EventAttendeeEntity, eventSyncEntity: EventSyncEntity) {
-        upsert(eventAttendeeEntity)
-        upsertEventSync(eventSyncEntity)
-    }
-
-    @Transaction
-    suspend fun upsertSyncStateAndTask(photoEntity: PhotoEntity, eventSyncEntity: EventSyncEntity) {
-        upsert(photoEntity)
+        upsert(photoEntities)
+        upsert(eventAttendeeEntities)
         upsertEventSync(eventSyncEntity)
     }
 

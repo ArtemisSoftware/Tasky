@@ -18,5 +18,6 @@ data class PhotoEntity(
     @PrimaryKey
     val key: String,
     val url: String,
+    val local: String? = null,
     val eventId: String,
 )
