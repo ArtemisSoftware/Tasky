@@ -34,8 +34,6 @@ class MainViewModel @Inject constructor(
 
     private fun authenticate() {
         viewModelScope.launch {
-            delay(1500)
-
             val result = authenticateUseCase()
 
             when (result) {
@@ -46,12 +44,13 @@ class MainViewModel @Inject constructor(
                     result.exception?.let { exception ->
                         when (exception) {
                             AuthenticationException.UserNotAuthenticated -> {
+                                delay(500)
                                 _state.update {
-                                    it.copy(isLoading = false, screenToNavigate = Destination.Login)
+                                    it.copy(showSplash = false, destinationAfterSplash = Destination.Login)
                                 }
                             }
                             else -> {
-                                _state.update { it.copy(isLoading = false) }
+                                _state.update { it.copy(showSplash = false) }
                                 sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = exception, reloadEvent = { authenticate() })))
                             }
                         }

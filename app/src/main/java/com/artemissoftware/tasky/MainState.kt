@@ -4,7 +4,7 @@ import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffoldS
 import com.artemissoftware.tasky.navigation.Destination
 
 data class MainState(
-    val screenToNavigate: Destination? = null,
-    val isLoading: Boolean = true,
+    val destinationAfterSplash: Destination? = null,
+    val showSplash: Boolean = true,
     val scaffoldState: TaskyScaffoldState = TaskyScaffoldState()
 )

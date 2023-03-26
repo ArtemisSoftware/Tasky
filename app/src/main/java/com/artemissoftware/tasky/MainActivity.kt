@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
             setKeepVisibleCondition {
-                viewModel.state.value.isLoading
+                viewModel.state.value.showSplash
             }
         }
         setContent {
