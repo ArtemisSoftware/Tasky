@@ -17,29 +17,26 @@ class UserStoreSerializer(private val cryptoManager: CryptoManager) : Serializer
         get() = User()
 
     override suspend fun readFrom(input: InputStream): User {
-
         val decryptedBytes = cryptoManager.decrypt(input)
 
         return try {
             Json.decodeFromString(
                 deserializer = UserStore.serializer(),
-                string = decryptedBytes.decodeToString()
+                string = decryptedBytes.decodeToString(),
             ).toUser()
         } catch (e: SerializationException) {
             defaultValue
         }
     }
 
-
     override suspend fun writeTo(t: User, output: OutputStream) {
-
         val bytes = Json.encodeToString(
             serializer = UserStore.serializer(),
-            value = t.toUserStore()
+            value = t.toUserStore(),
         )
         cryptoManager.encrypt(
             bytes = bytes.encodeToByteArray(),
-            outputStream = output
+            outputStream = output,
         )
     }
 }

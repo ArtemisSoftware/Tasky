@@ -38,20 +38,25 @@ class MainViewModel @Inject constructor(
 
             when (result) {
                 is Resource.Success -> {
-                    // TODO : send uiEvent to navigate to agenda + close splash screen
+                    _state.update {
+                        it.copy(showSplash = false, destinationAfterSplash = Destination.Agenda)
+                    }
                 }
                 is Resource.Error -> {
                     result.exception?.let { exception ->
                         when (exception) {
                             AuthenticationException.UserNotAuthenticated -> {
-                                delay(500)
                                 _state.update {
                                     it.copy(showSplash = false, destinationAfterSplash = Destination.Login)
                                 }
                             }
                             else -> {
-                                _state.update { it.copy(showSplash = false) }
-                                sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = exception, reloadEvent = { authenticate() })))
+//                                _state.update { it.copy(showSplash = false) }
+//                                sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = exception, reloadEvent = { authenticate() })))
+
+                                _state.update {
+                                    it.copy(showSplash = false, destinationAfterSplash = Destination.Login)
+                                }
                             }
                         }
                     }

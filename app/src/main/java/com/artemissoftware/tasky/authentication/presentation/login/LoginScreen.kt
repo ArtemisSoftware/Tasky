@@ -26,9 +26,16 @@ import com.artemissoftware.core.presentation.theme.Link
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.authentication.presentation.login.composables.LoginForm
+import com.artemissoftware.tasky.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@Destination
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LoginScreenContent(
@@ -41,8 +48,9 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
         showDialog = {
             state.scaffoldState.showDialog(it)
         },
-        onNavigate = {},
-        onPopBackStack = {},
+        onNavigate = {
+            navigator.navigate(it.route)
+        },
     )
 }
 

@@ -11,7 +11,7 @@ class UserStoreRepositoryImpl @Inject constructor(private val context: Context) 
 
     override suspend fun saveUser(user: User) {
         context.userStore.updateData {
-            it.copy(
+            User(
                 fullName = user.fullName,
                 token = user.token,
                 id = user.id,
