@@ -63,10 +63,16 @@ class MainViewModel @Inject constructor(
         return TaskyDialogType.Error(
             title = UiText.StringResource(R.string.app_name),
             description = ex.toUiText(),
-            dialogOptions = TaskyDialogOptions.SingleOption(
+            dialogOptions = TaskyDialogOptions.DoubleOption(
                 confirmationText = UiText.StringResource(R.string.retry),
                 confirmation = {
                     reloadEvent.invoke()
+                },
+                cancelText = UiText.StringResource(R.string.log_in),
+                cancel = {
+                    _state.update {
+                        it.copy(destinationAfterSplash = Destination.Login)
+                    }
                 },
             ),
         )
