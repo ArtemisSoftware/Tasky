@@ -16,8 +16,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -59,8 +57,6 @@ fun AgendaScreen(
 ) {
     val context = LocalContext.current
 
-    val date = remember { mutableStateOf(LocalDate.now()) }
-
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -75,7 +71,7 @@ fun AgendaScreen(
                             .clickable {
                                 DateTimePicker.datePickerDialog(
                                     context = context,
-                                    date = date,
+                                    date = state.selectedDayOfTheWeek,
                                     onDateSelected = {
                                         events(AgendaEvents.ChangeDate(it))
                                     },

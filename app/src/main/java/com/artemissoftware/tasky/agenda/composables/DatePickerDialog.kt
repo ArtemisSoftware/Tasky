@@ -10,19 +10,17 @@ object DateTimePicker {
 
     fun datePickerDialog(
         context: Context,
-        date: MutableState<LocalDate>,
+        date: LocalDate,
         onDateSelected: (LocalDate) -> Unit = {},
     ): DatePickerDialog {
         return DatePickerDialog(
             context,
             { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-
-                date.value = LocalDate.of(mYear, mMonth + 1, mDayOfMonth)
-                onDateSelected(date.value)
+                onDateSelected(LocalDate.of(mYear, mMonth + 1, mDayOfMonth))
             },
-            date.value.year,
-            date.value.monthValue - 1,
-            date.value.dayOfMonth,
+            date.year,
+            date.monthValue - 1,
+            date.dayOfMonth,
         )
     }
 }
