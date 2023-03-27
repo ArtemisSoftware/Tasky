@@ -17,6 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
@@ -48,8 +50,14 @@ fun LoginScreen(
         showDialog = {
             state.scaffoldState.showDialog(it)
         },
+        onNavigateAndPopCurrent = {
+            navigator.navigate(
+                route = it.route,
+                navOptions = NavOptions.Builder().setPopUpTo(LoginScreenDestination.route, inclusive = true).build()
+            )
+        },
         onNavigate = {
-            navigator.navigate(it.route)
+            navigator.navigate(route = it.route)
         },
     )
 }

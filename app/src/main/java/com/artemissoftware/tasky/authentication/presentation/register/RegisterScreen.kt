@@ -43,7 +43,6 @@ fun RegisterScreen(
         showDialog = {
             state.scaffoldState.showDialog(it)
         },
-        onNavigate = {},
         onPopBackStack = {
             navigator.popBackStack()
         },

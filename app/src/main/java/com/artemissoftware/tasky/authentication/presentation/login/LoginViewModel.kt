@@ -79,7 +79,7 @@ class LoginViewModel @Inject constructor(
 
                     when (result) {
                         is Resource.Success -> {
-                            sendUiEvent(UiEvent.Navigate(AgendaScreenDestination.route))
+                            sendUiEvent(UiEvent.NavigateAndPopCurrent(AgendaScreenDestination.route))
                         }
                         is Resource.Error -> {
                             result.exception?.let {
