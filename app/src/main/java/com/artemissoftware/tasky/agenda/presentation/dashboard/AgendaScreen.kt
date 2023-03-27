@@ -24,9 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
-import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
+import com.artemissoftware.core.presentation.composables.button.TaskyExpandableSquareButton
 import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
+import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Black
@@ -42,6 +43,7 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -94,6 +96,18 @@ fun AgendaScreen(
                             TaskyAvatar(text = state.userName, circleColor = LightBlue)
                         },
                     )
+                },
+            )
+        },
+        floatingActionButton = {
+            TaskyExpandableSquareButton(
+                icon = R.drawable.ic_add,
+                options = AgendaItems.values().toList(),
+                onOptionSelected = {
+                    // TODO: add event here
+                },
+                menuOption = {
+                    TaskyDropDownItem(text = stringResource(id = it.descriptionId))
                 },
             )
         },
