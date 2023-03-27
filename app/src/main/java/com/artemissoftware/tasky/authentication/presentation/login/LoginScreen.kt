@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
-import androidx.navigation.NavOptionsBuilder
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
@@ -36,7 +35,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -53,7 +52,7 @@ fun LoginScreen(
         onNavigateAndPopCurrent = {
             navigator.navigate(
                 route = it.route,
-                navOptions = NavOptions.Builder().setPopUpTo(LoginScreenDestination.route, inclusive = true).build()
+                navOptions = NavOptions.Builder().setPopUpTo(LoginScreenDestination.route, inclusive = true).build(),
             )
         },
         onNavigate = {
