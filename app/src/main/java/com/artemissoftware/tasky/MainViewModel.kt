@@ -13,7 +13,6 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.authentication.domain.usecases.AuthenticateUseCase
 import com.artemissoftware.tasky.navigation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -44,7 +43,6 @@ class MainViewModel @Inject constructor(
                     result.exception?.let { exception ->
                         when (exception) {
                             AuthenticationException.UserNotAuthenticated -> {
-                                delay(500)
                                 _state.update {
                                     it.copy(showSplash = false, destinationAfterSplash = Destination.Login)
                                 }
