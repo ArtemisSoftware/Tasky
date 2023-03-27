@@ -19,16 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
-import com.artemissoftware.core.presentation.composables.button.TaskyExpandableSquareButton
+import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
-import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Black
@@ -39,13 +37,11 @@ import com.artemissoftware.core.util.DateTimePatternsConstants.DATE_PATTERN_MONT
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
-import com.artemissoftware.tasky.agenda.composables.DateTimePicker
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
-import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -55,8 +51,6 @@ fun AgendaScreen(
     state: AgendaState,
     events: (AgendaEvents) -> Unit,
 ) {
-    val context = LocalContext.current
-
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -69,13 +63,7 @@ fun AgendaScreen(
                         modifier = Modifier
                             .wrapContentWidth()
                             .clickable {
-                                DateTimePicker.datePickerDialog(
-                                    context = context,
-                                    date = state.selectedDayOfTheWeek,
-                                    onDateSelected = {
-                                        events(AgendaEvents.ChangeDate(it))
-                                    },
-                                ).show()
+                                // TODO: open selector
                             },
                     ) {
                         TaskyText(
@@ -109,18 +97,6 @@ fun AgendaScreen(
                 },
             )
         },
-        floatingActionButton = {
-            TaskyExpandableSquareButton(
-                icon = R.drawable.ic_add,
-                options = AgendaItems.values().toList(),
-                onOptionSelected = {
-                    // TODO: add event here
-                },
-                menuOption = {
-                    TaskyDropDownItem(text = stringResource(id = it.descriptionId))
-                },
-            )
-        },
         content = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -151,7 +127,7 @@ fun AgendaScreen(
                                             dayOfTheWeek = item.day,
                                             isSelected = state.selectedDayOfTheWeek == item.date,
                                             onClick = {
-                                                events(AgendaEvents.ChangeWeekDay(item.date))
+                                                events(AgendaEvents.ChangeDate(item.date))
                                             },
                                         )
                                     },
