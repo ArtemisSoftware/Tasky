@@ -17,7 +17,7 @@ class UserStoreSerializer(private val cryptoManager: CryptoManager) : Serializer
         get() = User()
 
     override suspend fun readFrom(input: InputStream): User {
-        val decryptedBytes = cryptoManager.decrypt(input)
+        val decryptedBytes = if (USE_CRYPTO) cryptoManager.decrypt(input) else input.readBytes()
 
         return try {
             Json.decodeFromString(
@@ -34,9 +34,18 @@ class UserStoreSerializer(private val cryptoManager: CryptoManager) : Serializer
             serializer = UserStore.serializer(),
             value = t.toUserStore(),
         )
-        cryptoManager.encrypt(
-            bytes = bytes.encodeToByteArray(),
-            outputStream = output,
-        )
+
+        if (USE_CRYPTO) {
+            cryptoManager.encrypt(
+                bytes = bytes.encodeToByteArray(),
+                outputStream = output,
+            )
+        } else {
+            output.write(bytes.encodeToByteArray())
+        }
+    }
+
+    companion object {
+        private const val USE_CRYPTO = false // TODO: only for testing. Crypto is not working. Will pick this up later
     }
 }
