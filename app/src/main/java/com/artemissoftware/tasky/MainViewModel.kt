@@ -68,14 +68,12 @@ class MainViewModel @Inject constructor(
             dialogOptions = TaskyDialogOptions.SingleOption(
                 confirmationText = UiText.StringResource(R.string.retry),
                 confirmation = {
-                    if(authenticateRetries == 0){
+                    if (authenticateRetries == 0) {
                         _state.update {
                             it.copy(destinationAfterSplash = Destination.Login)
                         }
                         authenticateRetries = 3
-
-                    }
-                    else {
+                    } else {
                         --authenticateRetries
                         reloadEvent.invoke()
                     }
