@@ -27,6 +27,8 @@ class MainViewModel @Inject constructor(
     private val _state = MutableStateFlow(MainState())
     val state: StateFlow<MainState> = _state
 
+    private var authenticateRetries = 3
+
     init {
         authenticate()
     }
@@ -63,15 +65,19 @@ class MainViewModel @Inject constructor(
         return TaskyDialogType.Error(
             title = UiText.StringResource(R.string.app_name),
             description = ex.toUiText(),
-            dialogOptions = TaskyDialogOptions.DoubleOption(
+            dialogOptions = TaskyDialogOptions.SingleOption(
                 confirmationText = UiText.StringResource(R.string.retry),
                 confirmation = {
-                    reloadEvent.invoke()
-                },
-                cancelText = UiText.StringResource(R.string.log_in),
-                cancel = {
-                    _state.update {
-                        it.copy(destinationAfterSplash = Destination.Login)
+                    if(authenticateRetries == 0){
+                        _state.update {
+                            it.copy(destinationAfterSplash = Destination.Login)
+                        }
+                        authenticateRetries = 3
+
+                    }
+                    else {
+                        --authenticateRetries
+                        reloadEvent.invoke()
                     }
                 },
             ),
