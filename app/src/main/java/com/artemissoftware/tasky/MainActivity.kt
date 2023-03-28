@@ -11,16 +11,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
-import com.artemissoftware.tasky.navigation.Destination
-import com.artemissoftware.tasky.destinations.LoginScreenDestination
-import com.artemissoftware.tasky.navigation.Destination
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
-import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -60,26 +55,17 @@ private fun MainScreen(viewModel: MainViewModel) {
         )
     }
 
-
-    when (state.destinationAfterSplash) {
-        Destination.Agenda -> {
-            DestinationsNavHost(
-                navGraph = NavGraphs.root,
-            )
-        }
-        Destination.Login -> {
-            DestinationsNavHost(
-                navGraph = NavGraphs.root,
-                startRoute = LoginScreenDestination,
-            )
-        }
-        else -> {}
+    state.destinationAfterSplash?.let {
+        DestinationsNavHost(
+            navGraph = NavGraphs.root,
+            startRoute = it,
+        )
     }
 
     ManageUIEvents(
         uiEvent = viewModel.uiEvent,
         showDialog = {
-            state.scaffoldState.showDialog(it)
+            state.taskyDialogState.showDialog(it)
         },
     )
 }
