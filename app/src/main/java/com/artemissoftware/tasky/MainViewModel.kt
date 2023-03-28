@@ -13,7 +13,6 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.authentication.domain.usecases.AuthenticateUseCase
 import com.artemissoftware.tasky.navigation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -27,6 +26,8 @@ class MainViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(MainState())
     val state: StateFlow<MainState> = _state
+
+    private var authenticateRetries = 3
 
     init {
         authenticate()
@@ -73,7 +74,15 @@ class MainViewModel @Inject constructor(
             dialogOptions = TaskyDialogOptions.SingleOption(
                 confirmationText = UiText.StringResource(R.string.retry),
                 confirmation = {
-                    reloadEvent.invoke()
+                    if (authenticateRetries == 0) {
+                        _state.update {
+                            it.copy(destinationAfterSplash = Destination.Login)
+                        }
+                        authenticateRetries = 3
+                    } else {
+                        --authenticateRetries
+                        reloadEvent.invoke()
+                    }
                 },
             ),
         )
