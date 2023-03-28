@@ -6,8 +6,8 @@ import java.util.*
 
 sealed class AgendaItem(
     val itemId: String,
-    val itemTitle: String,
-    val itemDescription: String? = null,
+    var title: String,
+    var description: String? = null,
     val itemRemindAt: LocalDateTime,
     val itemTime: LocalDateTime,
     val itemSyncState: SyncType,
@@ -15,15 +15,15 @@ sealed class AgendaItem(
 
     data class Reminder(
         val id: String = UUID.randomUUID().toString(),
-        var title: String,
-        var description: String? = null,
+        var reminderTitle: String,
+        var reminderDescription: String? = null,
         var remindAt: LocalDateTime,
         var time: LocalDateTime,
         val syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
-        itemTitle = title,
-        itemDescription = description,
+        title = reminderTitle,
+        description = reminderDescription,
         itemRemindAt = remindAt,
         itemTime = time,
         itemSyncState = syncState,
@@ -31,16 +31,16 @@ sealed class AgendaItem(
 
     data class Task(
         val id: String = UUID.randomUUID().toString(),
-        var title: String,
-        var description: String? = null,
+        var taskTitle: String,
+        var taskDescription: String? = null,
         var remindAt: LocalDateTime,
         var time: LocalDateTime,
         var isDone: Boolean = false,
         val syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
-        itemTitle = title,
-        itemDescription = description,
+        title = taskTitle,
+        description = taskDescription,
         itemRemindAt = remindAt,
         itemTime = time,
         itemSyncState = syncState,

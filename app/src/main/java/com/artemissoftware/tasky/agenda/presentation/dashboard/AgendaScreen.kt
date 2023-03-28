@@ -160,8 +160,8 @@ fun AgendaScreen(
                                     itemContent = { item ->
                                         AssignmentCard(
                                             agendaItemType = getAgendaItemType(item),
-                                            title = item.itemTitle,
-                                            description = item.itemDescription,
+                                            title = item.title,
+                                            description = item.description,
                                             date = item.itemTime.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
                                             onCheckedChange = {
                                                 events(AgendaEvents.CompleteAssignment(item.itemId))
