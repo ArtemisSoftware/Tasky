@@ -2,8 +2,9 @@ package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import javax.inject.Inject
 
-class DeleteReminderUseCase constructor(
+class DeleteReminderUseCase @Inject constructor(
     private val reminderRepository: ReminderRepository
 ) {
     suspend operator fun invoke(id: String){
