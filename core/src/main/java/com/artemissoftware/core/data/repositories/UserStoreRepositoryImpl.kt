@@ -5,8 +5,9 @@ import com.artemissoftware.core.domain.models.authentication.User
 import com.artemissoftware.core.domain.repositories.UserStoreRepository
 import com.artemissoftware.core.util.extensions.userStore
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class UserStoreRepositoryImpl(private val context: Context) : UserStoreRepository {
+class UserStoreRepositoryImpl @Inject constructor(private val context: Context) : UserStoreRepository {
 
     override suspend fun saveUser(user: User) {
         context.userStore.updateData {

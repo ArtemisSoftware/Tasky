@@ -77,9 +77,9 @@ dependencies {
     api rootProject.libraries.coilCompose
 
     //hilt
-    api rootProject.libraries.hiltAndroid
+    implementation rootProject.libraries.hiltAndroid
     kapt rootProject.libraries.hiltAndroidCompiler
-    api rootProject.libraries.hiltNavigationCompose
+    implementation rootProject.libraries.hiltNavigationCompose
 
     //datastore
     implementation rootProject.libraries.datastore
