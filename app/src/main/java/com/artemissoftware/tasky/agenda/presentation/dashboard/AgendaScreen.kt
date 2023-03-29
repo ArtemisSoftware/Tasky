@@ -44,35 +44,7 @@ import java.time.LocalDateTime
 @Destination(start = true)
 @Composable
 fun AgendaScreen(/* TODO :Add view model here*/) {
-    AgendaScreenContent(
-        events = {},
-        state = AgendaState(
-            userName = "Bruce Wayne",
-            daysOfTheWeek = listOf(
-                DayOfWeek(date = LocalDate.now()),
-                DayOfWeek(date = LocalDate.now().plusDays(1L)),
-                DayOfWeek(date = LocalDate.now().plusDays(2L)),
-                DayOfWeek(date = LocalDate.now().plusDays(3L)),
-                DayOfWeek(date = LocalDate.now().plusDays(4L)),
-                DayOfWeek(date = LocalDate.now().plusDays(5L)),
-            ),
-            agendaItems = listOf(
-                AgendaItem.Reminder(
-                    title = "The title",
-                    description = "THe description",
-                    remindAt = LocalDateTime.now(),
-                    time = LocalDateTime.now(),
-                ),
-
-                AgendaItem.Reminder(
-                    title = "The title",
-                    description = "THe description",
-                    remindAt = LocalDateTime.now(),
-                    time = LocalDateTime.now(),
-                ),
-            ),
-        ),
-    )
+    AgendaScreenPreview()
 }
 
 @Composable
@@ -218,17 +190,19 @@ private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
 @Preview(showBackground = true)
 @Composable
 fun AgendaScreenPreview() {
+
+    val localDate = LocalDate.now()
     AgendaScreenContent(
         events = {},
         state = AgendaState(
             userName = "Bruce Wayne",
             daysOfTheWeek = listOf(
-                DayOfWeek(date = LocalDate.now()),
-                DayOfWeek(date = LocalDate.now().plusDays(1L)),
-                DayOfWeek(date = LocalDate.now().plusDays(2L)),
-                DayOfWeek(date = LocalDate.now().plusDays(3L)),
-                DayOfWeek(date = LocalDate.now().plusDays(4L)),
-                DayOfWeek(date = LocalDate.now().plusDays(5L)),
+                DayOfWeek(date = localDate),
+                DayOfWeek(date = localDate.plusDays(1L)),
+                DayOfWeek(date = localDate.plusDays(2L)),
+                DayOfWeek(date = localDate.plusDays(3L)),
+                DayOfWeek(date = localDate.plusDays(4L)),
+                DayOfWeek(date = localDate.plusDays(5L)),
             ),
             agendaItems = listOf(
                 AgendaItem.Reminder(
