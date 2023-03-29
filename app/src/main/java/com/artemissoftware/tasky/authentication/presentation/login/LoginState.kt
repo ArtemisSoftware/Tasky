@@ -1,6 +1,6 @@
 package com.artemissoftware.tasky.authentication.presentation.login
 
-import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffoldState
+import com.artemissoftware.core.presentation.composables.TaskyScaffoldState
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType.NOT_VALIDATED
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType.VALID

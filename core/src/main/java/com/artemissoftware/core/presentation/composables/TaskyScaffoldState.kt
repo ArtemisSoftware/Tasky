@@ -1,4 +1,4 @@
-package com.artemissoftware.core.presentation.composables.scaffold
+package com.artemissoftware.core.presentation.composables
 
 import androidx.compose.runtime.mutableStateOf
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType

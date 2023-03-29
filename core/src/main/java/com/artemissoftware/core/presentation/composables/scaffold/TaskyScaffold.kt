@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.R
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
+import com.artemissoftware.core.presentation.composables.TaskyScaffoldState
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
