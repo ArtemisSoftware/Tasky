@@ -5,8 +5,9 @@ import com.artemissoftware.tasky.agenda.data.remote.TaskyAgendaApi
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
 import okhttp3.ResponseBody
+import javax.inject.Inject
 
-class AgendaApiSource constructor(private val taskyAgendaApi: TaskyAgendaApi) {
+class AgendaApiSource @Inject constructor(private val taskyAgendaApi: TaskyAgendaApi) {
 
     suspend fun createReminder(reminder: ReminderDto): ResponseBody {
         return HandleApi.safeApiCall {

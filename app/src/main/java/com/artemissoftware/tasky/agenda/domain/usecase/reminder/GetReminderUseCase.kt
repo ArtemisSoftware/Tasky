@@ -2,8 +2,9 @@ package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import javax.inject.Inject
 
-class GetReminderUseCase constructor(
+class GetReminderUseCase @Inject constructor(
     private val reminderRepository: ReminderRepository
 ) {
 

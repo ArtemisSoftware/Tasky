@@ -1,15 +1,12 @@
 package com.artemissoftware.tasky.authentication.di
 
-import com.artemissoftware.tasky.BuildConfig
 import com.artemissoftware.tasky.authentication.data.remote.TaskyAuthenticationApi
 import com.artemissoftware.tasky.authentication.data.remote.source.AuthenticationApiSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -18,12 +15,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideTaskyAuthenticationApi(okHttpClient: OkHttpClient): TaskyAuthenticationApi {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
+    fun provideTaskyAuthenticationApi(retrofit: Retrofit): TaskyAuthenticationApi {
+        return retrofit
             .create(TaskyAuthenticationApi::class.java)
     }
 

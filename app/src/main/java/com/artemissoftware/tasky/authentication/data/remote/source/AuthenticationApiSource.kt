@@ -6,9 +6,8 @@ import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
 import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import okhttp3.ResponseBody
-import javax.inject.Inject
 
-class AuthenticationApiSource @Inject constructor(private val taskyAuthenticationApi: TaskyAuthenticationApi) {
+class AuthenticationApiSource constructor(private val taskyAuthenticationApi: TaskyAuthenticationApi) {
 
     suspend fun registerUser(registrationBodyDto: RegistrationBodyDto): ResponseBody {
         return HandleApi.safeApiCall {
