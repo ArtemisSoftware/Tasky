@@ -3,7 +3,6 @@ package com.artemissoftware.core.di
 import android.content.Context
 import androidx.room.Room
 import com.artemissoftware.core.data.database.TaskyDatabase
-import com.artemissoftware.core.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +21,6 @@ object DatabaseModule {
     ) = Room.databaseBuilder(
         context,
         TaskyDatabase::class.java,
-        Constants.TASKY_DATABASE,
+        "tasky_db",
     ).build()
 }
