@@ -39,7 +39,7 @@ import com.artemissoftware.core.util.DateTimePatternsConstants.DATE_PATTERN_MONT
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
-import com.artemissoftware.tasky.agenda.composables.DateTimePicker
+import com.artemissoftware.tasky.util.DateTimePicker
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -47,7 +47,6 @@ import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
-import com.artemissoftware.tasky.helper.AgendaEvents
 import java.time.LocalDate
 import java.time.LocalDateTime
 

@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.helper
+package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import com.artemissoftware.core.presentation.events.TaskyEvents
 import java.time.LocalDate

@@ -1,9 +1,8 @@
-package com.artemissoftware.tasky.agenda.composables
+package com.artemissoftware.tasky.util
 
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
-import androidx.compose.runtime.MutableState
 import java.time.LocalDate
 
 object DateTimePicker {
