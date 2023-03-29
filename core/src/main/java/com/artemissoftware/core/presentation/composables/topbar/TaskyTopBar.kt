@@ -1,8 +1,12 @@
 package com.artemissoftware.core.presentation.composables.topbar
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -102,6 +106,14 @@ private fun TaskyTopBarPreview() {
             toolbarActions = { color->
                 TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
                 TaskyToolBarAction(iconId = R.drawable.ic_visibility)
+            }
+        )
+
+        TaskyTopBar(
+            onBackClicked = {},
+            title = text,
+            toolbarActions = { color->
+                TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
             }
         )
     }

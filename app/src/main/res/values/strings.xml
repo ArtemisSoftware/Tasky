@@ -28,4 +28,10 @@
     <string name="edit_description">Edit description</string>
     <string name="at">At</string>
     <string name="delete_title_with_argument">Delete %s</string>
+    <string name="login_error">An error occurred during log in</string>
+    <string name="register_error">An error occurred while doing registering</string>
+    <string name="today">Today</string>
+    <string name="retry">Retry</string>
+    <string name="register">Register</string>
+    <string name="log_out">Log out</string>
 </resources>

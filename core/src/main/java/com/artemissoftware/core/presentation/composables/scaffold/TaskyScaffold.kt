@@ -17,8 +17,11 @@ import com.artemissoftware.core.presentation.composables.loading.TaskyLoading
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
 import com.artemissoftware.core.R
+import com.artemissoftware.core.presentation.composables.TaskyDropDown
+import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
+import com.artemissoftware.core.util.UiText
 
 @Composable
 fun TaskyScaffold(
@@ -92,11 +95,11 @@ private fun TaskyScaffoldLoadingPreview() {
 private fun TaskyScaffoldDialogPreview() {
 
     val dialogTypeSuccess = TaskyDialogType.Success(
-        title =  "Get updates",
-        description = "Allow permission to send notifications every day of the year",
+        title =  UiText.DynamicString("Get updates"),
+        description = UiText.DynamicString("Allow permission to send notifications every day of the year"),
         dialogOptions = TaskyDialogOptions.DoubleOption(
-            confirmationText = R.string.ok,
-            cancelText = R.string.cancel
+            confirmationText = UiText.StringResource(R.string.ok),
+            cancelText =UiText.StringResource(R.string.cancel)
         )
     )
 
@@ -123,9 +126,10 @@ private fun TaskyScaffoldTopBarPreview() {
     TaskyScaffold(
         topBar = {
             TaskyTopBar(
-                title = "Top bar title",
+                title = "Title",
                 toolbarActions = { color->
                     TaskyToolBarAction(iconId = R.drawable.ic_visibility, tint = color)
+                    TaskyToolBarAction(iconId = R.drawable.ic_visibility)
                 }
             )
         },

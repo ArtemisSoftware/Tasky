@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
 }
 
@@ -62,9 +63,9 @@ dependencies {
 
 
     //okhttp
-    implementation rootProject.libraries.okhttpBom
-    implementation rootProject.libraries.okhttp
-    implementation rootProject.libraries.okhttpLoggingInterceptor
+    api rootProject.libraries.okhttpBom
+    api rootProject.libraries.okhttp
+    api rootProject.libraries.okhttpLoggingInterceptor
 
 
     //room
@@ -72,9 +73,17 @@ dependencies {
     kapt rootProject.libraries.roomCompiler
     implementation rootProject.libraries.roomKtx
 
+    // coil
     api rootProject.libraries.coilCompose
+
+    //hilt
+    implementation rootProject.libraries.hiltAndroid
+    kapt rootProject.libraries.hiltAndroidCompiler
+    implementation rootProject.libraries.hiltNavigationCompose
 
     //datastore
     implementation rootProject.libraries.datastore
     implementation rootProject.libraries.kotlinxSerializationJson
+
+    implementation rootProject.libraries.lifecycleViewmodelKtx
 }
