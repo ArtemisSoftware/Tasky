@@ -27,14 +27,23 @@ import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.*
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Photo
+import com.artemissoftware.tasky.agenda.presentation.dashboard.AgendaScreenPreview
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
+import com.ramcosta.composedestinations.annotation.Destination
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+
+@Destination
 @Composable
-fun DetailScreen(
+fun DetailScreen(/* TODO :Add view model here*/) {
+
+}
+
+@Composable
+private fun DetailScreenContent(
     state: DetailState,
     events: (DetailEvents) -> Unit
 ) {
@@ -352,8 +361,8 @@ private fun getTimePickerDialog(context: Context, time: MutableState<LocalTime>)
 
 @Preview(showBackground = true)
 @Composable
-fun DetailScreenReminderPreview() {
-    DetailScreen(
+fun DetailScreenContentReminderPreview() {
+    DetailScreenContent(
         state = DetailState(
             agendaItemType = AgendaItemType.Reminder(),
             agendaItem = AgendaItem.mockReminder
@@ -364,8 +373,8 @@ fun DetailScreenReminderPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun DetailScreenReminderEditingPreview() {
-    DetailScreen(
+fun DetailScreenContentReminderEditingPreview() {
+    DetailScreenContent(
         state = DetailState(
             isEditing = true,
             agendaItemType = AgendaItemType.Reminder(),
