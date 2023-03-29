@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
+import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,6 +52,13 @@ private fun MainScreen(viewModel: MainViewModel) {
         TaskyDialog(
             taskyDialogType = it,
             onDialogDismiss = { state.taskyDialogState.closeDialog() },
+        )
+    }
+
+    state.destinationAfterSplash?.let {
+        DestinationsNavHost(
+            navGraph = NavGraphs.root,
+            startRoute = it,
         )
     }
 

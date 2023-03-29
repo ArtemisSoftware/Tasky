@@ -11,6 +11,8 @@ import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.authentication.domain.usecases.AuthenticateUseCase
+import com.artemissoftware.tasky.destinations.AgendaScreenDestination
+import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.navigation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,14 +41,16 @@ class MainViewModel @Inject constructor(
 
             when (result) {
                 is Resource.Success -> {
-                    // TODO : send uiEvent to navigate to agenda + close splash screen
+                    _state.update {
+                        it.copy(showSplash = false, destinationAfterSplash = AgendaScreenDestination)
+                    }
                 }
                 is Resource.Error -> {
                     result.exception?.let { exception ->
                         when (exception) {
                             AuthenticationException.UserNotAuthenticated -> {
                                 _state.update {
-                                    it.copy(showSplash = false, destinationAfterSplash = Destination.Login)
+                                    it.copy(showSplash = false, destinationAfterSplash = LoginScreenDestination)
                                 }
                             }
                             else -> {
@@ -70,7 +74,7 @@ class MainViewModel @Inject constructor(
                 confirmation = {
                     if (authenticateRetries == 0) {
                         _state.update {
-                            it.copy(destinationAfterSplash = Destination.Login)
+                            it.copy(destinationAfterSplash = LoginScreenDestination)
                         }
                         authenticateRetries = 3
                     } else {

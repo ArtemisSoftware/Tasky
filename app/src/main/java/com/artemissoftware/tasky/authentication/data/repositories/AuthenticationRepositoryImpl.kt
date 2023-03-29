@@ -8,9 +8,8 @@ import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
 import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import com.artemissoftware.tasky.authentication.data.remote.source.AuthenticationApiSource
 import com.artemissoftware.tasky.authentication.domain.repositories.AuthenticationRepository
-import javax.inject.Inject
 
-class AuthenticationRepositoryImpl @Inject constructor(
+class AuthenticationRepositoryImpl constructor(
     private val authenticationApiSource: AuthenticationApiSource,
 ) : AuthenticationRepository {
 

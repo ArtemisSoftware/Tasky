@@ -87,7 +87,7 @@ class RegisterViewModel @Inject constructor(
 
                     when (result) {
                         is Resource.Success -> {
-                            // TODO : send uiEvent to navigate to login + close register screen
+                            sendUiEvent(UiEvent.PopBackStack)
                         }
                         is Resource.Error -> {
                             result.exception?.let {
