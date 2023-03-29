@@ -35,6 +35,7 @@ import java.util.*
 @Composable
 fun DetailScreen(/* TODO :Add view model here*/) {
 
+    /* TODO :Add content here*/
 }
 
 @Composable
