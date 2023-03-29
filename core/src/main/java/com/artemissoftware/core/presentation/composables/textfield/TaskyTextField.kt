@@ -1,6 +1,5 @@
 package com.artemissoftware.core.presentation.composables.textfield
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
@@ -12,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core.presentation.theme.*
+import com.artemissoftware.core.presentation.theme.Black
 
 @Composable
 fun TaskyTextField(

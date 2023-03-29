@@ -1,7 +1,7 @@
 package com.artemissoftware.tasky.agenda.presentation.edit
 
 import com.artemissoftware.core.presentation.events.TaskyEvents
-import com.artemissoftware.tasky.agenda.presentation.edit.models.EditItem
+import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 
 sealed class EditEvents : TaskyEvents() {
 
@@ -9,7 +9,7 @@ sealed class EditEvents : TaskyEvents() {
 
     object PopBackStack : EditEvents()
 
-    data class LoadData(val editItem: EditItem) : EditEvents()
+    data class LoadData(val text: String, val editType: EditType) : EditEvents()
 
     data class UpdateText(val text: String) : EditEvents()
 }
