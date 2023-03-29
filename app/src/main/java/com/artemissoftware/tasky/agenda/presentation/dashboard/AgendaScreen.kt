@@ -1,7 +1,13 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -13,11 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
+import com.artemissoftware.core.presentation.composables.button.TaskyExpandableSquareButton
 import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
@@ -31,11 +39,13 @@ import com.artemissoftware.core.util.DateTimePatternsConstants.DATE_PATTERN_MONT
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
+import com.artemissoftware.tasky.util.DateTimePicker
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
 import com.ramcosta.composedestinations.annotation.Destination
 import java.time.LocalDate
@@ -52,6 +62,8 @@ private fun AgendaScreenContent(
     state: AgendaState,
     events: (AgendaEvents) -> Unit,
 ) {
+    val context = LocalContext.current
+
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -64,7 +76,13 @@ private fun AgendaScreenContent(
                         modifier = Modifier
                             .wrapContentWidth()
                             .clickable {
-                                // TODO: open selector
+                                DateTimePicker.datePickerDialog(
+                                    context = context,
+                                    date = state.selectedDayOfTheWeek,
+                                    onDateSelected = {
+                                        events(AgendaEvents.ChangeDate(it))
+                                    },
+                                ).show()
                             },
                     ) {
                         TaskyText(
@@ -98,6 +116,18 @@ private fun AgendaScreenContent(
                 },
             )
         },
+        floatingActionButton = {
+            TaskyExpandableSquareButton(
+                icon = R.drawable.ic_add,
+                options = AgendaItems.values().toList(),
+                onOptionSelected = {
+                    // TODO: add event here
+                },
+                menuOption = {
+                    TaskyDropDownItem(text = stringResource(id = it.descriptionId))
+                },
+            )
+        },
         content = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,7 +158,7 @@ private fun AgendaScreenContent(
                                             dayOfTheWeek = item.day,
                                             isSelected = state.selectedDayOfTheWeek == item.date,
                                             onClick = {
-                                                events(AgendaEvents.ChangeDate(item.date))
+                                                events(AgendaEvents.ChangeWeekDay(item.date))
                                             },
                                         )
                                     },
