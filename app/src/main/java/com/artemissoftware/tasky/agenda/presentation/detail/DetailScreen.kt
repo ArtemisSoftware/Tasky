@@ -1,9 +1,5 @@
 package com.artemissoftware.tasky.agenda.presentation.detail
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.content.Context
-import android.widget.DatePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.runtime.*
@@ -21,18 +17,17 @@ import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarActi
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
+import com.artemissoftware.core.util.DateTimePatternsConstants
+import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.core.util.safeLet
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.*
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Photo
-import com.artemissoftware.tasky.agenda.presentation.dashboard.AgendaScreenPreview
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
+import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -70,37 +65,6 @@ private fun DetailScreenContent(
             ""
         }
         mutableStateOf(title)
-    }
-
-    val startDate = remember { mutableStateOf(LocalDate.now()) }
-    val formattedStartDate by remember {
-        derivedStateOf {
-            DateTimeFormatter.ofPattern("MMM dd yyyy").format(startDate.value)
-        }
-    }
-
-    val endDate = remember { mutableStateOf(LocalDate.now()) }
-    val formattedEndDate by remember {
-        derivedStateOf {
-            DateTimeFormatter.ofPattern("MMM dd yyyy").format(endDate.value)
-        }
-    }
-
-
-
-
-    val startTime = remember { mutableStateOf(LocalTime.now()) }
-    val formattedStartTime by remember {
-        derivedStateOf {
-            DateTimeFormatter.ofPattern("HH:mm").format(startTime.value)
-        }
-    }
-
-    val endTime = remember { mutableStateOf(LocalTime.now()) }
-    val formattedEndTime by remember {
-        derivedStateOf {
-            DateTimeFormatter.ofPattern("HH:mm").format(endTime.value)
-        }
     }
 
     TaskyScaffold(
@@ -145,7 +109,6 @@ private fun DetailScreenContent(
 
                     safeLet(state.agendaItemType, state.agendaItem) { type, item ->
 
-
                         Box(
                             modifier = Modifier
                                 .padding(top = 32.dp)
@@ -164,6 +127,9 @@ private fun DetailScreenContent(
                                     title = item.itemTitle,
                                     modifier = Modifier.fillMaxWidth(),
                                     isEditing = state.isEditing,
+                                    onEditClick = {
+                                        events(DetailEvents.EditTitle(it))
+                                    }
                                 )
 
                                 TaskyDivider(top = 20.dp, bottom = 20.dp)
@@ -171,7 +137,10 @@ private fun DetailScreenContent(
                                 AssignmentDescription(
                                     isEditing = state.isEditing,
                                     description = item.itemDescription,
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onEditClick = {
+                                        events(DetailEvents.EditDescription(it))
+                                    }
                                 )
 
                                 if(type is AgendaItemType.Event) {
@@ -180,8 +149,10 @@ private fun DetailScreenContent(
                                             .fillMaxWidth()
                                             .height(112.dp),
                                         isEditing = state.isEditing,
-                                        onAddPhotoClick = {},
-                                        photos = Photo.mockPhotos
+                                        onAddPhotoClick = {
+                                                          // TODO: add event here
+                                        },
+                                        photos = Photo.mockPhotos // TODO: change this in the future when events are ready
                                     )
                                 }
 
@@ -190,30 +161,61 @@ private fun DetailScreenContent(
                                 TimeInterval(
                                     type = type,
                                     isEditing = state.isEditing,
-                                    startTime = formattedStartTime,
+                                    startTime = state.startTime.format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
                                     onStartTimeClick = {
-                                        getTimePickerDialog(context = context, time = startTime).show()
+
+                                        DateTimePicker.timePickerDialog(
+                                            context = context,
+                                            time = state.startTime,
+                                            onTimeSelected = {
+                                                events(DetailEvents.UpdateStartTime(it))
+                                            }
+                                        ).show()
                                     },
-                                    startDate = formattedStartDate,
+                                    startDate = state.startDate.format(pattern = DateTimePatternsConstants.DATE_PATTERN_MMM_dd_yyyy),
                                     onStartDateTimeClick = {
-                                        getDatePickerDialog(context = context, date = startDate).show()
+
+                                        DateTimePicker.datePickerDialog(
+                                            context = context,
+                                            date = state.startDate,
+                                            onDateSelected = {
+                                                events(DetailEvents.UpdateStartDate(it))
+                                            }
+                                        ).show()
                                     },
-                                    endTime = formattedEndTime,
+                                    endTime = state.endTime.format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
                                     onEndTimeClick = {
-                                        getTimePickerDialog(context = context, time = endTime).show()
+
+                                        DateTimePicker.timePickerDialog(
+                                            context = context,
+                                            time = state.endTime,
+                                            onTimeSelected = {
+                                                events(DetailEvents.UpdateEndTime(it))
+                                            }
+                                        ).show()
                                     },
-                                    endDate = formattedEndDate,
+                                    endDate = state.endDate.format(pattern = DateTimePatternsConstants.DATE_PATTERN_MMM_dd_yyyy),
                                     onEndDateTimeClick = {
-                                        getDatePickerDialog(context = context, date = endDate).show()
+                                        DateTimePicker.datePickerDialog(
+                                            context = context,
+                                            date = state.endDate,
+                                            onDateSelected = {
+                                                events(DetailEvents.UpdateEndDate(it))
+                                            }
+                                        ).show()
                                     }
                                 )
 
                                 TaskyDivider(top = 28.dp, bottom = 20.dp)
 
-                                AssignmentNotification(
+                                AssignmentNotification( // TODO: add a context menu here
                                     isEditing = state.isEditing,
-                                    description = "First description",
-                                    modifier = Modifier.fillMaxWidth()
+                                    description = "First description", //TODO: replace with default option. Do this on next PR
+                                    modifier = Modifier.fillMaxWidth(),
+                                    notificationOptions = emptyList(), //TODO: replace with data form the database when viewmodel is ready
+                                    onNotificationSelected = {
+                                        events(DetailEvents.UpdateNotification(it))
+                                    }
                                 )
 
                                 TaskyDivider(top = 20.dp, bottom = 30.dp)
@@ -224,10 +226,8 @@ private fun DetailScreenContent(
                                         modifier = Modifier.fillMaxWidth()
                                     )
 
-                                    VisitorList(
-                                        modifier = Modifier.padding(top = 20.dp),
-                                        isEditing = state.isEditing
-                                    )
+
+                                    // TODO: add visitor list here
                                 }
                             }
                             Column(
@@ -238,16 +238,13 @@ private fun DetailScreenContent(
                                 TaskyDivider(top = 20.dp, bottom = 20.dp)
                                 TaskyTextButton(
                                     text = buttonTitle.value,
-                                    onClick = {}
+                                    onClick = {
+                                        events(DetailEvents.Save)
+                                    }
                                 )
                             }
-
                         }
-
                     }
-
-
-
                 }
             )
         }
@@ -328,35 +325,6 @@ private fun TimeInterval(
     }
 }
 
-
-private fun getDatePickerDialog(context: Context, date: MutableState<LocalDate>): DatePickerDialog{
-
-    return DatePickerDialog(
-        context,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-
-            date.value = LocalDate.of(mYear, mMonth + 1, mDayOfMonth)
-        },
-        date.value.year,
-        date.value.monthValue - 1,
-        date.value.dayOfMonth
-    )
-
-}
-
-private fun getTimePickerDialog(context: Context, time: MutableState<LocalTime>): TimePickerDialog{
-
-    return TimePickerDialog(
-        context,
-        {_, mHour : Int, mMinute: Int ->
-            time.value = LocalTime.of(mHour, mMinute)
-        },
-        time.value.hour,
-        time.value.minute,
-        true
-    )
-
-}
 
 
 @Preview(showBackground = true)

@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -18,6 +19,7 @@ import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun AssignmentDescription(
+    onEditClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     description: String? = null,
     isEditing: Boolean = false
@@ -25,6 +27,9 @@ fun AssignmentDescription(
 
     Column(
         modifier = modifier
+            .clickable {
+                if(isEditing) onEditClick(description ?: "")
+            }
     ) {
 
         Row(
@@ -64,9 +69,9 @@ fun AssignmentDescription(
 @Composable
 private fun AssignmentHeaderPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentDescription(description = "First description", modifier = Modifier.fillMaxWidth())
-        AssignmentDescription(isEditing = true, description = "Second description", modifier = Modifier.fillMaxWidth())
-        AssignmentDescription(isEditing = true, description = "Second description of a really long one to prove that size is important for the space available", modifier = Modifier.fillMaxWidth())
+        AssignmentDescription(description = "First description", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentDescription(isEditing = true, description = "Second description", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentDescription(isEditing = true, description = "Second description of a really long one to prove that size is important for the space available", modifier = Modifier.fillMaxWidth(), onEditClick = {})
     }
 
 }

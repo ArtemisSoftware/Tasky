@@ -3,6 +3,7 @@ package com.artemissoftware.core.util.extensions
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -22,4 +23,8 @@ fun LocalDateTime.format(pattern: String): String {
 fun LocalDate.format(pattern: String): String {
     val formatter = DateTimeFormatter.ofPattern(pattern)
     return this.format(formatter)
+}
+
+fun LocalTime.format(pattern: String): String {
+    return DateTimeFormatter.ofPattern(pattern).format(this)
 }

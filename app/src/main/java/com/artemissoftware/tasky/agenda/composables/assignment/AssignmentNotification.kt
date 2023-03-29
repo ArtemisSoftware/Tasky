@@ -1,8 +1,8 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,57 +13,55 @@ import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.icon.TaskySquareIcon
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Gray
-import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.tasky.R
+import com.artemissoftware.tasky.agenda.domain.models.Notification
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun AssignmentNotification(
     description: String,
-    isEditing: Boolean = false,
+    onNotificationSelected: (Notification) -> Unit,
+    notificationOptions: List<Notification>,
     modifier: Modifier = Modifier,
+    isEditing: Boolean = false,
 ) {
-
     Column(
         modifier = modifier,
     ) {
-
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-
             Column(
-                modifier = Modifier.weight(0.9F)
+                modifier = Modifier.weight(0.9F),
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TaskySquareIcon(
                         size = 30.dp,
                         icon = R.drawable.ic_notification,
-                        iconColor = Gray
+                        iconColor = Gray,
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     TaskyText(
                         style = MaterialTheme.typography.body1,
-                        text = description
+                        text = description,
                     )
                 }
             }
 
             Column(
                 modifier = Modifier.weight(0.1F),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
                 AnimatedVisibility(
                     visible = isEditing,
                     enter = VisibilityTransitions.enterEdition(),
-                    exit = VisibilityTransitions.exitEdition()
+                    exit = VisibilityTransitions.exitEdition(),
                 ) {
                     TaskyIcon(
                         icon = R.drawable.ic_right_arrow,
-                        size = 30.dp
+                        size = 30.dp,
                     )
                 }
             }
@@ -71,13 +69,22 @@ fun AssignmentNotification(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun AssignmentTimePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentNotification(description = "First description", modifier = Modifier.fillMaxWidth())
-        AssignmentNotification(isEditing = true, description = "Second descriptionsdçljgjlsdglkdshfgklsdhfgjklhsdflkjghsdlkjfghlkdsfhgklsdfhgjklsdhfgjklshdfkljghsdlkfgjdfhgjklsdfhgjsdfg", modifier = Modifier.fillMaxWidth())
+        AssignmentNotification(
+            description = "First description",
+            modifier = Modifier.fillMaxWidth(),
+            onNotificationSelected = {},
+            notificationOptions = emptyList(),
+        )
+        AssignmentNotification(
+            isEditing = true,
+            description = "Second description",
+            modifier = Modifier.fillMaxWidth(),
+            onNotificationSelected = {},
+            notificationOptions = emptyList(),
+        )
     }
-
 }
