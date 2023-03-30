@@ -137,7 +137,7 @@ private fun DetailScreenContent(
 
                                 AssignmentDescription(
                                     isEditing = state.isEditing,
-                                    description = item.itemDescription,
+                                    description = item.itemDescription ?: "",
                                     modifier = Modifier.fillMaxWidth(),
                                     onEditClick = {
                                         events(DetailEvents.EditDescription(it))
@@ -162,12 +162,12 @@ private fun DetailScreenContent(
                                 TimeInterval(
                                     type = type,
                                     isEditing = state.isEditing,
-                                    startTime = state.startTime.format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
+                                    startTime = state.startDate.toLocalTime().format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
                                     onStartTimeClick = {
 
                                         DateTimePicker.timePickerDialog(
                                             context = context,
-                                            time = state.startTime,
+                                            time = state.startDate.toLocalTime(),
                                             onTimeSelected = {
                                                 events(DetailEvents.UpdateStartTime(it))
                                             }
@@ -178,18 +178,18 @@ private fun DetailScreenContent(
 
                                         DateTimePicker.datePickerDialog(
                                             context = context,
-                                            date = state.startDate,
+                                            date = state.startDate.toLocalDate(),
                                             onDateSelected = {
                                                 events(DetailEvents.UpdateStartDate(it))
                                             }
                                         ).show()
                                     },
-                                    endTime = state.endTime.format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
+                                    endTime = state.endDate.toLocalTime().format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
                                     onEndTimeClick = {
 
                                         DateTimePicker.timePickerDialog(
                                             context = context,
-                                            time = state.endTime,
+                                            time = state.endDate.toLocalTime(),
                                             onTimeSelected = {
                                                 events(DetailEvents.UpdateEndTime(it))
                                             }
@@ -199,7 +199,7 @@ private fun DetailScreenContent(
                                     onEndDateTimeClick = {
                                         DateTimePicker.datePickerDialog(
                                             context = context,
-                                            date = state.endDate,
+                                            date = state.endDate.toLocalDate(),
                                             onDateSelected = {
                                                 events(DetailEvents.UpdateEndDate(it))
                                             }
