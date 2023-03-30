@@ -11,6 +11,8 @@ sealed class DetailEvents : TaskyEvents() {
     object Edit : DetailEvents()
     object PopBackStack : DetailEvents()
 
+    data class LoadDetail(val id: String? = null) : DetailEvents()
+
     data class UpdateStartDate(val startDate: LocalDate) : DetailEvents()
     data class UpdateEndDate(val endDate: LocalDate) : DetailEvents()
     data class UpdateStartTime(val startTime: LocalTime) : DetailEvents()
