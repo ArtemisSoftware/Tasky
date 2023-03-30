@@ -26,6 +26,7 @@ fun TaskyTopBar(
     contentColor: Color = White,
     backGroundColor: Color = Green,
     onBackClicked: (() -> Unit)? = null,
+    allCaps: Boolean = false,
     title: String? = null
 ) {
 
@@ -46,6 +47,7 @@ fun TaskyTopBar(
                 TaskyText(
                     style = MaterialTheme.typography.subtitle1,
                     text = it,
+                    allCaps = allCaps,
                     color = contentColor,
                     modifier = Modifier
                         .fillMaxWidth(),

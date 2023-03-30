@@ -45,4 +45,14 @@ sealed class AgendaItem(
         itemTime = time,
         itemSyncState = syncState,
     )
+
+    companion object {
+        val mockReminder = Reminder(
+            id = "fdfgdf",
+            title = "This is a reminder",
+            description = "This is the description of the reminder",
+            remindAt = LocalDateTime.now(),
+            time = LocalDateTime.now(),
+        )
+    }
 }

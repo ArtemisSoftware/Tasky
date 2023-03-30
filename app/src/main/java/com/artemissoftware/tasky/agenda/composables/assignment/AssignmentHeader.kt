@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,12 +22,16 @@ import com.artemissoftware.tasky.util.VisibilityTransitions
 fun AssignmentHeader(
     agendaItemType: AgendaItemType,
     title: String,
+    onEditClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false
 ) {
 
     Column(
         modifier = modifier
+            .clickable {
+                if(isEditing) onEditClick(title)
+            }
     ) {
 
         Row(
@@ -92,9 +97,9 @@ fun AssignmentHeader(
 @Composable
 private fun AssignmentHeaderPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentHeader(agendaItemType = AgendaItemType.Reminder(), title = "First title", modifier = Modifier.fillMaxWidth())
-        AssignmentHeader(agendaItemType = AgendaItemType.Task(), isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth())
-        AssignmentHeader(agendaItemType = AgendaItemType.Event(), isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth())
+        AssignmentHeader(agendaItemType = AgendaItemType.Reminder(), title = "First title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Task(), isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Event(), isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
     }
 
 }

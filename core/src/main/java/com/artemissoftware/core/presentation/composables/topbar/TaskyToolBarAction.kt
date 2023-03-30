@@ -20,8 +20,8 @@ import com.artemissoftware.core.presentation.theme.Black
 
 @Composable
 fun TaskyToolBarAction(
-    modifier: Modifier = Modifier,
     @DrawableRes iconId: Int,
+    modifier: Modifier = Modifier,
     tint: Color = Black,
     onClicked: () -> Unit = {}
 ) {
@@ -43,8 +43,8 @@ fun TaskyToolBarAction(
 
 @Composable
 fun TaskyToolBarAction(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     allCaps: Boolean = false,
     tint: Color = Black,
     style: TextStyle = MaterialTheme.typography.subtitle1,
