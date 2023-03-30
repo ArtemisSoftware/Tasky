@@ -22,7 +22,7 @@ fun ManageUIEvents(
                     showDialog.invoke(event.dialogType)
                 }
                 is UiEvent.PopBackStack -> { onPopBackStack.invoke() }
-                is UiEvent.PopBackStackWithArguments<*> -> { onPopBackStackWithArguments.invoke(event) }
+                is UiEvent.PopBackStackWithArguments<*> -> { onPopBackStackWithArguments(event) }
                 is UiEvent.Navigate -> { onNavigate(event) }
             }
         }

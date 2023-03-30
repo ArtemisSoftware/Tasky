@@ -35,7 +35,7 @@ class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
     private fun updateText(text: String) {
         _state.update {
             it.copy(
-                text = text
+                text = text,
             )
         }
     }
@@ -57,8 +57,8 @@ class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
 
     private fun update() {
         viewModelScope.launch {
-            with(_state.value){
-                sendUiEvent(UiEvent.PopBackStackWithArguments(arguments = Pair(editType ,text)))
+            with(_state.value) {
+                sendUiEvent(UiEvent.PopBackStackWithArguments(arguments = Pair(editType, text)))
             }
         }
     }

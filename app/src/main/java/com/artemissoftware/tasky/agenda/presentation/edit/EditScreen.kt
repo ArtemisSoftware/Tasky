@@ -78,7 +78,7 @@ private fun EditScreenContent(
                     events(EditEvents.PopBackStack)
                 },
                 backGroundColor = White,
-                title = state.editType?.let { stringResource(id = it.title).uppercase() } ?: "",
+                title = stringResource(id = state.editType.title).uppercase(),
                 toolbarActions = { color ->
 
                     TaskyToolBarAction(
