@@ -22,9 +22,15 @@ import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.authentication.presentation.register.composables.RegisterForm
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@Destination
 @Composable
-fun RegisterScreen(viewModel: RegisterViewModel = hiltViewModel()) {
+fun RegisterScreen(
+    viewModel: RegisterViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     RegisterScreenContent(
@@ -37,13 +43,14 @@ fun RegisterScreen(viewModel: RegisterViewModel = hiltViewModel()) {
         showDialog = {
             state.scaffoldState.showDialog(it)
         },
-        onNavigate = {},
-        onPopBackStack = {},
+        onPopBackStack = {
+            navigator.popBackStack()
+        },
     )
 }
 
 @Composable
-fun RegisterScreenContent(
+private fun RegisterScreenContent(
     state: RegisterState,
     events: (RegisterEvents) -> Unit,
 ) {

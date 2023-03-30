@@ -12,6 +12,7 @@ ext.versions = [
         activityCompose             : '1.3.1',
 
         coreKtx                     : '1.7.0',
+        coreSplashscreen            : '1.0.0-alpha02',
         compose                     : '1.4.2',
         composeUiTooling            : '1.3.3',
         composeUiToolingPreview     : '1.3.3',
@@ -103,6 +104,9 @@ ext.libraries = [
         hiltAndroid                     : "com.google.dagger:hilt-android:$versions.hilt",
         hiltAndroidCompiler             : "com.google.dagger:hilt-android-compiler:$versions.hilt",
         hiltNavigationCompose           : "androidx.hilt:hilt-navigation-compose:$versions.hiltNavigationCompose",
+
+
+        coreSplashscreen                :  "androidx.core:core-splashscreen:$versions.coreSplashscreen"
 
 ]
 

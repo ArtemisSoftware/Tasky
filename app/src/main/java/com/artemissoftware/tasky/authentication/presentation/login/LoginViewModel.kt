@@ -14,6 +14,8 @@ import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.authentication.domain.usecases.LoginUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateEmailUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidatePasswordUseCase
+import com.artemissoftware.tasky.destinations.AgendaScreenDestination
+import com.artemissoftware.tasky.destinations.RegisterScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -60,8 +62,9 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun signUp() {
-        // TODO : send uiEvent to navigate to sign up screen
-        // // sendUiEvent(UiEvent.Navigate)
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.Navigate(RegisterScreenDestination.route))
+        }
     }
 
     private fun login() {
@@ -76,7 +79,7 @@ class LoginViewModel @Inject constructor(
 
                     when (result) {
                         is Resource.Success -> {
-                            // TODO : send uiEvent to navigate to agenda + close login screen
+                            sendUiEvent(UiEvent.NavigateAndPopCurrent(AgendaScreenDestination.route))
                         }
                         is Resource.Error -> {
                             result.exception?.let {

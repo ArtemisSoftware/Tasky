@@ -12,6 +12,7 @@ fun ManageUIEvents(
     uiEvent: Flow<UiEvent>,
     showDialog: (TaskyDialogType) -> Unit = {},
     onNavigate: (UiEvent.Navigate) -> Unit = {},
+    onNavigateAndPopCurrent: (UiEvent.NavigateAndPopCurrent) -> Unit = {},
     onPopBackStack: () -> Unit = {},
     onPopBackStackWithArguments: (UiEvent.PopBackStackWithArguments<*>) -> Unit = {},
 ) {
@@ -24,6 +25,9 @@ fun ManageUIEvents(
                 is UiEvent.PopBackStack -> { onPopBackStack.invoke() }
                 is UiEvent.PopBackStackWithArguments<*> -> { onPopBackStackWithArguments(event) }
                 is UiEvent.Navigate -> { onNavigate(event) }
+                is UiEvent.NavigateAndPopCurrent -> {
+                    onNavigateAndPopCurrent(event)
+                }
             }
         }
     }

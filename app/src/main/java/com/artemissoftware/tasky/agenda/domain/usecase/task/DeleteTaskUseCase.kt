@@ -2,8 +2,9 @@ package com.artemissoftware.tasky.agenda.domain.usecase.task
 
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
+import javax.inject.Inject
 
-class DeleteTaskUseCase constructor(
+class DeleteTaskUseCase @Inject constructor(
     private val taskRepository: TaskRepository,
 ) {
     suspend operator fun invoke(id: String) {

@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.devtools.ksp' version "$devtools_ksp_version"
     id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 kotlin {
@@ -93,6 +95,12 @@ dependencies {
     // Compose Destinations
     implementation rootProject.libraries.composeDestinationsCore
     ksp  rootProject.libraries.composeDestinationsKsp
+
+    implementation rootProject.libraries.coreSplashscreen
+
+    implementation rootProject.libraries.hiltAndroid
+    kapt rootProject.libraries.hiltAndroidCompiler
+    implementation rootProject.libraries.hiltNavigationCompose
 
     implementation project(':core')
 }
