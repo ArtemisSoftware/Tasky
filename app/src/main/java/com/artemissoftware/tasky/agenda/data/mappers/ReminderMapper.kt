@@ -30,8 +30,8 @@ fun ReminderAndSyncState.toAgendaItem(): AgendaItem.Reminder {
 
 fun AgendaItem.Reminder.toEntity(): ReminderEntity {
     return ReminderEntity(
-        title = title,
-        description = description,
+        title = itemTitle,
+        description = itemDescription,
         id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),
@@ -40,8 +40,8 @@ fun AgendaItem.Reminder.toEntity(): ReminderEntity {
 
 fun AgendaItem.Reminder.toDto(): ReminderDto {
     return ReminderDto(
-        title = title,
-        description = description,
+        title = itemTitle,
+        description = itemDescription,
         id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),

@@ -32,8 +32,8 @@ fun TaskAndSyncState.toAgendaItem(): AgendaItem.Task {
 
 fun AgendaItem.Task.toEntity(): TaskEntity {
     return TaskEntity(
-        title = title,
-        description = description,
+        title = itemTitle,
+        description = itemDescription,
         id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),
@@ -43,8 +43,8 @@ fun AgendaItem.Task.toEntity(): TaskEntity {
 
 fun AgendaItem.Task.toDto(): TaskDto {
     return TaskDto(
-        title = title,
-        description = description,
+        title = itemTitle,
+        description = itemDescription,
         id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),

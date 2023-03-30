@@ -1,8 +1,9 @@
 package com.artemissoftware.tasky.authentication.domain.usecases.validation
 
 import com.artemissoftware.tasky.BuildConfig.MIN_CHARACTERS_FOR_PASSWORD
+import javax.inject.Inject
 
-class ValidatePasswordUseCase() {
+class ValidatePasswordUseCase @Inject constructor() {
 
     operator fun invoke(password: String): Boolean {
         val hasValidLength = password.length >= MIN_CHARACTERS_FOR_PASSWORD
