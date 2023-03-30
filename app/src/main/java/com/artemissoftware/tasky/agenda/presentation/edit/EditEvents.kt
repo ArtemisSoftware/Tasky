@@ -1,11 +1,15 @@
 package com.artemissoftware.tasky.agenda.presentation.edit
 
 import com.artemissoftware.core.presentation.events.TaskyEvents
-import com.artemissoftware.tasky.authentication.presentation.register.RegisterEvents
+import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 
-sealed class EditEvents: TaskyEvents() {
+sealed class EditEvents : TaskyEvents() {
 
-    object Save : EditEvents()
+    object Update : EditEvents()
 
     object PopBackStack : EditEvents()
+
+    data class LoadData(val text: String, val editType: EditType) : EditEvents()
+
+    data class UpdateText(val text: String) : EditEvents()
 }

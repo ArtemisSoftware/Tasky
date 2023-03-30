@@ -14,6 +14,7 @@ fun ManageUIEvents(
     onNavigate: (UiEvent.Navigate) -> Unit = {},
     onNavigateAndPopCurrent: (UiEvent.NavigateAndPopCurrent) -> Unit = {},
     onPopBackStack: () -> Unit = {},
+    onPopBackStackWithArguments: (UiEvent.PopBackStackWithArguments<*>) -> Unit = {},
 ) {
     LaunchedEffect(key1 = Unit) {
         uiEvent.collectLatest { event ->
@@ -22,6 +23,7 @@ fun ManageUIEvents(
                     showDialog.invoke(event.dialogType)
                 }
                 is UiEvent.PopBackStack -> { onPopBackStack.invoke() }
+                is UiEvent.PopBackStackWithArguments<*> -> { onPopBackStackWithArguments(event) }
                 is UiEvent.Navigate -> { onNavigate(event) }
                 is UiEvent.NavigateAndPopCurrent -> {
                     onNavigateAndPopCurrent(event)
