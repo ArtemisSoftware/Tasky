@@ -1,7 +1,7 @@
 package com.artemissoftware.tasky.agenda.presentation.reminderdetail
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -32,7 +32,8 @@ import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInte
 import com.artemissoftware.tasky.util.DateTimePicker
 
 @Composable
-fun ReminderDetailScreen() {
+fun ReminderDetailScreen(/*Add view model when ready*/) {
+    // TODO extract data like on other screens to call ReminderDetailScreenContent
 }
 
 @Composable
