@@ -8,5 +8,6 @@ data class NotificationWarningEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val description: String,
-    val minutesBefore: Long
+    val minutesBefore: Long,
+    val isDefault: Boolean = false
 )
