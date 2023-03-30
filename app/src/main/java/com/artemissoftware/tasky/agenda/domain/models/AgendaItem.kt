@@ -10,21 +10,24 @@ sealed class AgendaItem(
     var itemDescription: String? = null,
     val itemRemindAt: LocalDateTime,
     val itemTime: LocalDateTime,
+    val itemNotification: Notification,
     val itemSyncState: SyncType,
 ) {
 
     data class Reminder(
         val id: String = UUID.randomUUID().toString(),
-        var title: String,
+        var title: String = "",
         var description: String? = null,
-        var remindAt: LocalDateTime,
-        var time: LocalDateTime,
+        var notification: Notification,
+        var time: LocalDateTime = LocalDateTime.now(),
+        var remindAt: LocalDateTime = time.minusMinutes(notification.minutesBefore),
         val syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
         itemTitle = title,
         itemDescription = description,
         itemRemindAt = remindAt,
+        itemNotification = notification,
         itemTime = time,
         itemSyncState = syncState,
     )
@@ -34,6 +37,7 @@ sealed class AgendaItem(
         var title: String,
         var description: String? = null,
         var remindAt: LocalDateTime,
+        var notification: Notification,
         var time: LocalDateTime,
         var isDone: Boolean = false,
         val syncState: SyncType = SyncType.CREATE,
@@ -42,6 +46,7 @@ sealed class AgendaItem(
         itemTitle = title,
         itemDescription = description,
         itemRemindAt = remindAt,
+        itemNotification = notification,
         itemTime = time,
         itemSyncState = syncState,
     )
@@ -53,6 +58,7 @@ sealed class AgendaItem(
             description = "This is the description of the reminder",
             remindAt = LocalDateTime.now(),
             time = LocalDateTime.now(),
+            notification = Notification(30, "30 minutes before", true),
         )
     }
 }
