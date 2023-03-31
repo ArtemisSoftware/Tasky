@@ -42,15 +42,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background,
                 ) {
-                    ReminderDetailScreenContent(
-                        state = DetailState(
-                            agendaItemType = AgendaItemType.Reminder(),
-                            agendaItem = AgendaItem.mockReminder,
-                        ),
-                        events = {},
-                        notifications = listOf(Notification(1,30, "30 minutes before", true))
-                    )
-                    //--MainScreen(viewModel)
+                    MainScreen(viewModel)
                 }
             }
         }
