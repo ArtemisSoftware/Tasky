@@ -2,6 +2,7 @@ package com.artemissoftware.core.data.database.entities.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.artemissoftware.core.data.database.entities.NotificationWarningEntity
 import com.artemissoftware.core.data.database.entities.TaskEntity
 import com.artemissoftware.core.data.database.entities.TaskSyncEntity
 
@@ -11,5 +12,11 @@ data class TaskAndSyncState(
         parentColumn = "id",
         entityColumn = "id",
     )
-    val taskSyncEntity: TaskSyncEntity,
+    val syncState: TaskSyncEntity,
+
+    @Relation(
+        parentColumn = "notificationId",
+        entityColumn = "id",
+    )
+    val notification: NotificationWarningEntity,
 )

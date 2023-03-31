@@ -209,15 +209,15 @@ private fun DetailScreenContent(
 
                                 TaskyDivider(top = 28.dp, bottom = 20.dp)
 
-                                AssignmentNotification( // TODO: add a context menu here
-                                    isEditing = state.isEditing,
-                                    description = "First description", //TODO: replace with default option. Do this on next PR
-                                    modifier = Modifier.fillMaxWidth(),
-                                    notificationOptions = emptyList(), //TODO: replace with data form the database when viewmodel is ready
-                                    onNotificationSelected = {
-                                        events(DetailEvents.UpdateNotification(it))
-                                    }
-                                )
+//                                AssignmentNotification( // TODO: add a context menu here
+//                                    isEditing = state.isEditing,
+//                                    description = "First description", //TODO: replace with default option. Do this on next PR
+//                                    modifier = Modifier.fillMaxWidth(),
+//                                    notificationOptions = emptyList(), //TODO: replace with data form the database when viewmodel is ready
+//                                    onNotificationSelected = {
+//                                        events(DetailEvents.UpdateNotification(it))
+//                                    }
+//                                )
 
                                 TaskyDivider(top = 20.dp, bottom = 30.dp)
 

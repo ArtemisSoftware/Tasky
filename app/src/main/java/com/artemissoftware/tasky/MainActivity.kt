@@ -14,6 +14,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
+import com.artemissoftware.tasky.agenda.AgendaItemType
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.Notification
+import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
+import com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail.ReminderDetailScreenContent
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -37,7 +42,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background,
                 ) {
-                    MainScreen(viewModel)
+                    ReminderDetailScreenContent(
+                        state = DetailState(
+                            agendaItemType = AgendaItemType.Reminder(),
+                            agendaItem = AgendaItem.mockReminder,
+                        ),
+                        events = {},
+                        notifications = listOf(Notification(1,30, "30 minutes before", true))
+                    )
+                    //--MainScreen(viewModel)
                 }
             }
         }

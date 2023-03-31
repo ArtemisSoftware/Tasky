@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Divider
@@ -18,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -52,31 +50,33 @@ fun <T>TaskyPopupMenu(
         placeHolder()
     }
 
-    Column(
-        horizontalAlignment = Alignment.End,
-        modifier = Modifier
-            .padding(top = with(LocalDensity.current) { parentSize.height.toDp() }),
-    ) {
-        DropdownMenu(
-            modifier = Modifier.wrapContentWidth(),
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
+    if (expanded) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+            /*.padding(top = with(LocalDensity.current) { parentSize.height.toDp() })*/, // TODO: not sure about this line. needs more testing
         ) {
-            options.forEachIndexed { index, item ->
+            DropdownMenu(
+                modifier = Modifier.wrapContentWidth(),
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                options.forEachIndexed { index, item ->
 
-                val isLast = (index == options.size - 1)
+                    val isLast = (index == options.size - 1)
 
-                DropdownMenuItem(
-                    onClick = {
-                        expanded = false
-                        onOptionSelected.invoke(item)
-                    },
-                ) {
-                    menuOption(item)
-                }
+                    DropdownMenuItem(
+                        onClick = {
+                            expanded = false
+                            onOptionSelected.invoke(item)
+                        },
+                    ) {
+                        menuOption(item)
+                    }
 
-                if (addDivider && !isLast) {
-                    Divider(color = Light)
+                    if (addDivider && !isLast) {
+                        Divider(color = Light)
+                    }
                 }
             }
         }

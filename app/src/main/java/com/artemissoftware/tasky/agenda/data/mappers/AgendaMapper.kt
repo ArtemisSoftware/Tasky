@@ -8,5 +8,6 @@ fun NotificationWarningEntity.toNotification(): Notification {
         minutesBefore = minutesBefore,
         description = description,
         isDefault = isDefault,
+        id = id
     )
 }

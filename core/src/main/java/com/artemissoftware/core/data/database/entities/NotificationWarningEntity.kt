@@ -9,5 +9,5 @@ data class NotificationWarningEntity(
     val id: Int,
     val description: String,
     val minutesBefore: Long,
-    val isDefault: Boolean = false
+    val isDefault: Boolean = false,
 )

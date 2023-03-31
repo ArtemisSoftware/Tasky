@@ -8,9 +8,9 @@ sealed class AgendaItem(
     val itemId: String,
     var itemTitle: String,
     var itemDescription: String? = null,
-    val itemRemindAt: LocalDateTime,
+    var itemRemindAt: LocalDateTime,
     val itemTime: LocalDateTime,
-    val itemNotification: Notification,
+    var itemNotification: Notification,
     val itemSyncState: SyncType,
 ) {
 
@@ -58,7 +58,7 @@ sealed class AgendaItem(
             description = "This is the description of the reminder",
             remindAt = LocalDateTime.now(),
             time = LocalDateTime.now(),
-            notification = Notification(30, "30 minutes before", true),
+            notification = Notification(1, 30, "30 minutes before", true),
         )
     }
 }

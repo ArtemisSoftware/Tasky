@@ -19,6 +19,7 @@ sealed class DetailEvents : TaskyEvents() {
     data class UpdateEndTime(val endTime: LocalTime) : DetailEvents()
     data class UpdateNotification(val notification: Notification) : DetailEvents()
     data class EditTitle(val title: String) : DetailEvents()
-
     data class EditDescription(val description: String) : DetailEvents()
+    data class UpdateTitle(val title: String) : DetailEvents()
+    data class UpdateDescription(val description: String) : DetailEvents()
 }

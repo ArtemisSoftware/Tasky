@@ -44,6 +44,7 @@ import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
+import com.artemissoftware.tasky.agenda.domain.models.Notification
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
@@ -240,6 +241,7 @@ fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
+                    notification = Notification(1,30, "30 minutes before", true)
                 ),
 
                 AgendaItem.Reminder(
@@ -247,6 +249,7 @@ fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
+                    notification = Notification(1,30, "30 minutes before", true)
                 ),
             ),
         ),
