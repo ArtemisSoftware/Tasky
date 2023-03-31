@@ -1,7 +1,6 @@
 package com.artemissoftware.core.di
 
 import android.content.Context
-import androidx.room.Room
 import com.artemissoftware.core.data.database.TaskyDatabase
 import dagger.Module
 import dagger.Provides
@@ -16,11 +15,5 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(
-        @ApplicationContext context: Context,
-    ) = Room.databaseBuilder(
-        context,
-        TaskyDatabase::class.java,
-        "tasky_db",
-    ).build()
+    fun provideDatabase(@ApplicationContext context: Context) = TaskyDatabase.getInstance(context)
 }

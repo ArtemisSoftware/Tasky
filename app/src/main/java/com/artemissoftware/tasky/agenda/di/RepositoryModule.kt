@@ -2,8 +2,10 @@ package com.artemissoftware.tasky.agenda.di
 
 import com.artemissoftware.core.data.database.TaskyDatabase
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
+import com.artemissoftware.tasky.agenda.data.repositories.AgendaRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.ReminderRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.TaskRepositoryImpl
+import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import dagger.Module
@@ -26,5 +28,11 @@ object RepositoryModule {
     @Singleton
     fun provideTaskRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): TaskRepository {
         return TaskRepositoryImpl(agendaApiSource = agendaApiSource, taskDao = database.taskDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAgendaRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): AgendaRepository {
+        return AgendaRepositoryImpl(notificationWarningDao = database.notificationWarningDao)
     }
 }

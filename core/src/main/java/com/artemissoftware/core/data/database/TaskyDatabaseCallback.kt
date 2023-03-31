@@ -1,23 +1,19 @@
 package com.artemissoftware.core.data.database
 
+import android.content.Context
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.artemissoftware.core.data.database.entities.NotificationWarningEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class TaskyDatabaseCallback @Inject constructor(
-    private val taskyDatabase: TaskyDatabase,
-) : RoomDatabase.Callback() {
+class TaskyDatabaseCallback(private val context: Context) : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
-
-        prePopulateNotifications(taskyDatabase)
+        prePopulateNotifications()
     }
-
-    private fun prePopulateNotifications(taskyDatabase: TaskyDatabase) {
+    private fun prePopulateNotifications() {
         CoroutineScope(SupervisorJob()).launch {
             val notifications = listOf(
                 NotificationWarningEntity(
@@ -47,7 +43,7 @@ class TaskyDatabaseCallback @Inject constructor(
                 ),
             )
 
-            taskyDatabase.notificationWarningDao.insert(notifications)
+            TaskyDatabase.getInstance(context).notificationWarningDao.insert(notifications)
         }
     }
 }
