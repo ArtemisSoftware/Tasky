@@ -39,15 +39,16 @@ import com.artemissoftware.core.util.DateTimePatternsConstants.DATE_PATTERN_MONT
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
-import com.artemissoftware.tasky.util.DateTimePicker
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.domain.models.Notification
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOption
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
+import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -122,7 +123,7 @@ private fun AgendaScreenContent(
                 icon = R.drawable.ic_add,
                 options = AgendaItems.values().toList(),
                 onOptionSelected = {
-                    // TODO: add event here
+                    events(AgendaEvents.GoToDetail(detailType = it, isEditing = true))
                 },
                 menuOption = {
                     TaskyDropDownItem(text = stringResource(id = it.descriptionId))
@@ -192,14 +193,22 @@ private fun AgendaScreenContent(
                                     itemContent = { item ->
                                         AssignmentCard(
                                             agendaItemType = getAgendaItemType(item),
-                                            title = item.itemTitle,
-                                            description = item.itemDescription,
-                                            date = item.itemTime.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
+                                            agendaItem = item,
                                             onCheckedChange = {
                                                 events(AgendaEvents.CompleteAssignment(item.itemId))
                                             },
                                             onOptionClick = {
-                                                // TODO : show options
+                                                when (it) {
+                                                    AgendaItemOption.OPEN -> {
+                                                        events(AgendaEvents.GoToDetail(id = item.itemId, detailType = getAgendaItems(item), isEditing = false))
+                                                    }
+                                                    AgendaItemOption.EDIT -> {
+                                                        events(AgendaEvents.GoToDetail(id = item.itemId, detailType = getAgendaItems(item), isEditing = true))
+                                                    }
+                                                    AgendaItemOption.DELETE -> {
+                                                        events(AgendaEvents.Delete(item.itemId))
+                                                    }
+                                                }
                                             },
                                         )
                                     },
@@ -218,10 +227,14 @@ private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
     // TODO: add other types likes task and events in the future
 }
 
+private fun getAgendaItems(item: AgendaItem): AgendaItems {
+    return AgendaItems.REMINDER
+    // TODO: add other types likes task and events in the future
+}
+
 @Preview(showBackground = true)
 @Composable
 fun AgendaScreenPreview() {
-
     val localDate = LocalDate.now()
     AgendaScreenContent(
         events = {},
@@ -241,7 +254,7 @@ fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
-                    notification = Notification(1,30, "30 minutes before", true)
+                    notification = Notification(1, 30, "30 minutes before", true),
                 ),
 
                 AgendaItem.Reminder(
@@ -249,7 +262,7 @@ fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
-                    notification = Notification(1,30, "30 minutes before", true)
+                    notification = Notification(1, 30, "30 minutes before", true),
                 ),
             ),
         ),
