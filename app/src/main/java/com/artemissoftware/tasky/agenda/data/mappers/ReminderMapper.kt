@@ -3,24 +3,24 @@ package com.artemissoftware.tasky.agenda.data.mappers
 import com.artemissoftware.core.data.database.entities.NotificationWarningEntity
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.relations.ReminderAndSyncState
+import com.artemissoftware.core.data.database.util.getValidNotification
 import com.artemissoftware.core.util.extensions.toLocalDateTime
 import com.artemissoftware.core.util.extensions.toLong
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import java.time.Duration
 
-fun ReminderDto.toEntity(notifications: List<NotificationWarningEntity>): ReminderEntity {
-    val notificationDefault = notifications.find { it.isDefault } ?: notifications.first()
-    val notification = notifications.find { Duration.between(remindAt.toLocalDateTime(), time.toLocalDateTime()).toMinutes() == it.minutesBefore }
+fun ReminderDto.toEntity(notifications: List<NotificationWarningEntity>): ReminderEntity? {
+    return notifications.getValidNotification(remindAt = remindAt.toLocalDateTime(), time = time.toLocalDateTime())?.let { notification ->
 
-    return ReminderEntity(
-        title = title,
-        description = description,
-        id = id,
-        remindAt = remindAt,
-        time = time,
-        notificationId = notification?.id ?: notificationDefault.id,
-    )
+        ReminderEntity(
+            title = title,
+            description = description,
+            id = id,
+            remindAt = remindAt,
+            time = time,
+            notificationId = notification.id,
+        )
+    }
 }
 
 fun ReminderAndSyncState.toAgendaItem(): AgendaItem.Reminder {

@@ -20,8 +20,6 @@ import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
-import com.artemissoftware.core.util.DateTimePatternsConstants
-import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentDescription
@@ -156,7 +154,7 @@ fun ReminderDetailScreenContent(
                                 },
                             )
 
-                            DetailDivider(top = 20.dp, bottom = 20.dp)
+                            DetailDivider(top = 20.dp, bottom = 20.dp, modifier = Modifier.fillMaxWidth())
 
                             AssignmentDescription(
                                 isEditing = state.isEditing,
@@ -167,11 +165,12 @@ fun ReminderDetailScreenContent(
                                 },
                             )
 
-                            DetailDivider(top = 20.dp, bottom = 28.dp)
+                            DetailDivider(top = 20.dp, bottom = 28.dp, modifier = Modifier.fillMaxWidth())
 
                             TimeInterval(
+                                modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,
-                                startTime = state.startDate.toLocalTime().format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
+                                startDate = state.startDate,
                                 onStartTimeClick = {
                                     DateTimePicker.timePickerDialog(
                                         context = context,
@@ -181,8 +180,7 @@ fun ReminderDetailScreenContent(
                                         },
                                     ).show()
                                 },
-                                startDate = state.startDate.format(pattern = DateTimePatternsConstants.DATE_PATTERN_MMM_dd_yyyy),
-                                onStartDateTimeClick = {
+                                onStartDateClick = {
                                     DateTimePicker.datePickerDialog(
                                         context = context,
                                         date = state.startDate.toLocalDate(),
@@ -193,7 +191,7 @@ fun ReminderDetailScreenContent(
                                 },
                             )
 
-                            DetailDivider(top = 28.dp, bottom = 20.dp)
+                            DetailDivider(top = 28.dp, bottom = 20.dp, modifier = Modifier.fillMaxWidth())
 
                             notifications.find { it.isDefault }?.let { defaultNotification ->
                                 AssignmentNotification(
@@ -207,13 +205,13 @@ fun ReminderDetailScreenContent(
                                 )
                             }
 
-                            DetailDivider(top = 20.dp, bottom = 30.dp)
+                            DetailDivider(top = 20.dp, bottom = 30.dp, modifier = Modifier.fillMaxWidth())
                         }
                         Column(
                             modifier = Modifier.align(Alignment.BottomCenter),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            DetailDivider(top = 20.dp, bottom = 20.dp)
+                            DetailDivider(top = 20.dp, bottom = 20.dp, modifier = Modifier.fillMaxWidth())
                             TaskyTextButton(
                                 text = String.format(resources.getString(R.string.delete_title_with_argument), resources.getString(R.string.reminder)),
                                 onClick = {
