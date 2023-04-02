@@ -40,7 +40,6 @@ fun ReminderDetailScreenContent(
     events: (DetailEvents) -> Unit,
 ) {
     val context = LocalContext.current
-    val resources = context.resources
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -52,7 +51,9 @@ fun ReminderDetailScreenContent(
                 },
                 backGroundColor = Black,
                 allCaps = true,
-                title = String.format(resources.getString(R.string.edit_title_with_argument), resources.getString(R.string.reminder)),
+                title = String.format(
+                    stringResource(id = R.string.edit_title_with_argument),
+                    stringResource(id = R.string.reminder)),
                 toolbarActions = { color ->
 
                     if (state.isEditing) {
@@ -157,7 +158,9 @@ fun ReminderDetailScreenContent(
                         ) {
                             DetailDivider(top = 20.dp, bottom = 20.dp, modifier = Modifier.fillMaxWidth())
                             TaskyTextButton(
-                                text = String.format(resources.getString(R.string.delete_title_with_argument), resources.getString(R.string.reminder)),
+                                text = String.format(
+                                    stringResource(id = R.string.delete_title_with_argument),
+                                    stringResource(id = R.string.reminder)),
                                 onClick = {
                                     events(DetailEvents.Save)
                                 },
