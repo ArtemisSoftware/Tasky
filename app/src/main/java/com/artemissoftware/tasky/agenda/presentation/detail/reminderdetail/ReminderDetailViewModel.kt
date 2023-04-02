@@ -12,6 +12,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.GetNotificationsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
+import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
@@ -31,7 +32,7 @@ class ReminderDetailViewModel @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(DetailState())
+    private val _state = MutableStateFlow(DetailState(specification = DetailSpecification.Reminder))
     val state: StateFlow<DetailState> = _state
 
     var notifications by mutableStateOf(emptyList<Notification>())

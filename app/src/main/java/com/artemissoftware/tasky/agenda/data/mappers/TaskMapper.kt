@@ -8,10 +8,8 @@ import com.artemissoftware.core.util.extensions.toLocalDateTime
 import com.artemissoftware.core.util.extensions.toLong
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import java.time.Duration
 
-fun TaskDto.toEntity(notifications: List<NotificationWarningEntity>): TaskEntity?  {
-
+fun TaskDto.toEntity(notifications: List<NotificationWarningEntity>): TaskEntity? {
     return notifications.getValidNotification(remindAt = remindAt.toLocalDateTime(), time = time.toLocalDateTime())?.let { notification ->
         TaskEntity(
             title = title,
