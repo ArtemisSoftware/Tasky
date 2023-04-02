@@ -28,6 +28,7 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotific
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Notification
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
+import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
@@ -49,7 +50,7 @@ fun ReminderDetailScreen(
     resultRecipient: ResultRecipient<EditScreenDestination, ReminderRecipient>
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    val notifications = viewModel.notifications.value
+    val notifications = viewModel.notifications
 
     LaunchedEffect(key1 = Unit) {
         // TODO: check if with hilt navigation I can get this object directly on the viewmodel and make this call on init
@@ -146,7 +147,7 @@ fun ReminderDetailScreenContent(
                         ) {
                             AssignmentHeader(
                                 agendaItemType = AgendaItemType.Reminder(),
-                                title = state.agendaItem?.itemTitle ?: "",
+                                title = state.title,
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,
                                 onEditClick = {
@@ -158,7 +159,7 @@ fun ReminderDetailScreenContent(
 
                             AssignmentDescription(
                                 isEditing = state.isEditing,
-                                description = state.agendaItem?.itemDescription ?: "",
+                                description = state.description,
                                 modifier = Modifier.fillMaxWidth(),
                                 onEditClick = {
                                     events(DetailEvents.EditDescription(it))
@@ -201,7 +202,7 @@ fun ReminderDetailScreenContent(
                                     onNotificationSelected = {
                                         events(DetailEvents.UpdateNotification(it))
                                     },
-                                    selectedNotification = state.agendaItem?.itemNotification ?: defaultNotification,
+                                    selectedNotification = state.notification ?: defaultNotification,
                                 )
                             }
 
@@ -233,6 +234,7 @@ fun ReminderDetailScreenContentPreview() {
         state = DetailState(
             agendaItemType = AgendaItemType.Reminder(),
             agendaItem = AgendaItem.mockReminder,
+            specification = DetailSpecification.Reminder
         ),
         events = {},
         notifications = listOf(Notification(1, 30, "30 minutes before", true)),
@@ -247,6 +249,7 @@ fun ReminderDetailScreenContentEditingPreview() {
             isEditing = true,
             agendaItemType = AgendaItemType.Reminder(),
             agendaItem = AgendaItem.mockReminder,
+            specification = DetailSpecification.Reminder
         ),
         events = {},
         notifications = listOf(Notification(1, 30, "30 minutes before", true)),

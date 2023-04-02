@@ -328,30 +328,6 @@ private fun TimeInterval(
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun DetailScreenContentReminderPreview() {
-    DetailScreenContent(
-        state = DetailState(
-            agendaItemType = AgendaItemType.Reminder(),
-            agendaItem = AgendaItem.mockReminder
-        ),
-        events = {}
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DetailScreenContentReminderEditingPreview() {
-    DetailScreenContent(
-        state = DetailState(
-            isEditing = true,
-            agendaItemType = AgendaItemType.Reminder(),
-            agendaItem = AgendaItem.mockReminder
-        ),
-        events = {}
-    )
-}
 /*
 @Preview(showBackground = true)
 @Composable
