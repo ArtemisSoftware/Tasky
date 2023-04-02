@@ -42,7 +42,6 @@ private fun TaskDetailScreenContent(
     events: (DetailEvents) -> Unit,
 ) {
     val context = LocalContext.current
-    val resources = context.resources
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -55,10 +54,8 @@ private fun TaskDetailScreenContent(
                 backGroundColor = Black,
                 allCaps = true,
                 title = String.format(
-                    resources.getString(R.string.edit_title_with_argument),
-                    resources.getString(
-                        R.string.task,
-                    ),
+                    stringResource(id = R.string.edit_title_with_argument),
+                    stringResource(id = R.string.task),
                 ),
                 toolbarActions = { color ->
 
@@ -165,10 +162,8 @@ private fun TaskDetailScreenContent(
                             DetailDivider(top = 20.dp, bottom = 20.dp, modifier = Modifier.fillMaxWidth())
                             TaskyTextButton(
                                 text = String.format(
-                                    resources.getString(R.string.delete_title_with_argument),
-                                    resources.getString(
-                                        R.string.task,
-                                    ),
+                                    stringResource(id = R.string.delete_title_with_argument),
+                                    stringResource(id = R.string.task)
                                 ),
                                 onClick = {
                                     events(DetailEvents.Save)
