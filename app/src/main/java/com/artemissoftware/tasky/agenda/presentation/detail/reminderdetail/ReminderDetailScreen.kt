@@ -52,11 +52,6 @@ fun ReminderDetailScreen(
     val state = viewModel.state.collectAsStateWithLifecycle()
     val notifications = viewModel.notifications
 
-    LaunchedEffect(key1 = Unit) {
-        // TODO: check if with hilt navigation I can get this object directly on the viewmodel and make this call on init
-        viewModel.onTriggerEvent(DetailEvents.LoadDetail(id = reminderId))
-    }
-
     resultRecipient.onNavResult { result ->
         result.getOr { null }?.let { editResult ->
 

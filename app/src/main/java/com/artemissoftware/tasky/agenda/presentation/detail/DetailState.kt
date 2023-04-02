@@ -11,7 +11,6 @@ data class DetailState(
     val agendaItemType: AgendaItemType? = null, // TODO: remove when TaskDetailScreen and EventDetailScreen are ready
     val agendaItem: AgendaItem? = null,
     val startDate: LocalDateTime = LocalDateTime.now(),
-    val endDate: LocalDateTime = LocalDateTime.now(),
     val title: String = "",
     val description: String = "",
     val notification: Notification? = null,
@@ -22,6 +21,7 @@ sealed interface DetailSpecification {
 
     data class Event( // TODO: complete when EventDetailScreen is ready
         val to: LocalDateTime = LocalDateTime.now(),
+        val endDate: LocalDateTime = LocalDateTime.now(),
     ) : DetailSpecification
 
     data class Task( // TODO: complete when TaskDetailScreen is ready

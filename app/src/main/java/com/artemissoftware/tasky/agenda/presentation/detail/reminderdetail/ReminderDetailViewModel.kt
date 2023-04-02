@@ -3,6 +3,7 @@ package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
@@ -16,6 +17,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
+import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +32,7 @@ class ReminderDetailViewModel @Inject constructor(
     private val saveReminderUseCase: SaveReminderUseCase,
     private val getReminderUseCase: GetReminderUseCase,
     private val getNotificationsUseCase: GetNotificationsUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(DetailState(specification = DetailSpecification.Reminder))
@@ -37,6 +40,10 @@ class ReminderDetailViewModel @Inject constructor(
 
     var notifications by mutableStateOf(emptyList<Notification>())
         private set
+
+    init {
+        loadDetail()
+    }
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -54,9 +61,6 @@ class ReminderDetailViewModel @Inject constructor(
             is DetailEvents.UpdateNotification -> { updateNotification(event.notification) }
             is DetailEvents.UpdateStartDate -> { updateStartDate(event.startDate) }
             is DetailEvents.UpdateStartTime -> { updateStartTime(event.startTime) }
-            is DetailEvents.LoadDetail -> {
-                loadDetail(event.id)
-            }
             is DetailEvents.UpdateDescription -> {
                 updateDescription(event.description)
             }
@@ -136,7 +140,10 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadDetail(id: String?) {
+    private fun loadDetail() {
+        ReminderDetailScreenDestination
+        val id = savedStateHandle.get<String>("reminderId") // TODO: safer way to get the name of the variable on savedStateHandle? is there a way to say ReminderDetailScreenDestination.reminderId
+
         viewModelScope.launch {
             notifications = getNotificationsUseCase()
 
@@ -144,19 +151,19 @@ class ReminderDetailViewModel @Inject constructor(
 
                 val result = getReminderUseCase(reminderId)
 
-                _state.update {
-                    it.copy(
-                        agendaItem = result,
-                    )
+                result?.let { reminder ->
+                    _state.update {
+                        it.copy(
+                            startDate = reminder.time,
+                            title = reminder.title,
+                            description = reminder.description ?: "",
+                            notification = reminder.notification,
+                            agendaItem = result,
+                        )
+                    }
                 }
             } ?: run {
-                _state.update {
-                    it.copy(
-                        agendaItem = AgendaItem.Reminder(
-                            notification = notifications.find { it.isDefault } ?: notifications.first(),
-                        ),
-                    )
-                }
+                createDefaultReminder()
             }
         }
     }
@@ -179,6 +186,16 @@ class ReminderDetailViewModel @Inject constructor(
                 saveReminderUseCase(item as AgendaItem.Reminder)
                 popBackStack()
             }
+        }
+    }
+
+    private fun createDefaultReminder() {
+        _state.update {
+            it.copy(
+                agendaItem = AgendaItem.Reminder(
+                    notification = notifications.find { it.isDefault } ?: notifications.first(),
+                ),
+            )
         }
     }
 }

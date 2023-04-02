@@ -23,6 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyExpandableSquareButton
@@ -48,15 +50,32 @@ import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.Agend
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOption
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
+import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Destination(start = true)
 @Composable
-fun AgendaScreen(/* TODO :Add view model here*/) {
-    AgendaScreenPreview()
+fun AgendaScreen(
+    navigator: DestinationsNavigator,
+    viewModel: AgendaViewModel = hiltViewModel(),
+) {
+    val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    AgendaScreenContent(
+        state = state,
+        events = viewModel::onTriggerEvent,
+    )
+
+    ManageUIEvents(
+        uiEvent = viewModel.uiEvent,
+        onNavigate = {
+            navigator.navigate(it.route)
+        },
+    )
 }
 
 @Composable
@@ -78,13 +97,15 @@ private fun AgendaScreenContent(
                         modifier = Modifier
                             .wrapContentWidth()
                             .clickable {
-                                DateTimePicker.datePickerDialog(
-                                    context = context,
-                                    date = state.selectedDayOfTheWeek,
-                                    onDateSelected = {
-                                        events(AgendaEvents.ChangeDate(it))
-                                    },
-                                ).show()
+                                DateTimePicker
+                                    .datePickerDialog(
+                                        context = context,
+                                        date = state.selectedDayOfTheWeek,
+                                        onDateSelected = {
+                                            events(AgendaEvents.ChangeDate(it))
+                                        },
+                                    )
+                                    .show()
                             },
                     ) {
                         TaskyText(
@@ -123,7 +144,7 @@ private fun AgendaScreenContent(
                 icon = R.drawable.ic_add,
                 options = AgendaItems.values().toList(),
                 onOptionSelected = {
-                    events(AgendaEvents.GoToDetail(detailType = it, isEditing = true))
+                    events(AgendaEvents.CreateAgendaItem(detailType = it))
                 },
                 menuOption = {
                     TaskyDropDownItem(text = stringResource(id = it.descriptionId))

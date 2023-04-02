@@ -13,5 +13,7 @@ sealed class AgendaEvents : TaskyEvents() {
 
     data class GoToDetail(val id: String? = null, val detailType: AgendaItems, val isEditing: Boolean) : AgendaEvents()
 
+    data class CreateAgendaItem(val detailType: AgendaItems) : AgendaEvents()
+
     data class Delete(val id: String) : AgendaEvents()
 }

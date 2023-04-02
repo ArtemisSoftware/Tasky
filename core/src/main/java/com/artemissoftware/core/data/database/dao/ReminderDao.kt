@@ -9,7 +9,7 @@ import com.artemissoftware.core.data.database.entities.relations.ReminderAndSync
 interface ReminderDao {
     @Transaction
     @Query("SELECT * FROM reminderEntity WHERE id = :id")
-    fun getReminderAndSyncState(id: String): ReminderAndSyncState?
+    suspend fun getReminderAndSyncState(id: String): ReminderAndSyncState?
 
     @Upsert
     fun upsert(reminderEntity: ReminderEntity)
