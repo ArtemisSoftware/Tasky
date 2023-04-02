@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.presentation.reminderdetail
+package com.artemissoftware.tasky.agenda.presentation.detail.taskdetail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,14 +28,16 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.util.DateTimePicker
+import com.ramcosta.composedestinations.annotation.Destination
 
+@Destination
 @Composable
-fun ReminderDetailScreen(/*Add view model when ready*/) {
-    // TODO extract data like on other screens to call ReminderDetailScreenContent
+fun TaskDetailScreen(/*Add view model when ready*/) {
+    // TODO extract data like on other screens to call TaskDetailScreenContent
 }
 
 @Composable
-fun ReminderDetailScreenContent(
+private fun TaskDetailScreenContent(
     state: DetailState,
     events: (DetailEvents) -> Unit,
 ) {
@@ -53,7 +55,8 @@ fun ReminderDetailScreenContent(
                 allCaps = true,
                 title = String.format(
                     stringResource(id = R.string.edit_title_with_argument),
-                    stringResource(id = R.string.reminder)),
+                    stringResource(id = R.string.task),
+                ),
                 toolbarActions = { color ->
 
                     if (state.isEditing) {
@@ -92,7 +95,7 @@ fun ReminderDetailScreenContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             AssignmentHeader(
-                                agendaItemType = AgendaItemType.Reminder(),
+                                agendaItemType = AgendaItemType.Task(),
                                 title = state.agendaItem?.itemTitle ?: "",
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,
@@ -160,7 +163,8 @@ fun ReminderDetailScreenContent(
                             TaskyTextButton(
                                 text = String.format(
                                     stringResource(id = R.string.delete_title_with_argument),
-                                    stringResource(id = R.string.reminder)),
+                                    stringResource(id = R.string.task)
+                                ),
                                 onClick = {
                                     events(DetailEvents.Save)
                                 },
@@ -175,11 +179,11 @@ fun ReminderDetailScreenContent(
 
 @Preview(showBackground = true)
 @Composable
-fun ReminderDetailScreenContentPreview() {
-    ReminderDetailScreenContent(
+fun TaskDetailScreenContentPreview() {
+    TaskDetailScreenContent(
         state = DetailState(
-            agendaItemType = AgendaItemType.Reminder(),
-            agendaItem = AgendaItem.mockReminder,
+            agendaItemType = AgendaItemType.Task(),
+            agendaItem = AgendaItem.mockTask,
         ),
         events = {},
     )
@@ -187,12 +191,12 @@ fun ReminderDetailScreenContentPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ReminderDetailScreenContentEditingPreview() {
-    ReminderDetailScreenContent(
+fun DetailScreenTaskEditingPreview() {
+    TaskDetailScreenContent(
         state = DetailState(
             isEditing = true,
-            agendaItemType = AgendaItemType.Reminder(),
-            agendaItem = AgendaItem.mockReminder,
+            agendaItemType = AgendaItemType.Task(),
+            agendaItem = AgendaItem.mockTask,
         ),
         events = {},
     )

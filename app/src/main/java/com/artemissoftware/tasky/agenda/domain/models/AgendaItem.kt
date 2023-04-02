@@ -54,5 +54,13 @@ sealed class AgendaItem(
             remindAt = LocalDateTime.now(),
             time = LocalDateTime.now(),
         )
+
+        val mockTask = Task(
+            id = "fdfgdf",
+            title = "This is a task",
+            description = "This is the description of the task",
+            remindAt = LocalDateTime.now(),
+            time = LocalDateTime.now(),
+        )
     }
 }
