@@ -1,6 +1,8 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
@@ -32,7 +34,7 @@ class ReminderDetailViewModel @Inject constructor(
     private val _state = MutableStateFlow(DetailState())
     val state: StateFlow<DetailState> = _state
 
-    var notifications = mutableStateOf(emptyList<Notification>())
+    var notifications by mutableStateOf(emptyList<Notification>())
         private set
 
     fun onTriggerEvent(event: DetailEvents) {
@@ -135,7 +137,7 @@ class ReminderDetailViewModel @Inject constructor(
 
     private fun loadDetail(id: String?) {
         viewModelScope.launch {
-            notifications.value = getNotificationsUseCase()
+            notifications = getNotificationsUseCase()
 
             id?.let { reminderId ->
 
@@ -150,7 +152,7 @@ class ReminderDetailViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         agendaItem = AgendaItem.Reminder(
-                            notification = notifications.value.find { it.isDefault } ?: notifications.value.first(),
+                            notification = notifications.find { it.isDefault } ?: notifications.first(),
                         ),
                     )
                 }
@@ -165,7 +167,7 @@ class ReminderDetailViewModel @Inject constructor(
                 item.itemTitle = title
                 item.itemDescription = description
 
-                notifications.value.find { it.isDefault }?.let {
+                notifications.find { it.isDefault }?.let {
                     val result = notification ?: it
                     item.itemNotification = result
                     item.itemRemindAt = startDate.minusMinutes(result.minutesBefore)
