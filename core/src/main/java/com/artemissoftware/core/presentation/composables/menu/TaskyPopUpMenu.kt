@@ -63,7 +63,7 @@ fun <T>TaskyPopupMenu(
             ) {
                 options.forEachIndexed { index, item ->
 
-                    val isLast = (index == options.size - 1)
+                    val isLast = (index == options.lastIndex)
 
                     DropdownMenuItem(
                         onClick = {
