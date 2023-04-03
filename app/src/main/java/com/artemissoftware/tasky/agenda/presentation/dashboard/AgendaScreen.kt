@@ -44,6 +44,7 @@ import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
+import com.artemissoftware.tasky.agenda.domain.models.Notification
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
@@ -191,8 +192,8 @@ private fun AgendaScreenContent(
                                     itemContent = { item ->
                                         AssignmentCard(
                                             agendaItemType = getAgendaItemType(item),
-                                            title = item.title,
-                                            description = item.description,
+                                            title = item.itemTitle,
+                                            description = item.itemDescription,
                                             date = item.itemTime.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
                                             onCheckedChange = {
                                                 events(AgendaEvents.CompleteAssignment(item.itemId))
@@ -240,6 +241,7 @@ fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
+                    notification = Notification(1,30, "30 minutes before", true)
                 ),
 
                 AgendaItem.Reminder(
@@ -247,6 +249,7 @@ fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
+                    notification = Notification(1,30, "30 minutes before", true)
                 ),
             ),
         ),

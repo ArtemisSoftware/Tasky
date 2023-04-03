@@ -1,16 +1,18 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.icon.TaskySquareIcon
+import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Gray
 import com.artemissoftware.tasky.R
@@ -19,9 +21,42 @@ import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun AssignmentNotification(
-    description: String,
+    selectedNotification: Notification,
     onNotificationSelected: (Notification) -> Unit,
     notificationOptions: List<Notification>,
+    modifier: Modifier = Modifier,
+    isEditing: Boolean = false,
+) {
+    if(isEditing){
+        TaskyPopupMenu(
+            options = notificationOptions,
+            onOptionSelected = onNotificationSelected,
+            menuOption = {
+                TaskyDropDownItem(text = it.description)
+            },
+            placeHolder = {
+                AssignmentNotification(
+                    isEditing = true,
+                    description = selectedNotification.description,
+                    modifier = modifier,
+                )
+            },
+        )
+    }
+    else{
+        AssignmentNotification(
+            isEditing = false,
+            description = selectedNotification.description,
+            modifier = modifier,
+        )
+    }
+
+
+}
+
+@Composable
+fun AssignmentNotification(
+    description: String,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
 ) {
@@ -69,22 +104,25 @@ fun AssignmentNotification(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 private fun AssignmentTimePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         AssignmentNotification(
             description = "First description",
-            modifier = Modifier.fillMaxWidth(),
-            onNotificationSelected = {},
-            notificationOptions = emptyList(),
+            modifier = Modifier.fillMaxWidth()
         )
         AssignmentNotification(
             isEditing = true,
             description = "Second description",
+            modifier = Modifier.fillMaxWidth()
+        )
+        AssignmentNotification(
+            isEditing = true,
             modifier = Modifier.fillMaxWidth(),
+            selectedNotification = Notification(1, 30, "30 minutes before", true),
             onNotificationSelected = {},
-            notificationOptions = emptyList(),
+            notificationOptions = listOf(Notification(1, 30, "30 minutes before", true))
         )
     }
 }
