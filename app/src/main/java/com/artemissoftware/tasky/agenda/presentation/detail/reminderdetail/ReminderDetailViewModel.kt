@@ -19,6 +19,7 @@ import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -33,7 +34,7 @@ class ReminderDetailViewModel @Inject constructor(
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(DetailState(specification = DetailSpecification.Reminder))
-    val state: StateFlow<DetailState> = _state
+    val state: StateFlow<DetailState> = _state.asStateFlow()
 
     var notifications by mutableStateOf(emptyList<Notification>())
         private set
@@ -41,7 +42,7 @@ class ReminderDetailViewModel @Inject constructor(
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
             DetailEvents.Edit -> {
-                setEdition()
+                toggleEdition()
             }
             is DetailEvents.EditDescription -> {
                 editTitleOrDescription(event.description, EditType.Description)
@@ -116,7 +117,7 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun setEdition() {
+    private fun toggleEdition() {
         _state.update {
             it.copy(
                 isEditing = !_state.value.isEditing,
