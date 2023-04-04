@@ -4,6 +4,7 @@ import androidx.room.*
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.ReminderAndSyncState
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReminderDao {
@@ -11,8 +12,14 @@ interface ReminderDao {
     @Query("SELECT * FROM reminderEntity WHERE id = :id")
     suspend fun getReminderAndSyncState(id: String): ReminderAndSyncState?
 
+    @Query("SELECT * FROM reminderEntity WHERE time >= :initialDate AND time < :endDate")
+    fun getReminders(initialDate: Long, endDate: Long): Flow<List<ReminderAndSyncState>>
+
     @Upsert
     fun upsert(reminderEntity: ReminderEntity)
+
+    @Upsert
+    fun upsert(reminderEntities: List<ReminderEntity>)
 
     @Upsert
     suspend fun upsertReminderSync(reminderSyncEntity: ReminderSyncEntity)

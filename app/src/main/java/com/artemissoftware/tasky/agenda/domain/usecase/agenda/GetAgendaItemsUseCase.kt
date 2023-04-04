@@ -2,17 +2,21 @@ package com.artemissoftware.tasky.agenda.domain.usecase.agenda
 
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import java.time.LocalDate
 import javax.inject.Inject
 
 class GetAgendaItemsUseCase @Inject constructor(
     private val reminderRepository: ReminderRepository,
+    private val taskRepository: TaskRepository,
 ) {
-    suspend operator fun invoke(): List<AgendaItem> { // TODO: add date to search
+    operator fun invoke(date: LocalDate): Flow<List<AgendaItem>> = combine(
+        reminderRepository.getReminders(date = date),
+        taskRepository.getTasks(date = date),
+    ) { reminders, tasks ->
 
-        val list = listOf<AgendaItem>(
-            reminderRepository.getReminder("7706f862-e36c-4676-bd75-8f4329402f8f")!!, // TODO: metodo para obter todos
-        )
-
-        return list
+        (reminders + tasks).sortedBy { it.itemTime }
     }
 }

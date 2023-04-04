@@ -11,6 +11,10 @@ import com.artemissoftware.tasky.agenda.data.mappers.toEntity
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import java.time.LocalDate
+import java.time.ZoneId
 
 class TaskRepositoryImpl constructor(
     private val taskDao: TaskDao,
@@ -19,6 +23,15 @@ class TaskRepositoryImpl constructor(
 
     override suspend fun getTask(id: String): AgendaItem.Task? {
         return taskDao.getTaskAndSyncState(id)?.toAgendaItem()
+    }
+
+    override fun getTasks(date: LocalDate): Flow<List<AgendaItem.Task>> {
+        val initialDate = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val endDate = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        return taskDao.getTasks(initialDate = initialDate, endDate = endDate).map { list ->
+            list.map { item -> item.toAgendaItem() }
+        }
     }
 
     override suspend fun saveTaskAndSync(task: AgendaItem.Task): DataResponse<Unit> {

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,18 +12,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
+    private val syncAgendaUseCase: SyncAgendaUseCase
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
     val state: StateFlow<AgendaState> = _state
 
     init {
-        getAgendaItems()
+        getAgendaItems(date = LocalDate.now())
+        syncAgenda(date = LocalDate.now())
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -65,15 +69,25 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    private fun getAgendaItems() {
+    private fun getAgendaItems(date: LocalDate) {
         viewModelScope.launch {
-            val result = getAgendaItemsUseCase()
+           getAgendaItemsUseCase(date = date).collect{ result ->
+               _state.update {
+                   it.copy(
+                       agendaItems = result,
+                   )
+               }
 
-            _state.update {
-                it.copy(
-                    agendaItems = result,
-                )
-            }
+
+           }
+
+
+        }
+    }
+
+    private fun syncAgenda(date: LocalDate) {
+        viewModelScope.launch {
+            syncAgendaUseCase(date = date)
         }
     }
 }
