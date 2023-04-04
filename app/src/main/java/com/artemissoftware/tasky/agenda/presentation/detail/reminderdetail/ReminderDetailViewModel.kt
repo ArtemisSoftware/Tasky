@@ -1,6 +1,8 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
@@ -10,12 +12,14 @@ import com.artemissoftware.tasky.agenda.domain.usecase.GetNotificationsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
+import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -29,16 +33,16 @@ class ReminderDetailViewModel @Inject constructor(
     private val getNotificationsUseCase: GetNotificationsUseCase,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(DetailState())
-    val state: StateFlow<DetailState> = _state
+    private val _state = MutableStateFlow(DetailState(specification = DetailSpecification.Reminder))
+    val state: StateFlow<DetailState> = _state.asStateFlow()
 
-    var notifications = mutableStateOf(emptyList<Notification>())
+    var notifications by mutableStateOf(emptyList<Notification>())
         private set
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
             DetailEvents.Edit -> {
-                setEdition()
+                toggleEdition()
             }
             is DetailEvents.EditDescription -> {
                 editTitleOrDescription(event.description, EditType.Description)
@@ -113,7 +117,7 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun setEdition() {
+    private fun toggleEdition() {
         _state.update {
             it.copy(
                 isEditing = !_state.value.isEditing,
@@ -135,7 +139,7 @@ class ReminderDetailViewModel @Inject constructor(
 
     private fun loadDetail(id: String?) {
         viewModelScope.launch {
-            notifications.value = getNotificationsUseCase()
+            notifications = getNotificationsUseCase()
 
             id?.let { reminderId ->
 
@@ -150,7 +154,7 @@ class ReminderDetailViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         agendaItem = AgendaItem.Reminder(
-                            notification = notifications.value.find { it.isDefault } ?: notifications.value.first(),
+                            notification = notifications.find { it.isDefault } ?: notifications.first(),
                         ),
                     )
                 }
@@ -165,7 +169,7 @@ class ReminderDetailViewModel @Inject constructor(
                 item.itemTitle = title
                 item.itemDescription = description
 
-                notifications.value.find { it.isDefault }?.let {
+                notifications.find { it.isDefault }?.let {
                     val result = notification ?: it
                     item.itemNotification = result
                     item.itemRemindAt = startDate.minusMinutes(result.minutesBefore)
