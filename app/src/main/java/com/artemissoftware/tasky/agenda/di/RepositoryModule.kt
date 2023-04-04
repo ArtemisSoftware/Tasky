@@ -33,6 +33,6 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideAgendaRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): AgendaRepository {
-        return AgendaRepositoryImpl(notificationWarningDao = database.notificationWarningDao)
+        return AgendaRepositoryImpl()
     }
 }

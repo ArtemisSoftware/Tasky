@@ -1,26 +1,20 @@
 package com.artemissoftware.tasky.agenda.data.mappers
 
-import com.artemissoftware.core.data.database.entities.NotificationWarningEntity
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.relations.ReminderAndSyncState
-import com.artemissoftware.core.data.database.util.getValidNotification
 import com.artemissoftware.core.util.extensions.toLocalDateTime
 import com.artemissoftware.core.util.extensions.toLong
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 
-fun ReminderDto.toEntity(notifications: List<NotificationWarningEntity>): ReminderEntity? {
-    return notifications.getValidNotification(remindAt = remindAt.toLocalDateTime(), time = time.toLocalDateTime())?.let { notification ->
-
-        ReminderEntity(
-            title = title,
-            description = description,
-            id = id,
-            remindAt = remindAt,
-            time = time,
-            notificationId = notification.id,
-        )
-    }
+fun ReminderDto.toEntity(): ReminderEntity {
+    return ReminderEntity(
+        title = title,
+        description = description,
+        id = id,
+        remindAt = remindAt,
+        time = time,
+    )
 }
 
 fun ReminderAndSyncState.toAgendaItem(): AgendaItem.Reminder {
@@ -31,7 +25,6 @@ fun ReminderAndSyncState.toAgendaItem(): AgendaItem.Reminder {
         remindAt = this.reminder.remindAt.toLocalDateTime(),
         time = this.reminder.time.toLocalDateTime(),
         syncState = this.syncState.syncType,
-        notification = this.notification.toNotification(),
     )
 }
 
@@ -42,7 +35,6 @@ fun AgendaItem.Reminder.toEntity(): ReminderEntity {
         id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),
-        notificationId = notification.id,
     )
 }
 

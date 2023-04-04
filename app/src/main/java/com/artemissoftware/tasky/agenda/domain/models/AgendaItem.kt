@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.domain.models
 
 import com.artemissoftware.core.domain.SyncType
+import com.artemissoftware.core.domain.models.agenda.NotificationType
 import java.time.LocalDateTime
 import java.util.*
 
@@ -9,8 +10,8 @@ sealed class AgendaItem(
     var itemTitle: String,
     var itemDescription: String? = null,
     var itemRemindAt: LocalDateTime,
-    val itemTime: LocalDateTime,
-    var itemNotification: Notification,
+    val starDate: LocalDateTime,
+    var itemNotification: NotificationType,
     val itemSyncState: SyncType,
 ) {
 
@@ -18,9 +19,9 @@ sealed class AgendaItem(
         val id: String = UUID.randomUUID().toString(),
         var title: String = "",
         var description: String? = null,
-        var notification: Notification,
         var time: LocalDateTime = LocalDateTime.now(),
-        var remindAt: LocalDateTime = time.minusMinutes(notification.minutesBefore),
+        var remindAt: LocalDateTime = NotificationType.remindAt(time, NotificationType.defaultNotification()),
+        var notification: NotificationType = NotificationType.getNotification(remindAt = remindAt, startDate = time),
         val syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
@@ -28,7 +29,7 @@ sealed class AgendaItem(
         itemDescription = description,
         itemRemindAt = remindAt,
         itemNotification = notification,
-        itemTime = time,
+        starDate = time,
         itemSyncState = syncState,
     )
 
@@ -36,10 +37,10 @@ sealed class AgendaItem(
         val id: String = UUID.randomUUID().toString(),
         var title: String,
         var description: String? = null,
-        var remindAt: LocalDateTime,
-        var notification: Notification,
-        var time: LocalDateTime,
+        var time: LocalDateTime = LocalDateTime.now(),
         var isDone: Boolean = false,
+        var remindAt: LocalDateTime = NotificationType.remindAt(time, NotificationType.defaultNotification()),
+        var notification: NotificationType = NotificationType.getNotification(remindAt = remindAt, startDate = time),
         val syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
@@ -47,7 +48,7 @@ sealed class AgendaItem(
         itemDescription = description,
         itemRemindAt = remindAt,
         itemNotification = notification,
-        itemTime = time,
+        starDate = time,
         itemSyncState = syncState,
     )
 
@@ -58,7 +59,7 @@ sealed class AgendaItem(
             description = "This is the description of the reminder",
             remindAt = LocalDateTime.now(),
             time = LocalDateTime.now(),
-            notification = Notification(1, 30, "30 minutes before", true),
+            notification = NotificationType.THIRTY_MINUTES_BEFORE,
         )
     }
 }
