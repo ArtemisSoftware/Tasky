@@ -13,13 +13,8 @@ import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import java.time.LocalDate
 
 class AgendaRepositoryImpl(
-    private val notificationWarningDao: NotificationWarningDao,
     private val agendaApiSource: AgendaApiSource,
 ) : AgendaRepository {
-
-    override suspend fun getNotifications(): List<Notification> {
-        return notificationWarningDao.getNotificationWarnings().map { it.toNotification() }
-    }
 
     override suspend fun getAgenda(date: LocalDate): DataResponse<Agenda> {
         return try {

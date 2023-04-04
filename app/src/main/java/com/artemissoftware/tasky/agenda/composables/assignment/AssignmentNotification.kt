@@ -1,14 +1,19 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.composables.dropdown.TaskyDropDownItem
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.icon.TaskySquareIcon
@@ -16,42 +21,37 @@ import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Gray
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.domain.models.Notification
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun AssignmentNotification(
-    selectedNotification: Notification,
-    onNotificationSelected: (Notification) -> Unit,
-    notificationOptions: List<Notification>,
+    selectedNotification: NotificationType,
+    onNotificationSelected: (NotificationType) -> Unit,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
 ) {
-    if(isEditing){
+    if (isEditing) {
         TaskyPopupMenu(
-            options = notificationOptions,
+            options = NotificationType.values().toList(),
             onOptionSelected = onNotificationSelected,
             menuOption = {
-                TaskyDropDownItem(text = it.description)
+                TaskyDropDownItem(text = it.description.asString())
             },
             placeHolder = {
                 AssignmentNotification(
                     isEditing = true,
-                    description = selectedNotification.description,
+                    description = selectedNotification.description.asString(),
                     modifier = modifier,
                 )
             },
         )
-    }
-    else{
+    } else {
         AssignmentNotification(
             isEditing = false,
-            description = selectedNotification.description,
+            description = selectedNotification.description.asString(),
             modifier = modifier,
         )
     }
-
-
 }
 
 @Composable
@@ -110,19 +110,18 @@ private fun AssignmentTimePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         AssignmentNotification(
             description = "First description",
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         AssignmentNotification(
             isEditing = true,
             description = "Second description",
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         AssignmentNotification(
             isEditing = true,
             modifier = Modifier.fillMaxWidth(),
-            selectedNotification = Notification(1, 30, "30 minutes before", true),
+            selectedNotification = NotificationType.THIRTY_MINUTES_BEFORE,
             onNotificationSelected = {},
-            notificationOptions = listOf(Notification(1, 30, "30 minutes before", true))
         )
     }
 }

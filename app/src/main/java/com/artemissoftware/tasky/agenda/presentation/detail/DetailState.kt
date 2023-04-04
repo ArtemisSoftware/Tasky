@@ -1,8 +1,9 @@
 package com.artemissoftware.tasky.agenda.presentation.detail
 
+import com.artemissoftware.core.domain.models.agenda.NotificationType
+import com.artemissoftware.core.domain.models.agenda.NotificationType.Companion.defaultNotification
 import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.agenda.domain.models.Notification
 import java.time.LocalDateTime
 
 data class DetailState(
@@ -13,7 +14,7 @@ data class DetailState(
     val startDate: LocalDateTime = LocalDateTime.now(),
     val title: String = "",
     val description: String = "",
-    val notification: Notification? = null,
+    val notification: NotificationType = defaultNotification(),
     val specification: DetailSpecification,
 )
 
@@ -26,6 +27,7 @@ sealed interface DetailSpecification {
 
     data class Task( // TODO: complete when TaskDetailScreen is ready
         val isDone: Boolean = false,
+        val endDate: LocalDateTime = LocalDateTime.now(),
     ) : DetailSpecification
 
     object Reminder : DetailSpecification
