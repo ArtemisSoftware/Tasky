@@ -3,6 +3,7 @@ package com.artemissoftware.tasky.agenda.presentation.edit
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail.ReminderRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,7 +59,7 @@ class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
     private fun update() {
         viewModelScope.launch {
             with(_state.value) {
-                sendUiEvent(UiEvent.PopBackStackWithArguments(arguments = Pair(editType, text)))
+                sendUiEvent(UiEvent.PopBackStackWithArguments(arguments = ReminderRecipient(editType = editType, text = text)))
             }
         }
     }

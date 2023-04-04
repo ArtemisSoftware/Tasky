@@ -16,11 +16,10 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(
-        @ApplicationContext context: Context,
-    ) = Room.databaseBuilder(
+    fun provideDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
         context,
         TaskyDatabase::class.java,
         "tasky_db",
-    ).build()
+    )
+        .build()
 }

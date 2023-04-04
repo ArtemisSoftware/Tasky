@@ -11,6 +11,7 @@ import com.artemissoftware.core.data.database.entities.relations.TaskAndSyncStat
 @Dao
 interface TaskDao {
 
+    @Transaction
     @Query("SELECT * FROM taskEntity WHERE id = :id")
     fun getTaskAndSyncState(id: String): TaskAndSyncState?
 

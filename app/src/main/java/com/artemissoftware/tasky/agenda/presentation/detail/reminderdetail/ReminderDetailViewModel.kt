@@ -1,14 +1,10 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.agenda.domain.models.Notification
-import com.artemissoftware.tasky.agenda.domain.usecase.GetNotificationsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
@@ -30,14 +26,10 @@ import javax.inject.Inject
 class ReminderDetailViewModel @Inject constructor(
     private val saveReminderUseCase: SaveReminderUseCase,
     private val getReminderUseCase: GetReminderUseCase,
-    private val getNotificationsUseCase: GetNotificationsUseCase,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(DetailState(specification = DetailSpecification.Reminder))
     val state: StateFlow<DetailState> = _state.asStateFlow()
-
-    var notifications by mutableStateOf(emptyList<Notification>())
-        private set
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -84,7 +76,7 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateNotification(notification: Notification) {
+    private fun updateNotification(notification: NotificationType) {
         _state.update {
             it.copy(
                 notification = notification,
@@ -139,23 +131,26 @@ class ReminderDetailViewModel @Inject constructor(
 
     private fun loadDetail(id: String?) {
         viewModelScope.launch {
-            notifications = getNotificationsUseCase()
-
             id?.let { reminderId ->
 
                 val result = getReminderUseCase(reminderId)
 
                 _state.update {
-                    it.copy(
-                        agendaItem = result,
-                    )
+                    result?.let { item ->
+                        it.copy(
+                            agendaItem = item,
+                            notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.starDate),
+                        )
+                    } ?: run {
+                        it.copy(
+                            agendaItem = AgendaItem.Reminder(),
+                        )
+                    }
                 }
             } ?: run {
                 _state.update {
                     it.copy(
-                        agendaItem = AgendaItem.Reminder(
-                            notification = notifications.find { it.isDefault } ?: notifications.first(),
-                        ),
+                        agendaItem = AgendaItem.Reminder(),
                     )
                 }
             }
@@ -168,12 +163,7 @@ class ReminderDetailViewModel @Inject constructor(
             with(_state.value) {
                 item.itemTitle = title
                 item.itemDescription = description
-
-                notifications.find { it.isDefault }?.let {
-                    val result = notification ?: it
-                    item.itemNotification = result
-                    item.itemRemindAt = startDate.minusMinutes(result.minutesBefore)
-                }
+                item.itemRemindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
             }
 
             viewModelScope.launch {

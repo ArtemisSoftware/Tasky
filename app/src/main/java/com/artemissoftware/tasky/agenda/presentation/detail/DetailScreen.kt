@@ -159,53 +159,6 @@ private fun DetailScreenContent(
 
                                 TaskyDivider(top = 20.dp, bottom = 28.dp)
 
-                                TimeInterval(
-                                    type = type,
-                                    isEditing = state.isEditing,
-                                    startTime = state.startDate.toLocalTime().format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
-                                    onStartTimeClick = {
-
-                                        DateTimePicker.timePickerDialog(
-                                            context = context,
-                                            time = state.startDate.toLocalTime(),
-                                            onTimeSelected = {
-                                                events(DetailEvents.UpdateStartTime(it))
-                                            }
-                                        ).show()
-                                    },
-                                    startDate = state.startDate.format(pattern = DateTimePatternsConstants.DATE_PATTERN_MMM_dd_yyyy),
-                                    onStartDateTimeClick = {
-
-                                        DateTimePicker.datePickerDialog(
-                                            context = context,
-                                            date = state.startDate.toLocalDate(),
-                                            onDateSelected = {
-                                                events(DetailEvents.UpdateStartDate(it))
-                                            }
-                                        ).show()
-                                    },
-                                    endTime = state.endDate.toLocalTime().format(pattern = DateTimePatternsConstants.TIME_PATTERN_HH_mm),
-                                    onEndTimeClick = {
-
-                                        DateTimePicker.timePickerDialog(
-                                            context = context,
-                                            time = state.endDate.toLocalTime(),
-                                            onTimeSelected = {
-                                                events(DetailEvents.UpdateEndTime(it))
-                                            }
-                                        ).show()
-                                    },
-                                    endDate = state.endDate.format(pattern = DateTimePatternsConstants.DATE_PATTERN_MMM_dd_yyyy),
-                                    onEndDateTimeClick = {
-                                        DateTimePicker.datePickerDialog(
-                                            context = context,
-                                            date = state.endDate.toLocalDate(),
-                                            onDateSelected = {
-                                                events(DetailEvents.UpdateEndDate(it))
-                                            }
-                                        ).show()
-                                    }
-                                )
 
                                 TaskyDivider(top = 28.dp, bottom = 20.dp)
 
@@ -328,30 +281,6 @@ private fun TimeInterval(
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun DetailScreenContentReminderPreview() {
-    DetailScreenContent(
-        state = DetailState(
-            agendaItemType = AgendaItemType.Reminder(),
-            agendaItem = AgendaItem.mockReminder
-        ),
-        events = {}
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DetailScreenContentReminderEditingPreview() {
-    DetailScreenContent(
-        state = DetailState(
-            isEditing = true,
-            agendaItemType = AgendaItemType.Reminder(),
-            agendaItem = AgendaItem.mockReminder
-        ),
-        events = {}
-    )
-}
 /*
 @Preview(showBackground = true)
 @Composable

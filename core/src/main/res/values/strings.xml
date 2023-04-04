@@ -8,4 +8,9 @@
     <string name="error_occurred_during_login">An error occurred while performing log in</string>
     <string name="error_occurred_during_user_registration">An error occurred while performing user registration</string>
     <string name="user_not_currently_authenticated">User is not currently authenticated</string>
+    <string name="ten_minutes_before">10 minutes before</string>
+    <string name="thirty_minutes_before">30 minutes before</string>
+    <string name="one_hour_before">1 hour before</string>
+    <string name="six_hours_before">6 hours before</string>
+    <string name="one_day_before">1 day before</string>
 </resources>
