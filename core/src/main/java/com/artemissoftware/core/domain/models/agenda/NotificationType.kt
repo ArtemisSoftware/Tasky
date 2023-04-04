@@ -5,7 +5,7 @@ import com.artemissoftware.core.util.UiText
 import java.time.Duration
 import java.time.LocalDateTime
 
-enum class NotificationType(val minutesBefore: Long, val description: UiText, private val isDefault: Boolean = false) {
+enum class NotificationType(val minutesBefore: Long, val description: UiText) {
 
     TEN_MINUTES_BEFORE(
         minutesBefore = 10,
@@ -15,7 +15,6 @@ enum class NotificationType(val minutesBefore: Long, val description: UiText, pr
     THIRTY_MINUTES_BEFORE(
         minutesBefore = 30,
         description = UiText.StringResource(R.string.thirty_minutes_before),
-        isDefault = true,
     ),
     ONE_HOUR_BEFORE(
         minutesBefore = 60,
@@ -33,7 +32,7 @@ enum class NotificationType(val minutesBefore: Long, val description: UiText, pr
 
     companion object {
 
-        fun defaultNotification() = values().find { it.isDefault } ?: THIRTY_MINUTES_BEFORE
+        fun defaultNotification() = THIRTY_MINUTES_BEFORE
 
         fun remindAt(time: LocalDateTime, notificationType: NotificationType): LocalDateTime {
             return when (notificationType) {

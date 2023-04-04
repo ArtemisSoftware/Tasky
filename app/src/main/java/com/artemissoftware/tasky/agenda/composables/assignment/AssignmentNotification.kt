@@ -27,13 +27,12 @@ import com.artemissoftware.tasky.util.VisibilityTransitions
 fun AssignmentNotification(
     selectedNotification: NotificationType,
     onNotificationSelected: (NotificationType) -> Unit,
-    notificationOptions: List<NotificationType>,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
 ) {
     if (isEditing) {
         TaskyPopupMenu(
-            options = notificationOptions,
+            options = NotificationType.values().toList(),
             onOptionSelected = onNotificationSelected,
             menuOption = {
                 TaskyDropDownItem(text = it.description.asString())
@@ -123,7 +122,6 @@ private fun AssignmentTimePreview() {
             modifier = Modifier.fillMaxWidth(),
             selectedNotification = NotificationType.THIRTY_MINUTES_BEFORE,
             onNotificationSelected = {},
-            notificationOptions = NotificationType.values().toList(),
         )
     }
 }

@@ -194,7 +194,6 @@ fun ReminderDetailScreenContent(
                             AssignmentNotification(
                                 isEditing = state.isEditing,
                                 modifier = Modifier.fillMaxWidth(),
-                                notificationOptions = NotificationType.values().toList(),
                                 onNotificationSelected = {
                                     events(DetailEvents.UpdateNotification(it))
                                 },
