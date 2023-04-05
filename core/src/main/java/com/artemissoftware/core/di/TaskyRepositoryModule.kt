@@ -1,5 +1,6 @@
 package com.artemissoftware.core.di
 
+import android.app.AlarmManager
 import android.content.Context
 import com.artemissoftware.core.data.repositories.UserStoreRepositoryImpl
 import com.artemissoftware.core.domain.repositories.UserStoreRepository
@@ -18,5 +19,13 @@ object TaskyRepositoryModule {
     @Singleton
     fun provideUserStoreRepository(@ApplicationContext context: Context): UserStoreRepository {
         return UserStoreRepositoryImpl(context = context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager {
+        return context.getSystemService(
+            AlarmManager::class.java,
+        )
     }
 }
