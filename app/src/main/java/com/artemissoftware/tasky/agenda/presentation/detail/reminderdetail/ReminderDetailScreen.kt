@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
@@ -33,6 +32,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
@@ -47,7 +47,7 @@ fun ReminderDetailScreen(
     navigator: DestinationsNavigator,
     viewModel: ReminderDetailViewModel = hiltViewModel(),
     reminderId: String? = null,
-    resultRecipient: ResultRecipient<EditScreenDestination, ReminderRecipient>,
+    resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
@@ -121,7 +121,7 @@ fun ReminderDetailScreenContent(
                             iconId = R.drawable.ic_edit,
                             tint = color,
                             onClicked = {
-                                events(DetailEvents.Edit)
+                                events(DetailEvents.ToggleEdition)
                             },
                         )
                     }

@@ -33,7 +33,7 @@ class ReminderDetailViewModel @Inject constructor(
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
-            DetailEvents.Edit -> {
+            DetailEvents.ToggleEdition -> {
                 toggleEdition()
             }
             is DetailEvents.EditDescription -> {
@@ -164,6 +164,7 @@ class ReminderDetailViewModel @Inject constructor(
                 item.itemTitle = title
                 item.itemDescription = description
                 item.itemRemindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
+                item.starDate = startDate
             }
 
             viewModelScope.launch {

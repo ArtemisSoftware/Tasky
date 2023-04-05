@@ -10,7 +10,7 @@ sealed class AgendaItem(
     var itemTitle: String,
     var itemDescription: String? = null,
     var itemRemindAt: LocalDateTime,
-    val starDate: LocalDateTime,
+    var starDate: LocalDateTime,
     var itemNotification: NotificationType,
     val itemSyncState: SyncType,
 ) {
@@ -35,7 +35,7 @@ sealed class AgendaItem(
 
     data class Task(
         val id: String = UUID.randomUUID().toString(),
-        var title: String,
+        var title: String = "",
         var description: String? = null,
         var time: LocalDateTime = LocalDateTime.now(),
         var isDone: Boolean = false,
