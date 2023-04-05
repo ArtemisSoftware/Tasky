@@ -132,7 +132,6 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
-
     private fun loadDetail() {
         val id = savedStateHandle.get<String>("taskId") // TODO: safer way to get the name of the variable on savedStateHandle? is there a way to say TaskDetailScreenDestination.taskId
 
@@ -150,8 +149,8 @@ class TaskDetailViewModel @Inject constructor(
                             title = item.title,
                             description = item.description ?: "",
                             specification = DetailSpecification.Task(
-                                isDone = item.isDone
-                            )
+                                isDone = item.isDone,
+                            ),
                         )
                     } ?: run {
                         it.copy(
@@ -181,10 +180,9 @@ class TaskDetailViewModel @Inject constructor(
             }
 
             viewModelScope.launch {
-                saveTaskUseCase(item as AgendaItem.Task)
+                saveTaskUseCase(item)
                 popBackStack()
             }
         }
     }
-
 }
