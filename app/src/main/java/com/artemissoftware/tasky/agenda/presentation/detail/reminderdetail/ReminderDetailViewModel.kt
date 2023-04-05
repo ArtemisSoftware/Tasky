@@ -28,8 +28,8 @@ class ReminderDetailViewModel @Inject constructor(
     private val getReminderUseCase: GetReminderUseCase,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(DetailState(specification = DetailSpecification.Reminder))
-    val state: StateFlow<DetailState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(ReminderDetailState())
+    val state: StateFlow<ReminderDetailState> = _state.asStateFlow()
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -161,10 +161,10 @@ class ReminderDetailViewModel @Inject constructor(
         _state.value.agendaItem?.let { item ->
 
             with(_state.value) {
-                item.itemTitle = title
-                item.itemDescription = description
-                item.itemRemindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
-                item.starDate = startDate
+                item.title = title
+                item.description = description
+                item.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
+                item.time = startDate
             }
 
             viewModelScope.launch {

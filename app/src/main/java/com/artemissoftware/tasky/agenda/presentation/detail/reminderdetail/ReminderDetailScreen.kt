@@ -88,7 +88,7 @@ fun ReminderDetailScreen(
 
 @Composable
 fun ReminderDetailScreenContent(
-    state: DetailState,
+    state: ReminderDetailState,
     events: (DetailEvents) -> Unit,
 ) {
     val context = LocalContext.current
@@ -228,10 +228,8 @@ fun ReminderDetailScreenContent(
 @Composable
 fun ReminderDetailScreenContentPreview() {
     ReminderDetailScreenContent(
-        state = DetailState(
-            agendaItemType = AgendaItemType.Reminder(),
+        state = ReminderDetailState(
             agendaItem = AgendaItem.mockReminder,
-            specification = DetailSpecification.Reminder,
         ),
         events = {},
     )
@@ -241,11 +239,9 @@ fun ReminderDetailScreenContentPreview() {
 @Composable
 fun ReminderDetailScreenContentEditingPreview() {
     ReminderDetailScreenContent(
-        state = DetailState(
+        state = ReminderDetailState(
             isEditing = true,
-            agendaItemType = AgendaItemType.Reminder(),
             agendaItem = AgendaItem.mockReminder,
-            specification = DetailSpecification.Reminder,
         ),
         events = {},
     )

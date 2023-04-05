@@ -7,11 +7,11 @@ import java.util.*
 
 sealed class AgendaItem(
     val itemId: String,
-    var itemTitle: String,
-    var itemDescription: String? = null,
-    var itemRemindAt: LocalDateTime,
-    var starDate: LocalDateTime,
-    var itemNotification: NotificationType,
+    val itemTitle: String,
+    val itemDescription: String? = null,
+    val itemRemindAt: LocalDateTime,
+    val starDate: LocalDateTime,
+    val itemNotification: NotificationType,
     val itemSyncState: SyncType,
 ) {
 

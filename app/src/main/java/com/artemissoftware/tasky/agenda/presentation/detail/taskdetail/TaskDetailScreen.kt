@@ -27,8 +27,6 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
@@ -66,7 +64,6 @@ fun TaskDetailScreen(
 
     TaskDetailScreenContent(
         state = state,
-        specification = (state.specification as DetailSpecification.Task),
         events = viewModel::onTriggerEvent,
     )
 
@@ -83,9 +80,8 @@ fun TaskDetailScreen(
 
 @Composable
 private fun TaskDetailScreenContent(
-    state: DetailState,
+    state: TaskDetailState,
     events: (DetailEvents) -> Unit,
-    specification: DetailSpecification.Task,
 ) {
     val context = LocalContext.current
 
@@ -159,7 +155,7 @@ private fun TaskDetailScreenContent(
                                 isEditing = state.isEditing,
                                 description = state.description,
                                 modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.body1.copy(textDecoration = if (specification.isDone) TextDecoration.LineThrough else TextDecoration.None),
+                                style = MaterialTheme.typography.body1.copy(textDecoration = if (state.isDone) TextDecoration.LineThrough else TextDecoration.None),
                                 onEditClick = {
                                     events(DetailEvents.EditDescription(it))
                                 },
@@ -230,13 +226,10 @@ private fun TaskDetailScreenContent(
 @Composable
 fun TaskDetailScreenContentPreview() {
     TaskDetailScreenContent(
-        state = DetailState(
-            agendaItemType = AgendaItemType.Task(),
+        state = TaskDetailState(
             agendaItem = AgendaItem.mockTask,
-            specification = DetailSpecification.Task(),
         ),
         events = {},
-        specification = DetailSpecification.Task(),
     )
 }
 
@@ -244,13 +237,10 @@ fun TaskDetailScreenContentPreview() {
 @Composable
 fun DetailScreenTaskEditingPreview() {
     TaskDetailScreenContent(
-        state = DetailState(
+        state = TaskDetailState(
             isEditing = true,
-            agendaItemType = AgendaItemType.Task(),
             agendaItem = AgendaItem.mockTask,
-            specification = DetailSpecification.Task(),
         ),
         events = {},
-        specification = DetailSpecification.Task(),
     )
 }

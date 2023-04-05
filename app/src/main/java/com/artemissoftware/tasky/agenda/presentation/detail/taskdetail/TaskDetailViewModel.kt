@@ -9,8 +9,6 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,8 +28,8 @@ class TaskDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(DetailState(specification = DetailSpecification.Task()))
-    val state: StateFlow<DetailState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(TaskDetailState())
+    val state: StateFlow<TaskDetailState> = _state.asStateFlow()
 
     init {
         loadDetail()
@@ -63,10 +61,9 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun toggleIsDone() {
-        val specification = (_state.value.specification as DetailSpecification.Task)
         _state.update {
             it.copy(
-                specification = specification.copy(isDone = !specification.isDone),
+                isDone = !_state.value.isDone,
             )
         }
     }
@@ -133,7 +130,7 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        val id = savedStateHandle.get<String>("taskId") // TODO: safer way to get the name of the variable on savedStateHandle? is there a way to say TaskDetailScreenDestination.taskId
+        val id = savedStateHandle.get<String>("taskId")
 
         viewModelScope.launch {
             id?.let { taskId ->
@@ -148,9 +145,7 @@ class TaskDetailViewModel @Inject constructor(
                             startDate = item.time,
                             title = item.title,
                             description = item.description ?: "",
-                            specification = DetailSpecification.Task(
-                                isDone = item.isDone,
-                            ),
+                            isDone = item.isDone,
                         )
                     } ?: run {
                         it.copy(
@@ -169,14 +164,14 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun saveTask() {
-        (_state.value.agendaItem as? AgendaItem.Task)?.let { item ->
+        _state.value.agendaItem?.let { item ->
 
             with(_state.value) {
-                item.itemTitle = title
-                item.itemDescription = description
-                item.itemRemindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
-                item.starDate = startDate
-                item.isDone = (specification as DetailSpecification.Task).isDone
+                item.title = title
+                item.description = description
+                item.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
+                item.time = startDate
+                item.isDone = isDone
             }
 
             viewModelScope.launch {
