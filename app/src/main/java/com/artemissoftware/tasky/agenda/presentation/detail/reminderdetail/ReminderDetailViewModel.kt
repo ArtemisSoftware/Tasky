@@ -168,7 +168,7 @@ class ReminderDetailViewModel @Inject constructor(
             }
 
             viewModelScope.launch {
-                saveReminderUseCase(item as AgendaItem.Reminder)
+                saveReminderUseCase(item)
                 popBackStack()
             }
         }
