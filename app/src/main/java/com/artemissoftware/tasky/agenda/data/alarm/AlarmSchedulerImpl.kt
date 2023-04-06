@@ -22,6 +22,11 @@ class AlarmSchedulerImpl @Inject constructor(
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     override fun schedule(item: AgendaItem) {
+        cancel(id = item.itemId)
+        setAlarm(item = item)
+    }
+
+    private fun setAlarm(item: AgendaItem) {
         if (item.itemRemindAt.isAfter(LocalDateTime.now())) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
@@ -36,11 +41,11 @@ class AlarmSchedulerImpl @Inject constructor(
         }
     }
 
-    override fun cancel(item: AgendaItem) {
+    override fun cancel(id: String) {
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                item.itemId.hashCode(),
+                id.hashCode(),
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             ),

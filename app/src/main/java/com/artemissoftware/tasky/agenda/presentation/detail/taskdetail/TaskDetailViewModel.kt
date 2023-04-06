@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.agenda.presentation.detail.taskdetail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
@@ -154,6 +155,9 @@ class TaskDetailViewModel @Inject constructor(
         agendaItem.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
         agendaItem.time = startDate
         agendaItem.isDone = isDone
+        savedStateHandle.get<String>("taskId")?.let {
+            if (agendaItem.syncState == SyncType.SYNCED) agendaItem.syncState = SyncType.UPDATE
+        }
 
         viewModelScope.launch {
             saveTaskUseCase(agendaItem)

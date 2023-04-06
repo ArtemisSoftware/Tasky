@@ -22,7 +22,7 @@ sealed class AgendaItem(
         var time: LocalDateTime = LocalDateTime.now(),
         var remindAt: LocalDateTime = NotificationType.remindAt(time, NotificationType.defaultNotification()),
         var notification: NotificationType = NotificationType.getNotification(remindAt = remindAt, startDate = time),
-        val syncState: SyncType = SyncType.CREATE,
+        var syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
         itemTitle = title,
@@ -41,7 +41,7 @@ sealed class AgendaItem(
         var isDone: Boolean = false,
         var remindAt: LocalDateTime = NotificationType.remindAt(time, NotificationType.defaultNotification()),
         var notification: NotificationType = NotificationType.getNotification(remindAt = remindAt, startDate = time),
-        val syncState: SyncType = SyncType.CREATE,
+        var syncState: SyncType = SyncType.CREATE,
     ) : AgendaItem(
         itemId = id,
         itemTitle = title,
