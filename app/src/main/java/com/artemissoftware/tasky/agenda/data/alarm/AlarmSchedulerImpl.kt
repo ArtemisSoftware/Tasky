@@ -14,8 +14,9 @@ import javax.inject.Inject
 
 class AlarmSchedulerImpl @Inject constructor(
     private val context: Context,
-    private val alarmManager: AlarmManager,
 ) : AlarmScheduler {
+
+    private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     override fun schedule(item: AgendaItem) {
         if (item.itemRemindAt.isAfter(LocalDateTime.now())) {

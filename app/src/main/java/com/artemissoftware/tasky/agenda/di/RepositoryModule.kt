@@ -43,7 +43,7 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideAlarmScheduler(@ApplicationContext context: Context, alarmManager: AlarmManager): AlarmScheduler {
-        return AlarmSchedulerImpl(context = context, alarmManager = alarmManager)
+    fun provideAlarmScheduler(@ApplicationContext context: Context): AlarmScheduler {
+        return AlarmSchedulerImpl(context = context)
     }
 }
