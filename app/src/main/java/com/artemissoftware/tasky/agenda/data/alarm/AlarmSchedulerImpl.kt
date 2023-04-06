@@ -5,6 +5,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.BODY
+import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.ID
+import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.TITLE
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
@@ -25,7 +28,7 @@ class AlarmSchedulerImpl @Inject constructor(
                 item.starDate.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
                 PendingIntent.getBroadcast(
                     context,
-                    item.hashCode(),
+                    item.itemId.hashCode(),
                     getIntent(item),
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
                 ),
@@ -37,7 +40,7 @@ class AlarmSchedulerImpl @Inject constructor(
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                item.hashCode(),
+                item.itemId.hashCode(),
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             ),
@@ -49,14 +52,10 @@ class AlarmSchedulerImpl @Inject constructor(
         val bundle = Bundle().apply {
             putString(TITLE, AgendaItemType.convertAgendaItem(item).name)
             putString(BODY, item.itemTitle)
+            putString(ID, item.itemId)
         }
         return intent.apply {
             putExtras(bundle)
         }
-    }
-
-    companion object {
-        const val TITLE = "TITLE"
-        const val BODY = "BODY"
     }
 }
