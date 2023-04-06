@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class SaveTaskUseCase @Inject constructor(
     private val taskRepository: TaskRepository,
-    private val alarmScheduler: AlarmScheduler
+    private val alarmScheduler: AlarmScheduler,
 ) {
     suspend operator fun invoke(
         task: AgendaItem.Task,
