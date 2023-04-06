@@ -24,9 +24,8 @@ sealed interface DetailSpecification {
         val to: LocalDateTime = LocalDateTime.now(),
     ) : DetailSpecification
 
-    data class Task( // TODO: complete when TaskDetailScreen is ready
+    data class Task(
         val isDone: Boolean = false,
-        val endDate: LocalDateTime = LocalDateTime.now(),
     ) : DetailSpecification
 
     object Reminder : DetailSpecification

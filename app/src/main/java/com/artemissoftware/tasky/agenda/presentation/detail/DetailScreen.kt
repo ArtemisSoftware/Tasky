@@ -7,7 +7,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
@@ -17,18 +16,13 @@ import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarActi
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.Light
-import com.artemissoftware.core.util.DateTimePatternsConstants
-import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.core.util.safeLet
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.*
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Photo
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
-import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
-import java.util.*
 
 
 @Destination
@@ -95,7 +89,7 @@ private fun DetailScreenContent(
                             iconId = R.drawable.ic_edit,
                             tint = color,
                             onClicked = {
-                                events(DetailEvents.Edit)
+                                events(DetailEvents.ToggleEdition)
                             }
                         )
                     }

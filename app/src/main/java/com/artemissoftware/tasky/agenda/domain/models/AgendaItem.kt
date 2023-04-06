@@ -7,11 +7,11 @@ import java.util.*
 
 sealed class AgendaItem(
     val itemId: String,
-    var itemTitle: String,
-    var itemDescription: String? = null,
-    var itemRemindAt: LocalDateTime,
+    val itemTitle: String,
+    val itemDescription: String? = null,
+    val itemRemindAt: LocalDateTime,
     val starDate: LocalDateTime,
-    var itemNotification: NotificationType,
+    val itemNotification: NotificationType,
     val itemSyncState: SyncType,
 ) {
 
@@ -35,7 +35,7 @@ sealed class AgendaItem(
 
     data class Task(
         val id: String = UUID.randomUUID().toString(),
-        var title: String,
+        var title: String = "",
         var description: String? = null,
         var time: LocalDateTime = LocalDateTime.now(),
         var isDone: Boolean = false,
