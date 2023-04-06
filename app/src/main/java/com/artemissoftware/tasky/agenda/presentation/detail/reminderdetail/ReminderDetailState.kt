@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 data class ReminderDetailState(
     val isLoading: Boolean = false,
     val isEditing: Boolean = false,
-    val agendaItem: AgendaItem.Reminder? = null,
+    val agendaItem: AgendaItem.Reminder = AgendaItem.Reminder(),
     val startDate: LocalDateTime = LocalDateTime.now(),
     val title: String = "",
     val description: String = "",

@@ -4,12 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -112,7 +109,7 @@ class ReminderDetailViewModel @Inject constructor(
     private fun toggleEdition() {
         _state.update {
             it.copy(
-                isEditing = !_state.value.isEditing,
+                isEditing = !it.isEditing,
             )
         }
     }
@@ -130,47 +127,33 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail(id: String?) {
-        viewModelScope.launch {
-            id?.let { reminderId ->
-
+        id?.let { reminderId ->
+            viewModelScope.launch {
                 val result = getReminderUseCase(reminderId)
-
-                _state.update {
-                    result?.let { item ->
+                result?.let { item ->
+                    _state.update {
                         it.copy(
                             agendaItem = item,
                             notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.starDate),
-                        )
-                    } ?: run {
-                        it.copy(
-                            agendaItem = AgendaItem.Reminder(),
+                            startDate = item.time,
+                            title = item.title,
+                            description = item.description ?: "",
                         )
                     }
-                }
-            } ?: run {
-                _state.update {
-                    it.copy(
-                        agendaItem = AgendaItem.Reminder(),
-                    )
                 }
             }
         }
     }
 
-    private fun saveReminder() {
-        _state.value.agendaItem?.let { item ->
+    private fun saveReminder() = with(_state.value) {
+        agendaItem.title = title
+        agendaItem.description = description
+        agendaItem.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
+        agendaItem.time = startDate
 
-            with(_state.value) {
-                item.title = title
-                item.description = description
-                item.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
-                item.time = startDate
-            }
-
-            viewModelScope.launch {
-                saveReminderUseCase(item)
-                popBackStack()
-            }
+        viewModelScope.launch {
+            saveReminderUseCase(agendaItem)
+            popBackStack()
         }
     }
 }

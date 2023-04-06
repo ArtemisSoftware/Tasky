@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 data class TaskDetailState(
     val isLoading: Boolean = false,
     val isEditing: Boolean = false,
-    val agendaItem: AgendaItem.Task? = null,
+    val agendaItem: AgendaItem.Task = AgendaItem.Task(),
     val startDate: LocalDateTime = LocalDateTime.now(),
     val title: String = "",
     val description: String = "",
