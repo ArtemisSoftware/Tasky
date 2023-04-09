@@ -32,6 +32,6 @@ interface ReminderDao {
         upsertReminderSync(reminderSyncEntity)
     }
 
-    @Query("SELECT EXISTS(SELECT * FROM reminderEntity WHERE id = :id)")
-    fun reminderExists(id: String): Boolean
+    @Query("SELECT * FROM reminderEntity WHERE time >= :currentDate")
+    suspend fun getRemindersToSetAlarm(currentDate: Long): List<ReminderEntity>
 }

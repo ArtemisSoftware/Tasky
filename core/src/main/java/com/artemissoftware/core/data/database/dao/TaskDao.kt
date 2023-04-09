@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.TaskEntity
 import com.artemissoftware.core.data.database.entities.TaskSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.TaskAndSyncState
@@ -35,4 +36,7 @@ interface TaskDao {
         deleteTask(id)
         upsertTaskSync(taskSyncEntity)
     }
+
+    @Query("SELECT * FROM taskEntity WHERE time >= :currentDate")
+    suspend fun getTasksToSetAlarm(currentDate: Long): List<TaskEntity>
 }
