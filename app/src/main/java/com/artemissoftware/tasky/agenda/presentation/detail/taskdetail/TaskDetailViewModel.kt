@@ -6,10 +6,12 @@ import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.TASK_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -130,7 +132,7 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        savedStateHandle.get<String>("taskId")?.let { taskId ->
+        savedStateHandle.get<String>(TASK_ID)?.let { taskId ->
             viewModelScope.launch {
                 val result = getTaskUseCase(taskId)
                 result?.let { item ->
@@ -150,18 +152,24 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun saveTask() = with(_state.value) {
-        agendaItem.title = title
-        agendaItem.description = description
-        agendaItem.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
-        agendaItem.time = startDate
-        agendaItem.isDone = isDone
-        savedStateHandle.get<String>("taskId")?.let {
-            if (agendaItem.syncState == SyncType.SYNCED) agendaItem.syncState = SyncType.UPDATE
-        }
+        val item = AgendaItem.Task(
+            id = agendaItem.id,
+            description = description,
+            remindAt = NotificationType.remindAt(time = startDate, notificationType = notification),
+            time = startDate,
+            isDone = isDone,
+            syncState = getSyncType(agendaItem),
+        )
 
         viewModelScope.launch {
-            saveTaskUseCase(agendaItem)
+            saveTaskUseCase(item)
             popBackStack()
         }
+    }
+
+    private fun getSyncType(agendaItem: AgendaItem.Task): SyncType {
+        return savedStateHandle.get<String>(TASK_ID)?.let {
+            if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
+        } ?: SyncType.CREATE
     }
 }
