@@ -22,10 +22,8 @@ class AlarmBootUpReceiver : BroadcastReceiver() {
 
     private val job = SupervisorJob()
 
-    override fun onReceive(context: Context?, intent: Intent?)  {
-
+    override fun onReceive(context: Context?, intent: Intent?) {
         CoroutineScope(job).launch {
-
             val items = getAgendaToUpdateAlarmsUseCase()
             items.forEach {
                 alarmScheduler.schedule(it)
