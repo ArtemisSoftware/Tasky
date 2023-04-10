@@ -6,5 +6,5 @@ data class AttendeeDto(
     @field:Json(name = "attendee")
     val attendeeProfile: AttendeeProfileDto,
     @field:Json(name = "doesUserExist")
-    val doesUserExist: Boolean
+    val doesUserExist: Boolean,
 )
