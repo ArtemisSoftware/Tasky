@@ -25,7 +25,7 @@ import com.artemissoftware.core.presentation.theme.Green
 import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail.ReminderRecipient
+import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.ramcosta.composedestinations.annotation.Destination
@@ -37,7 +37,7 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 fun EditScreen(
     viewModel: EditViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    resultNavigator: ResultBackNavigator<ReminderRecipient>,
+    resultNavigator: ResultBackNavigator<EditRecipient>,
     text: String,
     editType: EditType,
 ) {
@@ -59,7 +59,7 @@ fun EditScreen(
             navigator.popBackStack()
         },
         onPopBackStackWithArguments = {
-            resultNavigator.navigateBack(it.arguments as ReminderRecipient)
+            resultNavigator.navigateBack(it.arguments as EditRecipient)
         },
     )
 }

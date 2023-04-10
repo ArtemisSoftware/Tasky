@@ -8,7 +8,9 @@ import java.time.LocalTime
 sealed class DetailEvents : TaskyEvents() {
 
     object Save : DetailEvents()
-    object Edit : DetailEvents()
+    object ToggleEdition : DetailEvents()
+
+    object ToggleIsDone : DetailEvents()
     object PopBackStack : DetailEvents()
 
     data class UpdateStartDate(val startDate: LocalDate) : DetailEvents()

@@ -1,23 +1,15 @@
-package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
+package com.artemissoftware.tasky.agenda.presentation.detail.taskdetail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
-import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,14 +21,14 @@ import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
-class ReminderDetailViewModel @Inject constructor(
-    private val saveReminderUseCase: SaveReminderUseCase,
-    private val getReminderUseCase: GetReminderUseCase,
+class TaskDetailViewModel @Inject constructor(
+    private val saveTaskUseCase: SaveTaskUseCase,
+    private val getTaskUseCase: GetTaskUseCase,
     private val savedStateHandle: SavedStateHandle,
-    ) : TaskyUiEventViewModel() {
+) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(ReminderDetailState())
-    val state: StateFlow<ReminderDetailState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(TaskDetailState())
+    val state: StateFlow<TaskDetailState> = _state.asStateFlow()
 
     init {
         loadDetail()
@@ -44,27 +36,46 @@ class ReminderDetailViewModel @Inject constructor(
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
-            DetailEvents.ToggleEdition -> {
-                toggleEdition()
-            }
-            is DetailEvents.EditDescription -> {
-                editTitleOrDescription(event.description, EditType.Description)
-            }
-            is DetailEvents.EditTitle -> {
-                editTitleOrDescription(event.title, EditType.Title)
-            }
+            DetailEvents.ToggleEdition -> { toggleEdition() }
+            is DetailEvents.ToggleIsDone -> { toggleIsDone() }
+            is DetailEvents.EditDescription -> { editTitleOrDescription(event.description, EditType.Description) }
+            is DetailEvents.EditTitle -> { editTitleOrDescription(event.title, EditType.Title) }
             DetailEvents.PopBackStack -> { popBackStack() }
-            DetailEvents.Save -> { saveReminder() }
+            DetailEvents.Save -> { saveTask() }
+            is DetailEvents.UpdateDescription -> { updateDescription(event.description) }
             is DetailEvents.UpdateNotification -> { updateNotification(event.notification) }
             is DetailEvents.UpdateStartDate -> { updateStartDate(event.startDate) }
             is DetailEvents.UpdateStartTime -> { updateStartTime(event.startTime) }
-            is DetailEvents.UpdateDescription -> {
-                updateDescription(event.description)
-            }
-            is DetailEvents.UpdateTitle -> {
-                updateTitle(event.title)
-            }
+            is DetailEvents.UpdateTitle -> { updateTitle(event.title) }
             else -> Unit
+        }
+    }
+
+    private fun toggleEdition() {
+        _state.update {
+            it.copy(
+                isEditing = !it.isEditing,
+            )
+        }
+    }
+
+    private fun toggleIsDone() {
+        _state.update {
+            it.copy(
+                isDone = !it.isDone,
+            )
+        }
+    }
+
+    private fun editTitleOrDescription(text: String, editType: EditType) {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.Navigate(EditScreenDestination(text, editType).route))
+        }
+    }
+
+    private fun popBackStack() {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.PopBackStack)
         }
     }
 
@@ -117,32 +128,10 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun toggleEdition() {
-        _state.update {
-            it.copy(
-                isEditing = !it.isEditing,
-            )
-        }
-    }
-
-    private fun editTitleOrDescription(text: String, editType: EditType) {
-        viewModelScope.launch {
-            sendUiEvent(UiEvent.Navigate(EditScreenDestination(text, editType).route))
-        }
-    }
-
-    private fun popBackStack() {
-        viewModelScope.launch {
-            sendUiEvent(UiEvent.PopBackStack)
-        }
-    }
-
     private fun loadDetail() {
-        val id = savedStateHandle.get<String>("reminderId") // TODO: safer way to get the name of the variable on savedStateHandle? is there a way to say ReminderDetailScreenDestination.reminderId
-
-        id?.let { reminderId ->
+        savedStateHandle.get<String>("taskId")?.let { taskId ->
             viewModelScope.launch {
-                val result = getReminderUseCase(reminderId)
+                val result = getTaskUseCase(taskId)
                 result?.let { item ->
                     _state.update {
                         it.copy(
@@ -151,6 +140,7 @@ class ReminderDetailViewModel @Inject constructor(
                             startDate = item.time,
                             title = item.title,
                             description = item.description ?: "",
+                            isDone = item.isDone,
                         )
                     }
                 }
@@ -158,14 +148,15 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveReminder() = with(_state.value) {
+    private fun saveTask() = with(_state.value) {
         agendaItem.title = title
         agendaItem.description = description
         agendaItem.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
         agendaItem.time = startDate
+        agendaItem.isDone = isDone
 
         viewModelScope.launch {
-            saveReminderUseCase(agendaItem)
+            saveTaskUseCase(agendaItem)
             popBackStack()
         }
     }
