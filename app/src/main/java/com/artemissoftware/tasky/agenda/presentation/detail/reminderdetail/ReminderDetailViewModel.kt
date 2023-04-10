@@ -1,23 +1,15 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
-import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +25,7 @@ class ReminderDetailViewModel @Inject constructor(
     private val saveReminderUseCase: SaveReminderUseCase,
     private val getReminderUseCase: GetReminderUseCase,
     private val savedStateHandle: SavedStateHandle,
-    ) : TaskyUiEventViewModel() {
+) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(ReminderDetailState())
     val state: StateFlow<ReminderDetailState> = _state.asStateFlow()
@@ -138,9 +130,7 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        val id = savedStateHandle.get<String>("reminderId") // TODO: safer way to get the name of the variable on savedStateHandle? is there a way to say ReminderDetailScreenDestination.reminderId
-
-        id?.let { reminderId ->
+        savedStateHandle.get<String>("reminderId")?.let { reminderId ->
             viewModelScope.launch {
                 val result = getReminderUseCase(reminderId)
                 result?.let { item ->

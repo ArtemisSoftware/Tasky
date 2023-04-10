@@ -17,6 +17,6 @@ class GetAgendaItemsUseCase @Inject constructor(
         taskRepository.getTasks(date = date),
     ) { reminders, tasks ->
 
-        (reminders + tasks).sortedBy { it.itemTime }
+        (reminders + tasks).sortedBy { it.starDate }
     }
 }
