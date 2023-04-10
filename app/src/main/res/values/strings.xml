@@ -37,4 +37,6 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="log_out">Log out</string>
+    <string name="add_visitor">Add visitor</string>
+    <string name="add">Add</string>
 </resources>
