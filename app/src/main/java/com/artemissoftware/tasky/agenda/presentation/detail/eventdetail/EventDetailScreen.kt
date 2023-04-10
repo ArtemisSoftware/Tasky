@@ -34,7 +34,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
 @Composable
-fun EventDetailScreen() {
+fun EventDetailScreen(/* TODO: add viewmodel here*/) {
+    // TODO: call EventDetailScreenContent when viewmodel is ready
 }
 
 @Composable
