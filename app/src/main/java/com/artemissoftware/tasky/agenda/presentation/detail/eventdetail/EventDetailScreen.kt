@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
@@ -30,6 +28,7 @@ import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.Photo
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
+import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
 
@@ -115,7 +114,6 @@ private fun EventDetailScreenContent(
                                 isEditing = state.isEditing,
                                 description = state.description,
                                 modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.body1.copy(textDecoration = if (state.isDone) TextDecoration.LineThrough else TextDecoration.None),
                                 onEditClick = {
                                     events(DetailEvents.EditDescription(it))
                                 },
@@ -212,6 +210,17 @@ private fun EventDetailScreenContent(
                                 },
                             )
                         }
+
+                        AttendeeDialog(
+                            showDialog = state.attendeeDialogState.showDialog,
+                            errorText = state.attendeeDialogState.errorMessage,
+                            onCloseClick = {
+                                events(DetailEvents.CloseAttendeeDialog)
+                            },
+                            onAddClick = {
+                                events(DetailEvents.AddAttendee(email = it))
+                            },
+                        )
                     }
                 },
             )

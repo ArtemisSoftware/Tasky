@@ -13,6 +13,8 @@ sealed class DetailEvents : TaskyEvents() {
     object ToggleIsDone : DetailEvents()
     object PopBackStack : DetailEvents()
 
+    object CloseAttendeeDialog : DetailEvents()
+
     data class LoadDetail(val id: String? = null) : DetailEvents()
 
     data class UpdateStartDate(val startDate: LocalDate) : DetailEvents()
@@ -24,4 +26,6 @@ sealed class DetailEvents : TaskyEvents() {
     data class EditDescription(val description: String) : DetailEvents()
     data class UpdateTitle(val title: String) : DetailEvents()
     data class UpdateDescription(val description: String) : DetailEvents()
+
+    data class AddAttendee(val email: String) : DetailEvents()
 }

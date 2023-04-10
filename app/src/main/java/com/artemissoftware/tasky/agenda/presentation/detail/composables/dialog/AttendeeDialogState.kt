@@ -1,17 +1,9 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog
 
-import androidx.compose.runtime.mutableStateOf
+import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 
-class AttendeeDialogState {
-
-    var show = mutableStateOf(false)
-        private set
-
-    fun showDialog() {
-        show.value = true
-    }
-
-    fun closeDialog() {
-        show.value = false
-    }
-}
+data class AttendeeDialogState(
+    val emailValidationStateType: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED,
+    val errorMessage: String? = null,
+    val showDialog: Boolean = false,
+)
