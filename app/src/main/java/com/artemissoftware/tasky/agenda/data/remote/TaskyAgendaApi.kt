@@ -1,10 +1,7 @@
 package com.artemissoftware.tasky.agenda.data.remote
 
 import android.icu.util.TimeZone
-import com.artemissoftware.tasky.agenda.data.remote.dto.AgendaBodyDto
-import com.artemissoftware.tasky.agenda.data.remote.dto.AgendaResponseDto
-import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
-import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
+import com.artemissoftware.tasky.agenda.data.remote.dto.*
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -18,7 +15,7 @@ interface TaskyAgendaApi {
     @GET("agenda")
     suspend fun getAgenda(
         @Query(value = "timezone") timezone: String = TimeZone.getDefault().id,
-        @Query(value = "time") time: Long = System.currentTimeMillis()
+        @Query(value = "time") time: Long = System.currentTimeMillis(),
     ): AgendaResponseDto
 
     @POST("syncAgenda")
@@ -41,4 +38,7 @@ interface TaskyAgendaApi {
 
     @DELETE("reminder")
     suspend fun deleteReminder(@Query(value = "reminderId") reminderId: String): ResponseBody
+
+    @GET("attendee")
+    suspend fun getAttendee(@Query(value = "email") email: String): AttendeeDto
 }
