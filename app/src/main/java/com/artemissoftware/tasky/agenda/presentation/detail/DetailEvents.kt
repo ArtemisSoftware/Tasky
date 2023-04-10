@@ -28,4 +28,8 @@ sealed class DetailEvents : TaskyEvents() {
     data class UpdateDescription(val description: String) : DetailEvents()
 
     data class AddAttendee(val email: String) : DetailEvents()
+
+    data class ViewAllVisitors(val isSelected: Boolean) : DetailEvents()
+    data class ViewGoingVisitors(val isSelected: Boolean) : DetailEvents()
+    data class ViewNotGoingVisitors(val isSelected: Boolean) : DetailEvents()
 }

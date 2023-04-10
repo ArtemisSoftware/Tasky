@@ -189,8 +189,12 @@ private fun EventDetailScreenContent(
                             DetailDivider(top = 20.dp, bottom = 30.dp, modifier = Modifier.fillMaxWidth())
 
                             VisitorsHeader(
+                                visitorOptionType = state.visitorOption,
                                 isEditing = state.isEditing,
                                 modifier = Modifier.fillMaxWidth(),
+                                viewAllVisitors = { events(DetailEvents.ViewAllVisitors(isSelected = it)) },
+                                viewGoingVisitors = { events(DetailEvents.ViewGoingVisitors(isSelected = it)) },
+                                viewNotGoingVisitors = { events(DetailEvents.ViewNotGoingVisitors(isSelected = it)) },
                             )
 
                             // TODO: add visitor list here
