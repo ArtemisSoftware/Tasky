@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.agenda.presentation.detail
 
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.events.TaskyEvents
+import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -27,9 +28,8 @@ sealed class DetailEvents : TaskyEvents() {
     data class UpdateTitle(val title: String) : DetailEvents()
     data class UpdateDescription(val description: String) : DetailEvents()
 
-    data class AddAttendee(val email: String) : DetailEvents()
+    data class UpdateAttendeeEmail(val email: String) : DetailEvents()
+    object AddAttendee : DetailEvents()
 
-    data class ViewAllVisitors(val isSelected: Boolean) : DetailEvents()
-    data class ViewGoingVisitors(val isSelected: Boolean) : DetailEvents()
-    data class ViewNotGoingVisitors(val isSelected: Boolean) : DetailEvents()
+    data class ViewVisitors(val visitorOptionType: VisitorOptionType) : DetailEvents()
 }

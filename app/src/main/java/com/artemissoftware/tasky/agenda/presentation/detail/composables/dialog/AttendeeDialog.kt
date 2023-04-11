@@ -13,10 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,23 +32,21 @@ import com.artemissoftware.core.R as CoreR
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AttendeeDialog(
+    email: String,
     showDialog: Boolean,
+    onEmailChange: (String) -> Unit,
     onCloseClick: () -> Unit,
-    onAddClick: (String) -> Unit,
+    onAddClick: () -> Unit,
+    modifier: Modifier = Modifier,
     errorText: String? = null,
     validation: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED,
 ) {
-    var email by remember {
-        mutableStateOf("")
-    }
-
     if (showDialog) {
         Dialog(
             onDismissRequest = { },
             content = {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = modifier
                         .wrapContentHeight(),
                     shape = RoundedCornerShape(size = 4.dp),
                 ) {
@@ -88,9 +82,7 @@ fun AttendeeDialog(
                             validationState = validation,
                             errorText = errorText,
                             text = email,
-                            onValueChange = {
-                                email = it
-                            },
+                            onValueChange = onEmailChange,
                             hint = stringResource(id = R.string.email_address),
                         )
 
@@ -101,7 +93,7 @@ fun AttendeeDialog(
                                 .height(55.dp),
                             text = stringResource(id = R.string.add),
                             onClick = {
-                              if(validation == TaskyTextFieldValidationStateType.VALID) onAddClick(email)
+                                if (validation == TaskyTextFieldValidationStateType.VALID) onAddClick()
                             },
                         )
                     }
@@ -115,7 +107,9 @@ fun AttendeeDialog(
 @Composable
 private fun TAttendeeDialogPreview() {
     AttendeeDialog(
+        email = "email",
         showDialog = true,
+        onEmailChange = {},
         onCloseClick = {},
         onAddClick = {},
     )

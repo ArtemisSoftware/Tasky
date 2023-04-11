@@ -193,9 +193,7 @@ private fun EventDetailScreenContent(
                                 visitorOptionType = state.visitorOption,
                                 isEditing = state.isEditing,
                                 modifier = Modifier.fillMaxWidth(),
-                                viewAllVisitors = { events(DetailEvents.ViewAllVisitors(isSelected = it)) },
-                                viewGoingVisitors = { events(DetailEvents.ViewGoingVisitors(isSelected = it)) },
-                                viewNotGoingVisitors = { events(DetailEvents.ViewNotGoingVisitors(isSelected = it)) },
+                                onViewVisitorsClick = { events(DetailEvents.ViewVisitors(visitorOptionType = it)) },
                             )
 
                             // TODO: add visitor list here
@@ -217,13 +215,19 @@ private fun EventDetailScreenContent(
                         }
 
                         AttendeeDialog(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            email = state.attendeeDialogState.email,
                             showDialog = state.attendeeDialogState.showDialog,
                             errorText = state.attendeeDialogState.errorMessage,
+                            onEmailChange = {
+                                events(DetailEvents.UpdateAttendeeEmail(email = it))
+                            },
                             onCloseClick = {
                                 events(DetailEvents.CloseAttendeeDialog)
                             },
                             onAddClick = {
-                                events(DetailEvents.AddAttendee(email = it))
+                                events(DetailEvents.AddAttendee)
                             },
                         )
                     }

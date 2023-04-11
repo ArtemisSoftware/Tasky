@@ -6,4 +6,5 @@ data class AttendeeDialogState(
     val emailValidationStateType: TaskyTextFieldValidationStateType = TaskyTextFieldValidationStateType.NOT_VALIDATED,
     val errorMessage: String? = null,
     val showDialog: Boolean = false,
+    val email: String = "",
 )

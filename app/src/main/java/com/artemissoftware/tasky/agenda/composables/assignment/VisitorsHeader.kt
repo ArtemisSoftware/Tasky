@@ -25,9 +25,7 @@ import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun VisitorsHeader(
-    viewAllVisitors: (Boolean) -> Unit,
-    viewGoingVisitors: (Boolean) -> Unit,
-    viewNotGoingVisitors: (Boolean) -> Unit,
+    onViewVisitorsClick: (VisitorOptionType) -> Unit,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
     visitorOptionType: VisitorOptionType
@@ -70,7 +68,9 @@ fun VisitorsHeader(
                 modifier = Modifier
                     .height(30.dp)
                     .width(100.dp),
-                onClick = viewAllVisitors,
+                onClick = {
+                    onViewVisitorsClick(VisitorOptionType.ALL)
+                },
             )
             AttendanceOption(
                 isSelected = (visitorOptionType == VisitorOptionType.GOING),
@@ -78,7 +78,9 @@ fun VisitorsHeader(
                 modifier = Modifier
                     .height(30.dp)
                     .width(100.dp),
-                onClick = viewGoingVisitors,
+                onClick = {
+                    onViewVisitorsClick(VisitorOptionType.GOING)
+                },
             )
             AttendanceOption(
                 isSelected = (visitorOptionType == VisitorOptionType.NOT_GOING),
@@ -86,7 +88,9 @@ fun VisitorsHeader(
                 modifier = Modifier
                     .height(30.dp)
                     .width(100.dp),
-                onClick = viewNotGoingVisitors,
+                onClick = {
+                    onViewVisitorsClick(VisitorOptionType.NOT_GOING)
+                },
             )
         }
     }
@@ -99,17 +103,13 @@ private fun VisitorsHeaderPreview() {
         VisitorsHeader(
             isEditing = true,
             modifier = Modifier.fillMaxWidth(),
-            viewNotGoingVisitors = {},
-            viewGoingVisitors = {},
-            viewAllVisitors = {},
+            onViewVisitorsClick = {},
             visitorOptionType = VisitorOptionType.ALL
         )
         VisitorsHeader(
             isEditing = false,
             modifier = Modifier.fillMaxWidth(),
-            viewNotGoingVisitors = {},
-            viewGoingVisitors = {},
-            viewAllVisitors = {},
+            onViewVisitorsClick = {},
             visitorOptionType = VisitorOptionType.NOT_GOING
         )
     }
