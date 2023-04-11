@@ -15,6 +15,10 @@ interface TaskDao {
     @Query("SELECT * FROM taskEntity WHERE id = :id")
     fun getTaskAndSyncState(id: String): TaskAndSyncState?
 
+    @Transaction
+    @Query("SELECT * FROM taskEntity WHERE time >= :currentTime")
+    suspend fun getTasksToSetAlarm(currentTime: Long): List<TaskAndSyncState>
+
     @Upsert
     fun upsert(taskEntity: TaskEntity)
 
@@ -35,4 +39,5 @@ interface TaskDao {
         deleteTask(id)
         upsertTaskSync(taskSyncEntity)
     }
+
 }
