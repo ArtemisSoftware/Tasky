@@ -15,4 +15,6 @@
     <string name="one_day_before">1 day before</string>
     <string name="tasky_channel_id">tasky_channel_id</string>
     <string name="tasky_channel_name">Tasky channel</string>
+    <string name="error_occurred_during_attendee_search">An error occurred while performing attendee search</string>
+    <string name="attendee_not_exist">Attendee does not exist</string>
 </resources>

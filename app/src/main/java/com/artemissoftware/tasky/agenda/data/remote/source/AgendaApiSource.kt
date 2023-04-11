@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.agenda.data.remote.source
 
 import com.artemissoftware.core.data.remote.HandleApi
 import com.artemissoftware.tasky.agenda.data.remote.TaskyAgendaApi
+import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.AgendaResponseDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
@@ -44,6 +45,12 @@ class AgendaApiSource @Inject constructor(private val taskyAgendaApi: TaskyAgend
     suspend fun deleteTask(taskId: String): ResponseBody {
         return HandleApi.safeApiCall {
             taskyAgendaApi.deleteTask(taskId)
+        }
+    }
+
+    suspend fun getAttendee(email: String): AttendeeDto {
+        return HandleApi.safeApiCall {
+            taskyAgendaApi.getAttendee(email)
         }
     }
 
