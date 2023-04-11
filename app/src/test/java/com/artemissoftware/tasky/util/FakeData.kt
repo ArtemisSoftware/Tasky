@@ -1,6 +1,8 @@
 package com.artemissoftware.tasky.util
 
 import com.artemissoftware.core.domain.models.authentication.User
+import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
+import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeProfileDto
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
 import java.time.LocalDateTime
@@ -33,5 +35,16 @@ object FakeData {
         description = "No riddles today",
         remindAt = LocalDateTime.now().minusMinutes(10),
         time = LocalDateTime.now(),
+    )
+
+    val attendeeProfileDto = AttendeeProfileDto(
+        email = "batman@email.com",
+        fullName = "Bruce Wayne",
+        userId = "123",
+    )
+
+    val attendeeDto = AttendeeDto(
+        attendeeProfile = attendeeProfileDto,
+        doesUserExist = true,
     )
 }

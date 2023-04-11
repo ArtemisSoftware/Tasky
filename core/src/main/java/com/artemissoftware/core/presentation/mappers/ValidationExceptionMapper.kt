@@ -1,13 +1,13 @@
 package com.artemissoftware.core.presentation.mappers
 
 import com.artemissoftware.core.R
+import com.artemissoftware.core.domain.AgendaException
 import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.util.UiText
 
 fun ValidationException.toUiText(): UiText {
-
-    return when(this){
+    return when (this) {
         AuthenticationException.LoginError -> {
             UiText.StringResource(R.string.error_occurred_during_login)
         }
@@ -20,6 +20,11 @@ fun ValidationException.toUiText(): UiText {
         is ValidationException.DataError -> {
             this.uiText
         }
+        AgendaException.AttendeeDoesNotExist -> {
+            UiText.StringResource(R.string.attendee_not_exist)
+        }
+        AgendaException.AttendeeError -> {
+            UiText.StringResource(R.string.error_occurred_during_attendee_search)
+        }
     }
-
 }
