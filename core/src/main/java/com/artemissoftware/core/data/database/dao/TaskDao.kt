@@ -20,6 +20,10 @@ interface TaskDao {
     @Query("SELECT * FROM reminderEntity WHERE time >= :initialDate AND time < :endDate")
     fun getTasks(initialDate: Long, endDate: Long): Flow<List<TaskAndSyncState>>
 
+    @Transaction
+    @Query("SELECT * FROM taskEntity WHERE time >= :currentTime")
+    suspend fun getTasksToSetAlarm(currentTime: Long): List<TaskAndSyncState>
+
     @Upsert
     fun upsert(taskEntity: TaskEntity)
 

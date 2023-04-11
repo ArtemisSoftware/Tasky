@@ -15,6 +15,10 @@ interface ReminderDao {
     @Query("SELECT * FROM reminderEntity WHERE time >= :initialDate AND time < :endDate")
     fun getReminders(initialDate: Long, endDate: Long): Flow<List<ReminderAndSyncState>>
 
+    @Transaction
+    @Query("SELECT * FROM reminderEntity WHERE time >= :currentTime")
+    suspend fun getRemindersToSetAlarm(currentTime: Long): List<ReminderAndSyncState>
+
     @Upsert
     fun upsert(reminderEntity: ReminderEntity)
 
@@ -38,7 +42,4 @@ interface ReminderDao {
         deleteReminder(id)
         upsertReminderSync(reminderSyncEntity)
     }
-
-    @Query("SELECT EXISTS(SELECT * FROM reminderEntity WHERE id = :id)")
-    fun reminderExists(id: String): Boolean
 }
