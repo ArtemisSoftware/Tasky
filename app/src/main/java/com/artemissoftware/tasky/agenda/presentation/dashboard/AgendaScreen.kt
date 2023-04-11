@@ -23,6 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyExpandableSquareButton
@@ -39,22 +41,40 @@ import com.artemissoftware.core.util.DateTimePatternsConstants.DATE_PATTERN_MONT
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
-import com.artemissoftware.tasky.util.DateTimePicker
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.AgendaTopBar
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOption
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
+import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
+import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Destination(start = true)
 @Composable
-fun AgendaScreen(/* TODO :Add view model here*/) {
-    AgendaScreenPreview()
+fun AgendaScreen(
+    navigator: DestinationsNavigator,
+    viewModel: AgendaViewModel = hiltViewModel(),
+) {
+    val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    AgendaScreenContent(
+        state = state,
+        events = viewModel::onTriggerEvent,
+    )
+
+    ManageUIEvents(
+        uiEvent = viewModel.uiEvent,
+        onNavigate = {
+            navigator.navigate(it.route)
+        },
+    )
 }
 
 @Composable
@@ -76,13 +96,15 @@ private fun AgendaScreenContent(
                         modifier = Modifier
                             .wrapContentWidth()
                             .clickable {
-                                DateTimePicker.datePickerDialog(
-                                    context = context,
-                                    date = state.selectedDayOfTheWeek,
-                                    onDateSelected = {
-                                        events(AgendaEvents.ChangeDate(it))
-                                    },
-                                ).show()
+                                DateTimePicker
+                                    .datePickerDialog(
+                                        context = context,
+                                        date = state.selectedDayOfTheWeek,
+                                        onDateSelected = {
+                                            events(AgendaEvents.ChangeDate(it))
+                                        },
+                                    )
+                                    .show()
                             },
                     ) {
                         TaskyText(
@@ -121,7 +143,7 @@ private fun AgendaScreenContent(
                 icon = R.drawable.ic_add,
                 options = AgendaItems.values().toList(),
                 onOptionSelected = {
-                    // TODO: add event here
+                    events(AgendaEvents.CreateAgendaItem(detailType = it))
                 },
                 menuOption = {
                     TaskyDropDownItem(text = stringResource(id = it.descriptionId))
@@ -191,14 +213,22 @@ private fun AgendaScreenContent(
                                     itemContent = { item ->
                                         AssignmentCard(
                                             agendaItemType = getAgendaItemType(item),
-                                            title = item.itemTitle,
-                                            description = item.itemDescription,
-                                            date = item.starDate.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
+                                            agendaItem = item,
                                             onCheckedChange = {
-                                                events(AgendaEvents.CompleteAssignment(item.itemId))
+                                                if(item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item.itemId))
                                             },
                                             onOptionClick = {
-                                                // TODO : show options
+                                                when (it) {
+                                                    AgendaItemOption.OPEN -> {
+                                                        events(AgendaEvents.GoToDetail(item = item, isEditing = false))
+                                                    }
+                                                    AgendaItemOption.EDIT -> {
+                                                        events(AgendaEvents.GoToDetail(item = item, isEditing = true))
+                                                    }
+                                                    AgendaItemOption.DELETE -> {
+                                                        events(AgendaEvents.Delete(item = item))
+                                                    }
+                                                }
                                             },
                                         )
                                     },
@@ -213,14 +243,15 @@ private fun AgendaScreenContent(
 }
 
 private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
-    return AgendaItemType.Reminder()
-    // TODO: add other types likes task and events in the future
+    return when (item) {
+        is AgendaItem.Reminder -> AgendaItemType.Reminder()
+        is AgendaItem.Task -> AgendaItemType.Task()
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun AgendaScreenPreview() {
-
     val localDate = LocalDate.now()
     AgendaScreenContent(
         events = {},
@@ -239,14 +270,14 @@ fun AgendaScreenPreview() {
                     title = "The title",
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
-                    time = LocalDateTime.now()
+                    time = LocalDateTime.now(),
                 ),
 
                 AgendaItem.Reminder(
                     title = "The title",
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
-                    time = LocalDateTime.now()
+                    time = LocalDateTime.now(),
                 ),
             ),
         ),

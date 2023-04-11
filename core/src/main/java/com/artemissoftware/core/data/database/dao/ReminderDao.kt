@@ -1,18 +1,33 @@
 package com.artemissoftware.core.data.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.ReminderAndSyncState
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReminderDao {
     @Transaction
     @Query("SELECT * FROM reminderEntity WHERE id = :id")
-    fun getReminderAndSyncState(id: String): ReminderAndSyncState?
+    suspend fun getReminderAndSyncState(id: String): ReminderAndSyncState?
+
+    @Transaction
+    @Query("SELECT * FROM reminderEntity WHERE time >= :initialDate AND time < :endDate")
+    fun getReminders(initialDate: Long, endDate: Long): Flow<List<ReminderAndSyncState>>
+
+    @Transaction
+    @Query("SELECT * FROM reminderEntity WHERE time >= :currentTime")
+    suspend fun getRemindersToSetAlarm(currentTime: Long): List<ReminderAndSyncState>
 
     @Upsert
     fun upsert(reminderEntity: ReminderEntity)
+
+    @Upsert
+    fun upsert(reminderEntities: List<ReminderEntity>)
 
     @Upsert
     suspend fun upsertReminderSync(reminderSyncEntity: ReminderSyncEntity)
@@ -31,7 +46,4 @@ interface ReminderDao {
         deleteReminder(id)
         upsertReminderSync(reminderSyncEntity)
     }
-
-    @Query("SELECT EXISTS(SELECT * FROM reminderEntity WHERE id = :id)")
-    fun reminderExists(id: String): Boolean
 }

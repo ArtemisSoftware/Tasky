@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.agenda.data.mappers
 
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.relations.ReminderAndSyncState
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.util.extensions.toLocalDateTime
 import com.artemissoftware.core.util.extensions.toLong
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
@@ -45,5 +46,16 @@ fun AgendaItem.Reminder.toDto(): ReminderDto {
         id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),
+    )
+}
+
+fun ReminderDto.toReminder(): AgendaItem.Reminder {
+    return AgendaItem.Reminder(
+        title = this.title,
+        description = this.description,
+        id = this.id,
+        remindAt = this.remindAt.toLocalDateTime(),
+        time = this.time.toLocalDateTime(),
+        syncState = SyncType.SYNCED,
     )
 }

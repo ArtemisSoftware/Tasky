@@ -3,9 +3,11 @@ package com.artemissoftware.tasky.agenda.data.remote.source
 import com.artemissoftware.core.data.remote.HandleApi
 import com.artemissoftware.tasky.agenda.data.remote.TaskyAgendaApi
 import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
+import com.artemissoftware.tasky.agenda.data.remote.dto.AgendaResponseDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
 import okhttp3.ResponseBody
+import java.time.LocalDate
 import javax.inject.Inject
 
 class AgendaApiSource @Inject constructor(private val taskyAgendaApi: TaskyAgendaApi) {
@@ -49,6 +51,12 @@ class AgendaApiSource @Inject constructor(private val taskyAgendaApi: TaskyAgend
     suspend fun getAttendee(email: String): AttendeeDto {
         return HandleApi.safeApiCall {
             taskyAgendaApi.getAttendee(email)
+        }
+    }
+
+    suspend fun getAgenda(time: Long): AgendaResponseDto {
+        return HandleApi.safeApiCall {
+            taskyAgendaApi.getAgenda(time = time)
         }
     }
 }

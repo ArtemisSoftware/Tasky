@@ -1,8 +1,9 @@
-package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
+package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -11,8 +12,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
@@ -24,62 +23,24 @@ import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentDescription
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.composables.assignment.VisitorsHeader
+import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
-import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
-import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
-import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
-import com.artemissoftware.tasky.destinations.EditScreenDestination
+import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.ResultRecipient
-import com.ramcosta.composedestinations.result.getOr
 
 @Destination
 @Composable
-fun ReminderDetailScreen(
-    navigator: DestinationsNavigator,
-    viewModel: ReminderDetailViewModel = hiltViewModel(),
-    resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
-) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
-
-    resultRecipient.onNavResult { result ->
-        result.getOr { null }?.let { editResult ->
-
-            when (editResult.editType) {
-                EditType.Description -> {
-                    viewModel.onTriggerEvent(DetailEvents.UpdateDescription(editResult.text))
-                }
-                EditType.Title -> {
-                    viewModel.onTriggerEvent(DetailEvents.UpdateTitle(editResult.text))
-                }
-            }
-        }
-    }
-
-    ReminderDetailScreenContent(
-        state = state.value,
-        events = viewModel::onTriggerEvent,
-    )
-
-    ManageUIEvents(
-        uiEvent = viewModel.uiEvent,
-        onNavigate = {
-            navigator.navigate(it.route)
-        },
-        onPopBackStack = {
-            navigator.popBackStack()
-        },
-    )
+fun EventDetailScreen(/* TODO: add viewmodel here*/) {
+    // TODO: call EventDetailScreenContent when viewmodel is ready
 }
 
 @Composable
-fun ReminderDetailScreenContent(
-    state: ReminderDetailState,
+private fun EventDetailScreenContent(
+    state: EventDetailState,
     events: (DetailEvents) -> Unit,
 ) {
     val context = LocalContext.current
@@ -96,7 +57,7 @@ fun ReminderDetailScreenContent(
                 allCaps = true,
                 title = String.format(
                     stringResource(id = R.string.edit_title_with_argument),
-                    stringResource(id = R.string.reminder),
+                    stringResource(id = R.string.event),
                 ),
                 toolbarActions = { color ->
 
@@ -136,12 +97,15 @@ fun ReminderDetailScreenContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             AssignmentHeader(
-                                agendaItemType = AgendaItemType.Reminder(),
+                                agendaItemType = AgendaItemType.Task(),
                                 title = state.title,
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,
                                 onEditClick = {
                                     events(DetailEvents.EditTitle(it))
+                                },
+                                onIsDoneClick = {
+                                    events(DetailEvents.ToggleIsDone)
                                 },
                             )
 
@@ -156,12 +120,32 @@ fun ReminderDetailScreenContent(
                                 },
                             )
 
+                            PhotoGallery(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(112.dp),
+                                isEditing = state.isEditing,
+                                onAddPhotoClick = {
+                                    // TODO: add event here
+                                },
+                                photos = state.photos,
+                            )
+
                             DetailDivider(top = 20.dp, bottom = 28.dp, modifier = Modifier.fillMaxWidth())
 
                             TimeInterval(
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,
                                 startDate = state.startDate,
+                                onStartDateClick = {
+                                    DateTimePicker.datePickerDialog(
+                                        context = context,
+                                        date = state.startDate.toLocalDate(),
+                                        onDateSelected = {
+                                            events(DetailEvents.UpdateStartDate(it))
+                                        },
+                                    ).show()
+                                },
                                 onStartTimeClick = {
                                     DateTimePicker.timePickerDialog(
                                         context = context,
@@ -171,12 +155,22 @@ fun ReminderDetailScreenContent(
                                         },
                                     ).show()
                                 },
-                                onStartDateClick = {
+                                endDate = state.endDate,
+                                onEndDateClick = {
                                     DateTimePicker.datePickerDialog(
                                         context = context,
-                                        date = state.startDate.toLocalDate(),
+                                        date = state.endDate.toLocalDate(),
                                         onDateSelected = {
-                                            events(DetailEvents.UpdateStartDate(it))
+                                            events(DetailEvents.UpdateEndDate(it))
+                                        },
+                                    ).show()
+                                },
+                                onEndTimeClick = {
+                                    DateTimePicker.timePickerDialog(
+                                        context = context,
+                                        time = state.endDate.toLocalTime(),
+                                        onTimeSelected = {
+                                            events(DetailEvents.UpdateEndTime(it))
                                         },
                                     ).show()
                                 },
@@ -194,6 +188,15 @@ fun ReminderDetailScreenContent(
                             )
 
                             DetailDivider(top = 20.dp, bottom = 30.dp, modifier = Modifier.fillMaxWidth())
+
+                            VisitorsHeader(
+                                visitorOptionType = state.visitorOption,
+                                isEditing = state.isEditing,
+                                modifier = Modifier.fillMaxWidth(),
+                                onViewVisitorsClick = { events(DetailEvents.ViewVisitors(visitorOptionType = it)) },
+                            )
+
+                            // TODO: add visitor list here
                         }
                         Column(
                             modifier = Modifier.align(Alignment.BottomCenter),
@@ -203,13 +206,30 @@ fun ReminderDetailScreenContent(
                             TaskyTextButton(
                                 text = String.format(
                                     stringResource(id = R.string.delete_title_with_argument),
-                                    stringResource(id = R.string.reminder),
+                                    stringResource(id = R.string.event),
                                 ),
                                 onClick = {
                                     events(DetailEvents.Save)
                                 },
                             )
                         }
+
+                        AttendeeDialog(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            email = state.attendeeDialogState.email,
+                            showDialog = state.attendeeDialogState.showDialog,
+                            errorText = state.attendeeDialogState.errorMessage,
+                            onEmailChange = {
+                                events(DetailEvents.UpdateAttendeeEmail(email = it))
+                            },
+                            onCloseClick = {
+                                events(DetailEvents.CloseAttendeeDialog)
+                            },
+                            onAddClick = {
+                                events(DetailEvents.AddAttendee)
+                            },
+                        )
                     }
                 },
             )
@@ -219,10 +239,10 @@ fun ReminderDetailScreenContent(
 
 @Preview(showBackground = true)
 @Composable
-fun ReminderDetailScreenContentPreview() {
-    ReminderDetailScreenContent(
-        state = ReminderDetailState(
-            agendaItem = AgendaItem.mockReminder,
+fun EventDetailScreenContentContentPreview() {
+    EventDetailScreenContent(
+        state = EventDetailState(
+            // agendaItem = AgendaItem.mockTask,
         ),
         events = {},
     )
@@ -230,11 +250,11 @@ fun ReminderDetailScreenContentPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ReminderDetailScreenContentEditingPreview() {
-    ReminderDetailScreenContent(
-        state = ReminderDetailState(
+fun EventDetailScreenContentEditingPreview() {
+    EventDetailScreenContent(
+        state = EventDetailState(
             isEditing = true,
-            agendaItem = AgendaItem.mockReminder,
+            // agendaItem = AgendaItem.mockTask,
         ),
         events = {},
     )

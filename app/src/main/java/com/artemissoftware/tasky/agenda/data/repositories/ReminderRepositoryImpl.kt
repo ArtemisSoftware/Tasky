@@ -11,6 +11,10 @@ import com.artemissoftware.tasky.agenda.data.mappers.toEntity
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import java.time.LocalDate
+import java.time.ZoneId
 
 class ReminderRepositoryImpl constructor(
     private val reminderDao: ReminderDao,
@@ -19,6 +23,15 @@ class ReminderRepositoryImpl constructor(
 
     override suspend fun getReminder(id: String): AgendaItem.Reminder? {
         return reminderDao.getReminderAndSyncState(id)?.toAgendaItem()
+    }
+
+    override fun getReminders(date: LocalDate): Flow<List<AgendaItem.Reminder>> {
+        val initialDate = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val endDate = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        return reminderDao.getReminders(initialDate = initialDate, endDate = endDate).map {  list->
+            list.map { item -> item.toAgendaItem() }
+        }
     }
 
     override suspend fun saveReminderAndSync(reminder: AgendaItem.Reminder): DataResponse<Unit> {
@@ -52,5 +65,11 @@ class ReminderRepositoryImpl constructor(
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
         }
+    }
+
+    override fun upsertReminders(reminders: List<AgendaItem.Reminder>) {
+
+        val result = reminders.map { it.toEntity() }
+        reminderDao.upsert(result)
     }
 }
