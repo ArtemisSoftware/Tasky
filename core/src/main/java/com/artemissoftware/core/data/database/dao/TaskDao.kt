@@ -14,7 +14,7 @@ interface TaskDao {
 
     @Transaction
     @Query("SELECT * FROM taskEntity WHERE id = :id")
-    fun getTaskAndSyncState(id: String): TaskAndSyncState?
+    suspend fun getTaskAndSyncState(id: String): TaskAndSyncState?
 
     @Transaction
     @Query("SELECT * FROM taskEntity WHERE time >= :initialDate AND time < :endDate")
@@ -28,7 +28,7 @@ interface TaskDao {
     fun upsert(taskEntity: TaskEntity)
 
     @Upsert
-    fun upsert(taskEntities: List<TaskEntity>)
+    suspend fun upsert(taskEntities: List<TaskEntity>)
 
     @Upsert
     suspend fun upsertTaskSync(taskSyncEntity: TaskSyncEntity)

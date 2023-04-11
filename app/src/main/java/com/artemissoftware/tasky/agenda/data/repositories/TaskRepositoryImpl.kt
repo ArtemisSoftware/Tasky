@@ -65,7 +65,7 @@ class TaskRepositoryImpl constructor(
         }
     }
 
-    override fun upsertTasks(tasks: List<AgendaItem.Task>) {
+    override suspend fun upsertTasks(tasks: List<AgendaItem.Task>) {
         val result = tasks.map { it.toEntity() }
         taskDao.upsert(result)
     }

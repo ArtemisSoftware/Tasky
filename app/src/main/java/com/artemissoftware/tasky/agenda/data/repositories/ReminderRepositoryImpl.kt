@@ -65,7 +65,7 @@ class ReminderRepositoryImpl constructor(
         }
     }
 
-    override fun upsertReminders(reminders: List<AgendaItem.Reminder>) {
+    override suspend fun upsertReminders(reminders: List<AgendaItem.Reminder>) {
         val result = reminders.map { it.toEntity() }
         reminderDao.upsert(result)
     }

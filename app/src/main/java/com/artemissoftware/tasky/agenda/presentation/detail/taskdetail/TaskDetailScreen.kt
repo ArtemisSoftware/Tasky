@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
@@ -43,7 +44,7 @@ import com.ramcosta.composedestinations.result.getOr
 @Composable
 fun TaskDetailScreen(
     navigator: DestinationsNavigator,
-    viewModel: TaskDetailViewModel,
+    viewModel: TaskDetailViewModel = hiltViewModel(),
     taskId: String? = null,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
@@ -142,6 +143,8 @@ private fun TaskDetailScreenContent(
                                 title = state.title,
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,
+                                isDone = state.isDone,
+                                style = MaterialTheme.typography.h4.copy(textDecoration = if (state.isDone) TextDecoration.LineThrough else TextDecoration.None),
                                 onEditClick = {
                                     events(DetailEvents.EditTitle(it))
                                 },
@@ -156,7 +159,6 @@ private fun TaskDetailScreenContent(
                                 isEditing = state.isEditing,
                                 description = state.description,
                                 modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.body1.copy(textDecoration = if (state.isDone) TextDecoration.LineThrough else TextDecoration.None),
                                 onEditClick = {
                                     events(DetailEvents.EditDescription(it))
                                 },

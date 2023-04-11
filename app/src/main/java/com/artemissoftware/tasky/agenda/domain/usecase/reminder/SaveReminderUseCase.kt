@@ -1,17 +1,20 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import javax.inject.Inject
 
 class SaveReminderUseCase @Inject constructor(
     private val reminderRepository: ReminderRepository,
+    private val alarmScheduler: AlarmScheduler,
 ) {
     suspend operator fun invoke(
         reminder: AgendaItem.Reminder,
     ) {
         val result = reminderRepository.saveReminderAndSync(reminder = reminder)
+        alarmScheduler.schedule(item = reminder)
 
         when (result) {
             is DataResponse.Error -> {

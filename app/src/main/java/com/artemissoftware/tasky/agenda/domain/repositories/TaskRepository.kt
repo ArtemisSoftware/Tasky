@@ -15,5 +15,5 @@ interface TaskRepository {
 
     suspend fun deleteTaskAndSync(id: String): DataResponse<Unit>
 
-    fun upsertTasks(tasks: List<AgendaItem.Task>)
+    suspend fun upsertTasks(tasks: List<AgendaItem.Task>)
 }

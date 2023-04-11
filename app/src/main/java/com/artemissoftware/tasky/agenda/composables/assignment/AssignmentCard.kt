@@ -30,8 +30,13 @@ fun AssignmentCard(
     onCheckedChange: (Boolean) -> Unit,
     onOptionClick: (AgendaItemOption) -> Unit,
     modifier: Modifier = Modifier,
-    isComplete: Boolean = false,
 ) {
+    val isComplete = if (agendaItem is AgendaItem.Task) {
+        agendaItem.isDone
+    } else {
+        false
+    }
+
     Card(
         modifier = modifier,
         elevation = 0.dp,
@@ -45,6 +50,7 @@ fun AssignmentCard(
             Row {
                 Column {
                     TaskyIconToggleButton(
+                        selected = isComplete,
                         modifier = Modifier.padding(top = 4.dp),
                         onIcon = R.drawable.ic_round_check,
                         offIcon = R.drawable.ic_circle,
