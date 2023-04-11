@@ -28,7 +28,7 @@ class AgendaRepositoryImpl(
         }
     }
 
-    override suspend fun getAgendaToUpdateAlarms(currentDate: Long): List<AgendaItem> {
+    override suspend fun getFutureAgenda(currentDate: Long): List<AgendaItem> {
 
         val reminders = reminderDao.getRemindersToSetAlarm(currentTime = currentDate).map { it.toAgendaItem() }
         val tasks = taskDao.getTasksToSetAlarm(currentTime = currentDate).map { it.toAgendaItem() }

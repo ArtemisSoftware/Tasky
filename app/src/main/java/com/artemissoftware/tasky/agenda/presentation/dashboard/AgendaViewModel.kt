@@ -3,8 +3,10 @@ package com.artemissoftware.tasky.agenda.presentation.dashboard
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
-    private val syncAgendaUseCase: SyncAgendaUseCase
+    private val syncAgendaUseCase: SyncAgendaUseCase,
+    private val deleteReminderUseCase: DeleteReminderUseCase,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
@@ -34,9 +37,11 @@ class AgendaViewModel @Inject constructor(
             is AgendaEvents.ChangeDate -> TODO()
             is AgendaEvents.ChangeWeekDay -> TODO()
             is AgendaEvents.CompleteAssignment -> TODO()
-            is AgendaEvents.Delete -> TODO()
+            is AgendaEvents.Delete -> {
+                deleteItem(item = event.item)
+            }
             is AgendaEvents.GoToDetail -> {
-                goToDetail(event.id, event.detailType)
+                goToDetail(item = event.item)
             }
             AgendaEvents.LogOut -> TODO()
             is AgendaEvents.CreateAgendaItem -> {
@@ -45,14 +50,24 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    private fun goToDetail(id: String?, detailType: AgendaItems) {
+    private fun deleteItem(item: AgendaItem) {
         viewModelScope.launch {
-            when (detailType) {
-                AgendaItems.EVENT -> TODO()
-                AgendaItems.TASK -> TODO()
-                AgendaItems.REMINDER -> {
-                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = id).route))
+            when (item) {
+                is AgendaItem.Reminder -> {
+                    deleteReminderUseCase.invoke(id = item.itemId)
                 }
+                is AgendaItem.Task -> TODO()
+            }
+        }
+    }
+
+    private fun goToDetail(item: AgendaItem) {
+        viewModelScope.launch {
+            when (item) {
+                is AgendaItem.Reminder -> {
+                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = item.itemId).route))
+                }
+                is AgendaItem.Task -> TODO()
             }
         }
     }
@@ -71,23 +86,31 @@ class AgendaViewModel @Inject constructor(
 
     private fun getAgendaItems(date: LocalDate) {
         viewModelScope.launch {
-           getAgendaItemsUseCase(date = date).collect{ result ->
-               _state.update {
-                   it.copy(
-                       agendaItems = result,
-                   )
-               }
-
-
-           }
-
-
+            getAgendaItemsUseCase(date = date).collect { result ->
+                _state.update {
+                    it.copy(
+                        agendaItems = result,
+                    )
+                }
+            }
         }
     }
 
     private fun syncAgenda(date: LocalDate) {
+        _state.update {
+            it.copy(
+                isLoading = true,
+            )
+        }
+
         viewModelScope.launch {
             syncAgendaUseCase(date = date)
+
+            _state.update {
+                it.copy(
+                    isLoading = false,
+                )
+            }
         }
     }
 }

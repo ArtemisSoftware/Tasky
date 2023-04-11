@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,12 +26,10 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailSpecification
-import com.artemissoftware.tasky.agenda.presentation.detail.DetailState
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
-import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
+import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
@@ -46,11 +43,9 @@ import com.ramcosta.composedestinations.result.getOr
 fun ReminderDetailScreen(
     navigator: DestinationsNavigator,
     viewModel: ReminderDetailViewModel = hiltViewModel(),
-    reminderId: String? = null,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    val notifications = viewModel.notifications
 
     resultRecipient.onNavResult { result ->
         result.getOr { null }?.let { editResult ->
@@ -101,7 +96,8 @@ fun ReminderDetailScreenContent(
                 allCaps = true,
                 title = String.format(
                     stringResource(id = R.string.edit_title_with_argument),
-                    stringResource(id = R.string.reminder)),
+                    stringResource(id = R.string.reminder),
+                ),
                 toolbarActions = { color ->
 
                     if (state.isEditing) {
@@ -207,7 +203,8 @@ fun ReminderDetailScreenContent(
                             TaskyTextButton(
                                 text = String.format(
                                     stringResource(id = R.string.delete_title_with_argument),
-                                    stringResource(id = R.string.reminder)),
+                                    stringResource(id = R.string.reminder),
+                                ),
                                 onClick = {
                                     events(DetailEvents.Save)
                                 },

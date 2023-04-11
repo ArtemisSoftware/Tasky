@@ -1,6 +1,9 @@
 package com.artemissoftware.core.data.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.ReminderAndSyncState
@@ -12,6 +15,7 @@ interface ReminderDao {
     @Query("SELECT * FROM reminderEntity WHERE id = :id")
     suspend fun getReminderAndSyncState(id: String): ReminderAndSyncState?
 
+    @Transaction
     @Query("SELECT * FROM reminderEntity WHERE time >= :initialDate AND time < :endDate")
     fun getReminders(initialDate: Long, endDate: Long): Flow<List<ReminderAndSyncState>>
 

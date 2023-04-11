@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaToUpdateAlarmsUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetFutureAgendaItemsUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class AlarmBootUpReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var getAgendaToUpdateAlarmsUseCase: GetAgendaToUpdateAlarmsUseCase
+    lateinit var getFutureAgendaItemsUseCase: GetFutureAgendaItemsUseCase
 
     @Inject
     lateinit var alarmScheduler: AlarmScheduler
@@ -25,7 +25,7 @@ class AlarmBootUpReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             CoroutineScope(job).launch {
-                val items = getAgendaToUpdateAlarmsUseCase()
+                val items = getFutureAgendaItemsUseCase()
                 items.forEach {
                     alarmScheduler.schedule(it)
                 }

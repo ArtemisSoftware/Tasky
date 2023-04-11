@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import com.artemissoftware.core.presentation.events.TaskyEvents
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import java.time.LocalDate
 
@@ -11,9 +12,9 @@ sealed class AgendaEvents : TaskyEvents() {
 
     object LogOut : AgendaEvents()
 
-    data class GoToDetail(val id: String? = null, val detailType: AgendaItems, val isEditing: Boolean) : AgendaEvents()
+    data class GoToDetail(val item: AgendaItem, val isEditing: Boolean) : AgendaEvents()
 
     data class CreateAgendaItem(val detailType: AgendaItems) : AgendaEvents()
 
-    data class Delete(val id: String) : AgendaEvents()
+    data class Delete(val item: AgendaItem) : AgendaEvents()
 }

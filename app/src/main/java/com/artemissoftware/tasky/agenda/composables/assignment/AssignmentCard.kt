@@ -100,7 +100,7 @@ fun AssignmentCard(
                 TaskyText(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     color = agendaItemType.secondaryTextColor,
-                    text = agendaItem.itemTime.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
+                    text = agendaItem.starDate.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
                     style = MaterialTheme.typography.body2,
                 )
             }

@@ -213,22 +213,20 @@ private fun AgendaScreenContent(
                                     itemContent = { item ->
                                         AssignmentCard(
                                             agendaItemType = getAgendaItemType(item),
-                                            title = item.itemTitle,
-                                            description = item.itemDescription,
-                                            date = item.starDate.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
+                                            agendaItem = item,
                                             onCheckedChange = {
-                                                events(AgendaEvents.CompleteAssignment(item.itemId))
+                                                if(item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item.itemId))
                                             },
                                             onOptionClick = {
                                                 when (it) {
                                                     AgendaItemOption.OPEN -> {
-                                                        events(AgendaEvents.GoToDetail(id = item.itemId, detailType = getAgendaItems(item), isEditing = false))
+                                                        events(AgendaEvents.GoToDetail(item = item, isEditing = false))
                                                     }
                                                     AgendaItemOption.EDIT -> {
-                                                        events(AgendaEvents.GoToDetail(id = item.itemId, detailType = getAgendaItems(item), isEditing = true))
+                                                        events(AgendaEvents.GoToDetail(item = item, isEditing = true))
                                                     }
                                                     AgendaItemOption.DELETE -> {
-                                                        events(AgendaEvents.Delete(item.itemId))
+                                                        events(AgendaEvents.Delete(item = item))
                                                     }
                                                 }
                                             },
@@ -245,13 +243,10 @@ private fun AgendaScreenContent(
 }
 
 private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
-    return AgendaItemType.Reminder()
-    // TODO: add other types likes task and events in the future
-}
-
-private fun getAgendaItems(item: AgendaItem): AgendaItems {
-    return AgendaItems.REMINDER
-    // TODO: add other types likes task and events in the future
+    return when (item) {
+        is AgendaItem.Reminder -> AgendaItemType.Reminder()
+        is AgendaItem.Task -> AgendaItemType.Task()
+    }
 }
 
 @Preview(showBackground = true)
@@ -276,15 +271,13 @@ fun AgendaScreenPreview() {
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
                     time = LocalDateTime.now(),
-                    notification = Notification(1, 30, "30 minutes before", true),
-                    time = LocalDateTime.now()
                 ),
 
                 AgendaItem.Reminder(
                     title = "The title",
                     description = "THe description",
                     remindAt = LocalDateTime.now(),
-                    time = LocalDateTime.now()
+                    time = LocalDateTime.now(),
                 ),
             ),
         ),

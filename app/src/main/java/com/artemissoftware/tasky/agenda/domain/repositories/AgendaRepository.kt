@@ -10,5 +10,5 @@ interface AgendaRepository {
 
     suspend fun getAgenda(date: LocalDate): DataResponse<Agenda>
 
-    suspend fun getAgendaToUpdateAlarms(currentDate: Long): List<AgendaItem>
+    suspend fun getFutureAgenda(currentDate: Long): List<AgendaItem>
 }
