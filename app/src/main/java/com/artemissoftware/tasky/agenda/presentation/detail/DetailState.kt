@@ -22,6 +22,7 @@ sealed interface DetailSpecification {
 
     data class Event( // TODO: complete when EventDetailScreen is ready
         val to: LocalDateTime = LocalDateTime.now(),
+        val endDate: LocalDateTime = LocalDateTime.now(),
     ) : DetailSpecification
 
     data class Task(

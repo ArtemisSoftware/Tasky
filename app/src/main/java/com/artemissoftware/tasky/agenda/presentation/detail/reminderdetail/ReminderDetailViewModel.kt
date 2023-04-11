@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
@@ -23,10 +24,15 @@ import javax.inject.Inject
 class ReminderDetailViewModel @Inject constructor(
     private val saveReminderUseCase: SaveReminderUseCase,
     private val getReminderUseCase: GetReminderUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(ReminderDetailState())
     val state: StateFlow<ReminderDetailState> = _state.asStateFlow()
+
+    init {
+        loadDetail()
+    }
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -44,9 +50,6 @@ class ReminderDetailViewModel @Inject constructor(
             is DetailEvents.UpdateNotification -> { updateNotification(event.notification) }
             is DetailEvents.UpdateStartDate -> { updateStartDate(event.startDate) }
             is DetailEvents.UpdateStartTime -> { updateStartTime(event.startTime) }
-            is DetailEvents.LoadDetail -> {
-                loadDetail(event.id)
-            }
             is DetailEvents.UpdateDescription -> {
                 updateDescription(event.description)
             }
@@ -126,8 +129,8 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadDetail(id: String?) {
-        id?.let { reminderId ->
+    private fun loadDetail() {
+        savedStateHandle.get<String>("reminderId")?.let { reminderId ->
             viewModelScope.launch {
                 val result = getReminderUseCase(reminderId)
                 result?.let { item ->

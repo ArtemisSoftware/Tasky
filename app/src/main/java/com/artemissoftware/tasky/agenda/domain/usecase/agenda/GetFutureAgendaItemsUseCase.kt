@@ -6,11 +6,11 @@ import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
 
-class GetAgendaToUpdateAlarmsUseCase @Inject constructor(
+class GetFutureAgendaItemsUseCase @Inject constructor(
     private val agendaRepository: AgendaRepository,
 ) {
     suspend operator fun invoke(): List<AgendaItem> {
         val date = LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        return agendaRepository.getAgendaToUpdateAlarms(currentDate = date)
+        return agendaRepository.getFutureAgenda(currentDate = date)
     }
 }

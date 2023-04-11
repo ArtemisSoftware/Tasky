@@ -28,3 +28,8 @@ fun LocalDate.format(pattern: String): String {
 fun LocalTime.format(pattern: String): String {
     return DateTimeFormatter.ofPattern(pattern).format(this)
 }
+
+fun LocalDate.toEpochMilli(): Long {
+    val dateTime = LocalDateTime.of(this, LocalTime.now())
+    return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
