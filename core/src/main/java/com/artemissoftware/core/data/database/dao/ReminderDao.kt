@@ -12,8 +12,8 @@ interface ReminderDao {
     fun getReminderAndSyncState(id: String): ReminderAndSyncState?
 
     @Transaction
-    @Query("SELECT * FROM reminderEntity WHERE time >= :currentDate")
-    suspend fun getRemindersToSetAlarm(currentDate: Long): List<ReminderAndSyncState>
+    @Query("SELECT * FROM reminderEntity WHERE time >= :currentTime")
+    suspend fun getRemindersToSetAlarm(currentTime: Long): List<ReminderAndSyncState>
 
     @Upsert
     fun upsert(reminderEntity: ReminderEntity)
