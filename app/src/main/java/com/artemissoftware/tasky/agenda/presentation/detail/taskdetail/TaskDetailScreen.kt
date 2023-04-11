@@ -44,6 +44,7 @@ import com.ramcosta.composedestinations.result.getOr
 fun TaskDetailScreen(
     navigator: DestinationsNavigator,
     viewModel: TaskDetailViewModel,
+    taskId: String? = null,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value

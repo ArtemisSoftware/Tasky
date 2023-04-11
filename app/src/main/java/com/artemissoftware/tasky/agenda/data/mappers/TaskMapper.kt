@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.agenda.data.mappers
 
 import com.artemissoftware.core.data.database.entities.TaskEntity
 import com.artemissoftware.core.data.database.entities.relations.TaskAndSyncState
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.util.extensions.toLocalDateTime
 import com.artemissoftware.core.util.extensions.toLong
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
@@ -48,6 +49,18 @@ fun AgendaItem.Task.toDto(): TaskDto {
         id = this.id,
         remindAt = remindAt.toLong(),
         time = time.toLong(),
+        isDone = isDone,
+    )
+}
+
+fun TaskDto.toTask(): AgendaItem.Task {
+    return AgendaItem.Task(
+        title = this.title,
+        description = this.description,
+        id = this.id,
+        remindAt = this.remindAt.toLocalDateTime(),
+        time = this.time.toLocalDateTime(),
+        syncState = SyncType.SYNCED,
         isDone = isDone,
     )
 }

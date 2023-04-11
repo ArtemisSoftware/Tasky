@@ -215,7 +215,7 @@ private fun AgendaScreenContent(
                                             agendaItemType = getAgendaItemType(item),
                                             agendaItem = item,
                                             onCheckedChange = {
-                                                if(item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item.itemId))
+                                                if(item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item))
                                             },
                                             onOptionClick = {
                                                 when (it) {

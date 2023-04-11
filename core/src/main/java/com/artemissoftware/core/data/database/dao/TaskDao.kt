@@ -28,6 +28,9 @@ interface TaskDao {
     fun upsert(taskEntity: TaskEntity)
 
     @Upsert
+    fun upsert(taskEntities: List<TaskEntity>)
+
+    @Upsert
     suspend fun upsertTaskSync(taskSyncEntity: TaskSyncEntity)
 
     @Transaction

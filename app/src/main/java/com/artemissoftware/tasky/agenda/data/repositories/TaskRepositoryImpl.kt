@@ -64,4 +64,9 @@ class TaskRepositoryImpl constructor(
             DataResponse.Error(exception = ex)
         }
     }
+
+    override fun upsertTasks(tasks: List<AgendaItem.Task>) {
+        val result = tasks.map { it.toEntity() }
+        taskDao.upsert(result)
+    }
 }

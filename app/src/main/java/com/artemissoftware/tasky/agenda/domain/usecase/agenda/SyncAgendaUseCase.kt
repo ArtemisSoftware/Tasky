@@ -1,13 +1,16 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.agenda
 
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
 class SyncAgendaUseCase @Inject constructor(
     private val reminderRepository: ReminderRepository,
+    private val taskRepository: TaskRepository,
     private val agendaRepository: AgendaRepository,
 ) {
 
@@ -20,11 +23,13 @@ class SyncAgendaUseCase @Inject constructor(
             }
             is DataResponse.Success -> {
                 result.data?.let {
-                    reminderRepository.upsertReminders(it.reminders)
+                    with(it.items) {
+                        reminderRepository.upsertReminders(filterIsInstance<AgendaItem.Reminder>())
 
-                    // TODO: add task
+                        taskRepository.upsertTasks(filterIsInstance<AgendaItem.Task>())
 
-                    // TODO: add events
+                        // TODO: add events
+                    }
                 }
             }
         }

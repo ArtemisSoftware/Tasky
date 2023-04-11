@@ -7,8 +7,11 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.task.CompleteTaskUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
+import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +25,8 @@ class AgendaViewModel @Inject constructor(
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
     private val syncAgendaUseCase: SyncAgendaUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val completeTaskUseCase: CompleteTaskUseCase
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
@@ -36,7 +41,9 @@ class AgendaViewModel @Inject constructor(
         when (event) {
             is AgendaEvents.ChangeDate -> TODO()
             is AgendaEvents.ChangeWeekDay -> TODO()
-            is AgendaEvents.CompleteAssignment -> TODO()
+            is AgendaEvents.CompleteAssignment -> {
+                completeAssignment(event.item)
+            }
             is AgendaEvents.Delete -> {
                 deleteItem(item = event.item)
             }
@@ -50,13 +57,21 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
+    private fun completeAssignment(item: AgendaItem.Task) {
+        viewModelScope.launch {
+            completeTaskUseCase.invoke(task = item)
+        }
+    }
+
     private fun deleteItem(item: AgendaItem) {
         viewModelScope.launch {
             when (item) {
                 is AgendaItem.Reminder -> {
                     deleteReminderUseCase.invoke(id = item.itemId)
                 }
-                is AgendaItem.Task -> TODO()
+                is AgendaItem.Task -> {
+                    deleteTaskUseCase.invoke(id = item.itemId)
+                }
             }
         }
     }
@@ -67,7 +82,9 @@ class AgendaViewModel @Inject constructor(
                 is AgendaItem.Reminder -> {
                     sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = item.itemId).route))
                 }
-                is AgendaItem.Task -> TODO()
+                is AgendaItem.Task -> {
+                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
+                }
             }
         }
     }
@@ -76,7 +93,9 @@ class AgendaViewModel @Inject constructor(
         viewModelScope.launch {
             when (detailType) {
                 AgendaItems.EVENT -> TODO()
-                AgendaItems.TASK -> TODO()
+                AgendaItems.TASK -> {
+                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination().route))
+                }
                 AgendaItems.REMINDER -> {
                     sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination().route))
                 }
