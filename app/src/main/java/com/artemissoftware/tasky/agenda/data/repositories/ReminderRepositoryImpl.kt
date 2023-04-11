@@ -5,6 +5,8 @@ import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
+import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
@@ -14,7 +16,6 @@ import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
-import java.time.ZoneId
 
 class ReminderRepositoryImpl constructor(
     private val reminderDao: ReminderDao,
@@ -26,10 +27,7 @@ class ReminderRepositoryImpl constructor(
     }
 
     override fun getReminders(date: LocalDate): Flow<List<AgendaItem.Reminder>> {
-        val initialDate = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val endDate = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-        return reminderDao.getReminders(initialDate = initialDate, endDate = endDate).map {  list->
+        return reminderDao.getReminders(initialDate = date.toStartOfDayEpochMilli(), endDate = date.toEndOfDayEpochMilli()).map { list ->
             list.map { item -> item.toAgendaItem() }
         }
     }
@@ -68,7 +66,6 @@ class ReminderRepositoryImpl constructor(
     }
 
     override fun upsertReminders(reminders: List<AgendaItem.Reminder>) {
-
         val result = reminders.map { it.toEntity() }
         reminderDao.upsert(result)
     }

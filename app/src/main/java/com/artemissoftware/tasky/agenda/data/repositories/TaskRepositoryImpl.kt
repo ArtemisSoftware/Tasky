@@ -5,6 +5,8 @@ import com.artemissoftware.core.data.database.entities.TaskSyncEntity
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
+import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
@@ -14,7 +16,6 @@ import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
-import java.time.ZoneId
 
 class TaskRepositoryImpl constructor(
     private val taskDao: TaskDao,
@@ -26,10 +27,7 @@ class TaskRepositoryImpl constructor(
     }
 
     override fun getTasks(date: LocalDate): Flow<List<AgendaItem.Task>> {
-        val initialDate = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val endDate = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-        return taskDao.getTasks(initialDate = initialDate, endDate = endDate).map { list ->
+        return taskDao.getTasks(initialDate = date.toStartOfDayEpochMilli(), endDate = date.toEndOfDayEpochMilli()).map { list ->
             list.map { item -> item.toAgendaItem() }
         }
     }

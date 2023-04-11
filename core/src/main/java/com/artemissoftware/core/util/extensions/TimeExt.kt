@@ -33,3 +33,11 @@ fun LocalDate.toEpochMilli(): Long {
     val dateTime = LocalDateTime.of(this, LocalTime.now())
     return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
+
+fun LocalDate.toStartOfDayEpochMilli(): Long {
+    return this.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
+fun LocalDate.toEndOfDayEpochMilli(): Long {
+    return this.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
