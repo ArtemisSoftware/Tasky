@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.detail
 
+import android.net.Uri
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.events.TaskyEvents
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
@@ -32,4 +33,8 @@ sealed class DetailEvents : TaskyEvents() {
     object AddAttendee : DetailEvents()
 
     data class ViewVisitors(val visitorOptionType: VisitorOptionType) : DetailEvents()
+
+    data class AddPicture(val uri: Uri) : DetailEvents()
+
+    object ShowImageSizeError : DetailEvents()
 }

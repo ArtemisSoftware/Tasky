@@ -2,8 +2,8 @@ package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
-import com.artemissoftware.tasky.agenda.domain.models.Photo
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
+import com.artemissoftware.tasky.agenda.presentation.detail.models.Picture
 import java.time.LocalDateTime
 
 data class EventDetailState(
@@ -14,7 +14,7 @@ data class EventDetailState(
     val startDate: LocalDateTime = LocalDateTime.now(),
     val endDate: LocalDateTime = LocalDateTime.now().plusMinutes(30L),
     val title: String = "",
-    val photos: List<Photo> = emptyList(),
+    val photos: List<Picture> = emptyList(),
     val description: String = "",
     val notification: NotificationType = NotificationType.defaultNotification(),
     val attendeeDialogState: AttendeeDialogState = AttendeeDialogState(),

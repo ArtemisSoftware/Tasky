@@ -1,11 +1,15 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +22,7 @@ import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
+import com.artemissoftware.core.util.constants.ImageSizeConstants.ONE_MEGA_BYTE
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentDescription
@@ -31,6 +36,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInte
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.coroutines.launch
 
 @Destination
 @Composable
@@ -44,6 +50,28 @@ private fun EventDetailScreenContent(
     events: (DetailEvents) -> Unit,
 ) {
     val context = LocalContext.current
+
+    val coroutine = rememberCoroutineScope()
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let {
+                context.contentResolver.openInputStream(it)?.let { inputStream ->
+                    coroutine.launch {
+                        val size: Int = inputStream.available() ?: 0
+                        inputStream.close()
+
+                        if (size < ONE_MEGA_BYTE) {
+                            events(DetailEvents.AddPicture(uri = uri))
+                        } else {
+                            events(DetailEvents.ShowImageSizeError)
+                        }
+                    }
+                }
+            }
+        },
+    )
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -126,7 +154,9 @@ private fun EventDetailScreenContent(
                                     .height(112.dp),
                                 isEditing = state.isEditing,
                                 onAddPhotoClick = {
-                                    // TODO: add event here
+                                    singlePhotoPickerLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                                    )
                                 },
                                 photos = state.photos,
                             )
