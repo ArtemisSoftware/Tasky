@@ -212,7 +212,6 @@ private fun AgendaScreenContent(
                                     },
                                     itemContent = { item ->
                                         AssignmentCard(
-                                            agendaItemType = getAgendaItemType(item),
                                             agendaItem = item,
                                             onCheckedChange = {
                                                 if(item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item))
