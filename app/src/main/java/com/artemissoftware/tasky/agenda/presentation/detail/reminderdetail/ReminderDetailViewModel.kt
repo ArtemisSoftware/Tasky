@@ -2,13 +2,16 @@ package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -149,14 +152,24 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun saveReminder() = with(_state.value) {
-        agendaItem.title = title
-        agendaItem.description = description
-        agendaItem.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
-        agendaItem.time = startDate
+        val item = AgendaItem.Reminder(
+            id = agendaItem.id,
+            title = title,
+            description = description,
+            remindAt = NotificationType.remindAt(time = startDate, notificationType = notification),
+            time = startDate,
+            syncState = getSyncType(agendaItem),
+        )
 
         viewModelScope.launch {
-            saveReminderUseCase(agendaItem)
+            saveReminderUseCase(item)
             popBackStack()
         }
+    }
+
+    private fun getSyncType(agendaItem: AgendaItem.Reminder): SyncType {
+        return savedStateHandle.get<String>(NavigationConstants.TASK_ID)?.let {
+            if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
+        } ?: SyncType.CREATE
     }
 }

@@ -35,6 +35,7 @@
                 <data android:host="tasky.com" />
             </intent-filter>
         </activity>
+        <receiver android:name=".agenda.data.alarm.AlarmReceiver" />
         <receiver
             android:name=".agenda.data.alarm.AlarmBootUpReceiver"
             android:directBootAware="true"

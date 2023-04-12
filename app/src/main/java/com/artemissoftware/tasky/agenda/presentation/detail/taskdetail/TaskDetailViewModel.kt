@@ -154,6 +154,7 @@ class TaskDetailViewModel @Inject constructor(
     private fun saveTask() = with(_state.value) {
         val item = AgendaItem.Task(
             id = agendaItem.id,
+            title = title,
             description = description,
             remindAt = NotificationType.remindAt(time = startDate, notificationType = notification),
             time = startDate,

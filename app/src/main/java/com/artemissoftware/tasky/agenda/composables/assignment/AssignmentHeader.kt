@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.core.presentation.composables.geometric.TaskySquare
@@ -31,6 +32,8 @@ fun AssignmentHeader(
     title: String,
     onEditClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isDone: Boolean = false,
+    style: TextStyle = MaterialTheme.typography.h4,
     onIsDoneClick: (Boolean) -> Unit = {},
     isEditing: Boolean = false,
 ) {
@@ -60,8 +63,15 @@ fun AssignmentHeader(
             Column(
                 modifier = Modifier.weight(0.9F),
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            if (isEditing) onEditClick(title)
+                        },
+                ) {
                     TaskyIconToggleButton(
+                        selected = isDone,
                         size = 20.dp,
                         onIcon = R.drawable.ic_round_check,
                         offIcon = R.drawable.ic_circle,
@@ -76,7 +86,7 @@ fun AssignmentHeader(
                                 if (isEditing) onEditClick(title)
                             },
                         text = title,
-                        style = MaterialTheme.typography.h4,
+                        style = style,
                     )
                 }
             }

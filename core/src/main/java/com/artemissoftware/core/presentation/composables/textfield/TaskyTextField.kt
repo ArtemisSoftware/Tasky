@@ -6,11 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,10 +22,8 @@ fun TaskyTextField(
     textColor: Color = Black,
 
 ) {
-    val focusRequester = remember { FocusRequester() }
-
     TextField(
-        modifier = modifier.focusRequester(focusRequester),
+        modifier = modifier,
         textStyle = textStyle,
         value = text,
         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -40,10 +34,6 @@ fun TaskyTextField(
         ),
         onValueChange = onValueChange,
     )
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
 }
 
 @Preview(showBackground = true)

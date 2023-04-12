@@ -43,6 +43,7 @@ import com.ramcosta.composedestinations.result.getOr
 fun ReminderDetailScreen(
     navigator: DestinationsNavigator,
     viewModel: ReminderDetailViewModel = hiltViewModel(),
+    reminderId: String? = null,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()

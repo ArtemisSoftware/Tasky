@@ -15,5 +15,5 @@ interface ReminderRepository {
 
     suspend fun deleteReminderAndSync(id: String): DataResponse<Unit>
 
-    fun upsertReminders(reminders: List<AgendaItem.Reminder>)
+    suspend fun upsertReminders(reminders: List<AgendaItem.Reminder>)
 }
