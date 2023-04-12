@@ -26,10 +26,4 @@ class AuthenticationApiSource constructor(private val taskyAuthenticationApi: Ta
             taskyAuthenticationApi.authenticate()
         }
     }
-
-    suspend fun logoutUser(): ResponseBody {
-        return HandleApi.safeApiCall {
-            taskyAuthenticationApi.logoutUser()
-        }
-    }
 }

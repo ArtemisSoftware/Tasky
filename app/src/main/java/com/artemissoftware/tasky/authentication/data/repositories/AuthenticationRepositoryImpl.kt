@@ -43,13 +43,4 @@ class AuthenticationRepositoryImpl constructor(
             DataResponse.Error(exception = ex)
         }
     }
-
-    override suspend fun logoutUser(): DataResponse<Boolean> {
-        return try {
-            authenticationApiSource.logoutUser()
-            DataResponse.Success(data = true)
-        } catch (ex: TaskyNetworkException) {
-            DataResponse.Error(exception = ex)
-        }
-    }
 }

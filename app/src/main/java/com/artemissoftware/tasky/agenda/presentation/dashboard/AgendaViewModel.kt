@@ -12,6 +12,7 @@ import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.LogOutUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
@@ -26,6 +27,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.YearMonth
+import java.time.temporal.ChronoUnit
+import java.util.stream.Collectors
+import java.util.stream.IntStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,27 +46,19 @@ class AgendaViewModel @Inject constructor(
     val state: StateFlow<AgendaState> = _state
 
     init {
+        getMonthDates(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
-        getAgendaItems(date = LocalDate.now())
-        syncAgenda(date = LocalDate.now())
-    }
-
-    private fun getUser() {
-        viewModelScope.launch {
-            getUserUseCase().collectLatest { user ->
-                _state.update {
-                    it.copy(
-                        userName = user.fullName,
-                    )
-                }
-            }
-        }
+        updateAgenda(date = LocalDate.now())
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
         when (event) {
-            is AgendaEvents.ChangeDate -> TODO()
-            is AgendaEvents.ChangeWeekDay -> TODO()
+            is AgendaEvents.ChangeDate -> {
+                changeDate(event.date)
+            }
+            is AgendaEvents.ChangeWeekDay -> {
+                changeWeekDay(event.date)
+            }
             is AgendaEvents.CompleteAssignment -> TODO()
             is AgendaEvents.Delete -> {
                 deleteItem(item = event.item)
@@ -76,6 +73,34 @@ class AgendaViewModel @Inject constructor(
                 createAgendaItem(event.detailType)
             }
         }
+    }
+
+    private fun updateAgenda(date: LocalDate) {
+        getAgendaItems(date = date)
+        //syncAgenda(date = date)
+    }
+
+    private fun changeDate(date: LocalDate) {
+        val selectedDay = _state.value.selectedDayOfTheWeek
+
+        if (selectedDay.year != date.year || selectedDay.month != date.month) {
+            getMonthDates(selectedDay = date)
+        }
+
+        _state.update {
+            it.copy(
+                selectedDayOfTheWeek = date,
+            )
+        }
+        updateAgenda(date = date)
+    }
+    private fun changeWeekDay(date: LocalDate) {
+        _state.update {
+            it.copy(
+                selectedDayOfTheWeek = date,
+            )
+        }
+        updateAgenda(date = date)
     }
 
     private fun logout() {
@@ -156,6 +181,39 @@ class AgendaViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                 )
+            }
+        }
+    }
+
+    private fun getMonthDates(selectedDay: LocalDate) {
+        val yearMonth = YearMonth.of(selectedDay.year, selectedDay.month)
+        val firstOfMonth: LocalDate = yearMonth.atDay(1)
+        val firstOfFollowingMonth: LocalDate = yearMonth.plusMonths(1).atDay(1)
+        val numOfDaysBetween: Long = ChronoUnit.DAYS.between(firstOfMonth, firstOfFollowingMonth)
+
+        val listOfDates = IntStream.iterate(0) { i -> i + 1 }
+            .limit(numOfDaysBetween)
+            .mapToObj { i -> firstOfMonth.plusDays(i.toLong()) }
+            .collect(Collectors.toList())
+            .map {
+                DayOfWeek(date = it)
+            }
+
+        _state.update {
+            it.copy(
+                daysOfTheWeek = listOfDates,
+            )
+        }
+    }
+
+    private fun getUser() {
+        viewModelScope.launch {
+            getUserUseCase().collectLatest { user ->
+                _state.update {
+                    it.copy(
+                        userName = user.fullName,
+                    )
+                }
             }
         }
     }
