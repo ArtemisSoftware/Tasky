@@ -4,4 +4,6 @@ sealed class AgendaException : ValidationException() {
 
     object AttendeeError : AgendaException()
     object AttendeeDoesNotExist : AgendaException()
+
+    object LogOutError : AgendaException()
 }

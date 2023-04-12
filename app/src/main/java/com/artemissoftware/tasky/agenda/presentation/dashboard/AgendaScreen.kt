@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavOptions
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyExpandableSquareButton
@@ -50,6 +51,8 @@ import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItem
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
+import com.artemissoftware.tasky.destinations.AgendaScreenDestination
+import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -73,6 +76,12 @@ fun AgendaScreen(
         uiEvent = viewModel.uiEvent,
         onNavigate = {
             navigator.navigate(it.route)
+        },
+        onNavigateAndPopCurrent = {
+            navigator.navigate(
+                route = it.route,
+                navOptions = NavOptions.Builder().setPopUpTo(AgendaScreenDestination.route, inclusive = true).build(),
+            )
         },
     )
 }

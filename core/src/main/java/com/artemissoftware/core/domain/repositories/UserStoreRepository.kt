@@ -7,4 +7,6 @@ interface UserStoreRepository {
 
     suspend fun saveUser(user: User)
     fun getUser(): Flow<User>
+
+    suspend fun deleteUser()
 }

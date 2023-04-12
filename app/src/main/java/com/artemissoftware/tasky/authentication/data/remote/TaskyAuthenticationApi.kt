@@ -21,7 +21,4 @@ interface TaskyAuthenticationApi {
 
     @GET("authenticate")
     suspend fun authenticate(): ResponseBody
-
-    @GET("logout")
-    suspend fun logoutUser(): ResponseBody
 }

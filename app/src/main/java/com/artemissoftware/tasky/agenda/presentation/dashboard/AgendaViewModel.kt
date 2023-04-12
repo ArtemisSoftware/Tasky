@@ -1,14 +1,23 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.ValidationException
+import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
+import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
+import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.core.presentation.mappers.toUiText
+import com.artemissoftware.core.util.UiText
+import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.agenda.LogOutUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
+import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
+    private val logOutUseCase: LogOutUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
     private val syncAgendaUseCase: SyncAgendaUseCase,
@@ -38,7 +48,7 @@ class AgendaViewModel @Inject constructor(
 
     private fun getUser() {
         viewModelScope.launch {
-            getUserUseCase().collectLatest { user->
+            getUserUseCase().collectLatest { user ->
                 _state.update {
                     it.copy(
                         userName = user.fullName,
@@ -59,9 +69,29 @@ class AgendaViewModel @Inject constructor(
             is AgendaEvents.GoToDetail -> {
                 goToDetail(item = event.item)
             }
-            AgendaEvents.LogOut -> TODO()
+            AgendaEvents.LogOut -> {
+                logout()
+            }
             is AgendaEvents.CreateAgendaItem -> {
                 createAgendaItem(event.detailType)
+            }
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            val result = logOutUseCase.invoke()
+
+            when (result) {
+                is Resource.Error -> {
+                    result.exception?.let {
+                        sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { logout() })))
+                    }
+                }
+                is Resource.Success -> {
+                    sendUiEvent(UiEvent.NavigateAndPopCurrent(LoginScreenDestination.route))
+                }
+                is Resource.Loading -> Unit
             }
         }
     }
@@ -128,5 +158,19 @@ class AgendaViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun getDialogData(ex: ValidationException, reloadEvent: () -> Unit): TaskyDialogType {
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.log_out),
+            description = ex.toUiText(),
+            dialogOptions = TaskyDialogOptions.DoubleOption(
+                confirmationText = UiText.StringResource(R.string.retry),
+                confirmation = {
+                    reloadEvent.invoke()
+                },
+                cancelText = UiText.StringResource(com.artemissoftware.core.R.string.cancel),
+            ),
+        )
     }
 }

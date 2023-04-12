@@ -26,5 +26,8 @@ fun ValidationException.toUiText(): UiText {
         AgendaException.AttendeeError -> {
             UiText.StringResource(R.string.error_occurred_during_attendee_search)
         }
+        AgendaException.LogOutError -> {
+            UiText.StringResource(R.string.error_occurred_during_user_logout)
+        }
     }
 }

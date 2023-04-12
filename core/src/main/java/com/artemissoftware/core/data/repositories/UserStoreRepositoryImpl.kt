@@ -22,4 +22,10 @@ class UserStoreRepositoryImpl @Inject constructor(private val context: Context) 
     override fun getUser(): Flow<User> {
         return context.userStore.data
     }
+
+    override suspend fun deleteUser() {
+        context.userStore.updateData {
+            User()
+        }
+    }
 }
