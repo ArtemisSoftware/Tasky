@@ -77,7 +77,7 @@ class AgendaViewModel @Inject constructor(
 
     private fun updateAgenda(date: LocalDate) {
         getAgendaItems(date = date)
-        //syncAgenda(date = date)
+        syncAgenda(date = date)
     }
 
     private fun changeDate(date: LocalDate) {
