@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -12,6 +13,7 @@ import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -19,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
+    private val getUserUseCase: GetUserUseCase,
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
     private val syncAgendaUseCase: SyncAgendaUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
@@ -28,8 +31,21 @@ class AgendaViewModel @Inject constructor(
     val state: StateFlow<AgendaState> = _state
 
     init {
+        getUser()
         getAgendaItems(date = LocalDate.now())
         syncAgenda(date = LocalDate.now())
+    }
+
+    private fun getUser() {
+        viewModelScope.launch {
+            getUserUseCase().collectLatest { user->
+                _state.update {
+                    it.copy(
+                        userName = user.fullName,
+                    )
+                }
+            }
+        }
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
