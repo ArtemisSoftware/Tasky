@@ -48,16 +48,14 @@ fun TaskCard(
                 .padding(12.dp),
         ) {
             Row {
-                Column {
-                    TaskyIconToggleButton(
-                        selected = task.isDone,
-                        modifier = Modifier.padding(top = 4.dp),
-                        onIcon = R.drawable.ic_round_check,
-                        offIcon = R.drawable.ic_circle,
-                        onIconColor = agendaItemType.generalTextColor,
-                        onCheckedChange = onCheckedChange,
-                    )
-                }
+                TaskyIconToggleButton(
+                    selected = task.isDone,
+                    modifier = Modifier.padding(top = 4.dp),
+                    onIcon = R.drawable.ic_round_check,
+                    offIcon = R.drawable.ic_circle,
+                    onIconColor = agendaItemType.generalTextColor,
+                    onCheckedChange = onCheckedChange,
+                )
 
                 Column(
                     modifier = Modifier

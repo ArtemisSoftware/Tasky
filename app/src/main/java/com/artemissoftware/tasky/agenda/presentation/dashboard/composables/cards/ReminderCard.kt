@@ -46,15 +46,12 @@ fun ReminderCard(
                 .padding(12.dp),
         ) {
             Row {
-                Column {
-                    TaskyIconToggleButton(
-                        modifier = Modifier.padding(top = 4.dp),
-                        onIcon = R.drawable.ic_round_check,
-                        offIcon = R.drawable.ic_circle,
-                        onIconColor = agendaItemType.generalTextColor,
-                        onCheckedChange = { },
-                    )
-                }
+                TaskyIconToggleButton(
+                    modifier = Modifier.padding(top = 4.dp),
+                    onIcon = R.drawable.ic_round_check,
+                    offIcon = R.drawable.ic_circle,
+                    onIconColor = agendaItemType.generalTextColor,
+                )
 
                 Column(
                     modifier = Modifier
