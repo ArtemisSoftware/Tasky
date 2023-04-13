@@ -194,6 +194,9 @@ private fun EventDetailScreenContent(
                                 isEditing = state.isEditing,
                                 modifier = Modifier.fillMaxWidth(),
                                 onViewVisitorsClick = { events(DetailEvents.ViewVisitors(visitorOptionType = it)) },
+                                onOpenAttendeeDialogClick = {
+                                    events(DetailEvents.OpenAttendeeDialog)
+                                },
                             )
 
                             // TODO: add visitor list here
@@ -219,7 +222,7 @@ private fun EventDetailScreenContent(
                                 .fillMaxWidth(),
                             email = state.attendeeDialogState.email,
                             showDialog = state.attendeeDialogState.showDialog,
-                            errorText = state.attendeeDialogState.errorMessage,
+                            errorText = state.attendeeDialogState.errorMessage?.asString(),
                             onEmailChange = {
                                 events(DetailEvents.UpdateAttendeeEmail(email = it))
                             },

@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,9 +27,10 @@ import com.artemissoftware.tasky.util.VisibilityTransitions
 @Composable
 fun VisitorsHeader(
     onViewVisitorsClick: (VisitorOptionType) -> Unit,
+    visitorOptionType: VisitorOptionType,
+    onOpenAttendeeDialogClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isEditing: Boolean = false,
-    visitorOptionType: VisitorOptionType
+    isEditing: Boolean = false
 ) {
     Column(
         modifier = modifier,
@@ -53,6 +55,10 @@ fun VisitorsHeader(
                     size = 34.dp,
                     icon = R.drawable.ic_add,
                     iconColor = Gray,
+                    modifier = Modifier.
+                            clickable {
+                                onOpenAttendeeDialogClick()
+                            }
                 )
             }
         }
@@ -104,13 +110,15 @@ private fun VisitorsHeaderPreview() {
             isEditing = true,
             modifier = Modifier.fillMaxWidth(),
             onViewVisitorsClick = {},
-            visitorOptionType = VisitorOptionType.ALL
+            visitorOptionType = VisitorOptionType.ALL,
+            onOpenAttendeeDialogClick = {}
         )
         VisitorsHeader(
             isEditing = false,
             modifier = Modifier.fillMaxWidth(),
             onViewVisitorsClick = {},
-            visitorOptionType = VisitorOptionType.NOT_GOING
+            visitorOptionType = VisitorOptionType.NOT_GOING,
+            onOpenAttendeeDialogClick = {}
         )
     }
 }

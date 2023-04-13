@@ -12,6 +12,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseC
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.REMINDER_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -133,7 +134,7 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        savedStateHandle.get<String>("reminderId")?.let { reminderId ->
+        savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
             viewModelScope.launch {
                 val result = getReminderUseCase(reminderId)
                 result?.let { item ->
@@ -168,7 +169,7 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun getSyncType(agendaItem: AgendaItem.Reminder): SyncType {
-        return savedStateHandle.get<String>(NavigationConstants.TASK_ID)?.let {
+        return savedStateHandle.get<String>(REMINDER_ID)?.let {
             if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
         } ?: SyncType.CREATE
     }
