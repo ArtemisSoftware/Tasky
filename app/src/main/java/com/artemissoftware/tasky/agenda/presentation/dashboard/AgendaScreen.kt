@@ -17,8 +17,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -58,7 +56,6 @@ import com.artemissoftware.tasky.destinations.AgendaScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -96,13 +93,6 @@ private fun AgendaScreenContent(
 ) {
     val context = LocalContext.current
     val listWeekDaysState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(key1 = state.selectedDayOfTheWeek) {
-        coroutineScope.launch {
-            listWeekDaysState.animateScrollToItem(index = state.selectedDayOfTheWeek.dayOfMonth - 1)
-        }
-    }
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -185,7 +175,7 @@ private fun AgendaScreenContent(
                                 modifier = Modifier
                                     .padding(top = 20.dp)
                                     .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
                             ) {
                                 items(
                                     items = state.daysOfTheWeek,

@@ -10,6 +10,7 @@ import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
+import com.artemissoftware.core.util.extensions.nextDays
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
@@ -27,10 +28,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.YearMonth
-import java.time.temporal.ChronoUnit
-import java.util.stream.Collectors
-import java.util.stream.IntStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +43,7 @@ class AgendaViewModel @Inject constructor(
     val state: StateFlow<AgendaState> = _state
 
     init {
-        getMonthDates(selectedDay = _state.value.selectedDayOfTheWeek)
+        updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
         updateAgenda(date = LocalDate.now())
     }
@@ -81,10 +78,8 @@ class AgendaViewModel @Inject constructor(
     }
 
     private fun changeDate(date: LocalDate) {
-        val selectedDay = _state.value.selectedDayOfTheWeek
-
-        if (selectedDay.year != date.year || selectedDay.month != date.month) {
-            getMonthDates(selectedDay = date)
+        if (!_state.value.daysOfTheWeek.any { it.date.isEqual(date) }) {
+            updateDaysOfTheWeek(date)
         }
 
         _state.update {
@@ -185,16 +180,9 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    private fun getMonthDates(selectedDay: LocalDate) {
-        val yearMonth = YearMonth.of(selectedDay.year, selectedDay.month)
-        val firstOfMonth: LocalDate = yearMonth.atDay(1)
-        val firstOfFollowingMonth: LocalDate = yearMonth.plusMonths(1).atDay(1)
-        val numOfDaysBetween: Long = ChronoUnit.DAYS.between(firstOfMonth, firstOfFollowingMonth)
-
-        val listOfDates = IntStream.iterate(0) { i -> i + 1 }
-            .limit(numOfDaysBetween)
-            .mapToObj { i -> firstOfMonth.plusDays(i.toLong()) }
-            .collect(Collectors.toList())
+    private fun updateDaysOfTheWeek(selectedDay: LocalDate) {
+        val listOfDates = selectedDay
+            .nextDays(numberOfNextDays = 5)
             .map {
                 DayOfWeek(date = it)
             }

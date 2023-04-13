@@ -33,3 +33,17 @@ fun LocalDate.toEpochMilli(): Long {
     val dateTime = LocalDateTime.of(this, LocalTime.now())
     return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
+
+fun LocalDate.nextDays(includeCurrentDay: Boolean = true, numberOfNextDays: Int): List<LocalDate> {
+    val list = mutableListOf<LocalDate>()
+
+    if (includeCurrentDay) {
+        list.add(this)
+    }
+
+    for (i in 1..numberOfNextDays) {
+        list.add(this.plusDays(i.toLong()))
+    }
+
+    return list
+}
