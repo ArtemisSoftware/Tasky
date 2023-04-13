@@ -178,10 +178,11 @@ private fun PhotoDisplay(
     picture: Picture,
     modifier: Modifier = Modifier,
 ) {
+
     when (picture) {
         is Picture.Local -> {
             TaskySquareIcon(
-                uri = picture.uri,
+                source = picture.uri,
                 borderWidth = 2.dp,
                 iconColor = LightBlue,
                 borderColor = LightBlue,
@@ -192,7 +193,7 @@ private fun PhotoDisplay(
         }
         is Picture.Remote -> {
             TaskySquareIcon(
-                url = picture.url,
+                source = picture.url,
                 borderWidth = 2.dp,
                 iconColor = LightBlue,
                 borderColor = LightBlue,

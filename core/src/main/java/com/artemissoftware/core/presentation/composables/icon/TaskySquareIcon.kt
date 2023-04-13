@@ -61,7 +61,7 @@ fun TaskySquareIcon(
 
 @Composable
 fun TaskySquareIcon(
-    url: String,
+    source: String,
     modifier: Modifier = Modifier,
     size: Dp = 16.dp,
     padding: Dp = 4.dp,
@@ -74,7 +74,7 @@ fun TaskySquareIcon(
 
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(url)
+            .data(source)
             .size(Size.ORIGINAL)
             .crossfade(800)
             .error(R.drawable.ic_tasky_logo)
@@ -119,7 +119,7 @@ fun TaskySquareIcon(
 
 @Composable
 fun TaskySquareIcon(
-    uri: Uri,
+    source: Uri,
     modifier: Modifier = Modifier,
     size: Dp = 16.dp,
     padding: Dp = 4.dp,
@@ -132,7 +132,7 @@ fun TaskySquareIcon(
 
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(uri)
+            .data(source)
             .size(Size.ORIGINAL)
             .crossfade(800)
             .error(R.drawable.ic_tasky_logo)
@@ -198,7 +198,7 @@ private fun TaskySquareIconPreview() {
             size = 32.dp,
             borderWidth = 2.dp,
             borderColor = Black,
-            url = "https://filmschoolrejects.com/wp-content/uploads/2022/02/The-Batman-Best-Comics.jpg",
+            source = "https://filmschoolrejects.com/wp-content/uploads/2022/02/The-Batman-Best-Comics.jpg",
         )
     }
 }
