@@ -8,5 +8,6 @@ fun AttendeeDto.toAttendee(): Attendee {
         id = attendeeProfile.userId,
         email = attendeeProfile.email,
         fullName = attendeeProfile.fullName,
+        isGoing = true,
     )
 }
