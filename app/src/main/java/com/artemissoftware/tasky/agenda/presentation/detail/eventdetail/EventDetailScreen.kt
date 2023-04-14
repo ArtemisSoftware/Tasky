@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +23,7 @@ import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
+import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentDescription
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
@@ -32,7 +34,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.VisitorEvent
+import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
@@ -52,7 +54,7 @@ fun EventDetailScreen(
 /* TODO: add viewmodel here*/
 ) {
     resultRecipient.onNavResult { result ->
-        result.getOr { null }?.let { editResult ->
+        result.getOr { null }?.let { editResult -> // TODO If by any chance it returns null, you could pop the backstack, so you get back to the agenda screen
 
             when (editResult.editType) {
                 EditType.Description -> {
@@ -233,23 +235,20 @@ private fun EventDetailScreenContent(
                                     onViewVisitorsClick = { events(DetailEvents.ViewVisitors(visitorOptionType = it)) },
                                 )
                             }
-                            items(
-                                items = state.getVisitors(),
-                                itemContent = { visitorEvent ->
-
-                                    when (visitorEvent) {
-                                        is VisitorEvent.Title -> {
-                                            TaskyText(text = stringResource(id = visitorEvent.textId))
-                                        }
-                                        is VisitorEvent.Visitor -> {
-                                            VisitorItem(
-                                                visitor = visitorEvent,
-                                                onDeleteVisitor = { attendeeId ->
-                                                    events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
-                                                },
-                                            )
-                                        }
-                                    }
+                            visitors(
+                                type = VisitorOptionType.GOING,
+                                selectedOption = state.visitorOption,
+                                visitors = state.getGoingVisitors(),
+                                onDeleteVisitor = { attendeeId ->
+                                    events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
+                                },
+                            )
+                            visitors(
+                                type = VisitorOptionType.NOT_GOING,
+                                selectedOption = state.visitorOption,
+                                visitors = state.getNotGoingVisitors(),
+                                onDeleteVisitor = { attendeeId ->
+                                    events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
                                 },
                             )
                             item {
@@ -291,6 +290,33 @@ private fun EventDetailScreenContent(
             )
         },
     )
+}
+
+private fun LazyListScope.visitors(
+    type: VisitorOptionType,
+    selectedOption: VisitorOptionType,
+    visitors: List<Visitor>,
+    onDeleteVisitor: (String) -> Unit,
+) {
+    if ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()) {
+        item {
+            TaskyText(text = stringResource(id = type.textId))
+        }
+        items(
+            items = visitors,
+            key = {
+                it.attendee.id
+            },
+            itemContent = { visitor ->
+                VisitorItem(
+                    visitor = visitor,
+                    onDeleteVisitor = { attendeeId ->
+                        onDeleteVisitor(attendeeId)
+                    },
+                )
+            },
+        )
+    }
 }
 
 @Preview(showBackground = true)

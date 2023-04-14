@@ -1,12 +1,11 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import com.artemissoftware.core.domain.models.agenda.NotificationType
-import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.domain.models.Photo
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.VisitorEvent
+import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import java.time.LocalDateTime
 
 data class EventDetailState(
@@ -25,24 +24,13 @@ data class EventDetailState(
     val attendees: List<Attendee> = emptyList(),
 ) {
 
-    fun getVisitors(): List<VisitorEvent> {
-        val result = mutableListOf<VisitorEvent>()
-
-        when (visitorOption) {
-            VisitorOptionType.ALL -> {
-                result.addAll(attendees.map { attendee -> VisitorEvent.Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) })
-            }
-            VisitorOptionType.GOING -> {
-                result.add(VisitorEvent.Title(textId = R.string.going))
-                result.addAll(attendees.filter { it.isGoing }.map { attendee -> VisitorEvent.Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) })
-            }
-            VisitorOptionType.NOT_GOING -> {
-                result.add(VisitorEvent.Title(textId = R.string.not_going))
-                result.addAll(attendees.filter { !it.isGoing }.map { attendee -> VisitorEvent.Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) })
-            }
-        }
-        return result
+    fun getGoingVisitors(): List<Visitor> {
+        return attendees.filter { it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) }
     }
 
-    private fun isEventCreator(attendeeId: String) = attendeeId == eventCreatorId
+    fun getNotGoingVisitors(): List<Visitor> {
+        return attendees.filter { !it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) }
+    }
+
+    private fun isEventCreator(attendeeId: String) = (attendeeId == eventCreatorId)
 }

@@ -30,11 +30,11 @@ import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.VisitorEvent
+import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 
 @Composable
 fun VisitorItem(
-    visitor: VisitorEvent.Visitor,
+    visitor: Visitor,
     onDeleteVisitor: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -101,7 +101,7 @@ fun VisitorItem(
 private fun VisitorItemPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         VisitorItem(
-            visitor = VisitorEvent.Visitor(
+            visitor = Visitor(
                 attendee = Attendee(
                     fullName = "Bruce Wayne",
                     id = "222",
@@ -114,7 +114,7 @@ private fun VisitorItemPreview() {
             modifier = Modifier.fillMaxWidth().height(46.dp),
         )
         VisitorItem(
-            visitor = VisitorEvent.Visitor(
+            visitor = Visitor(
                 attendee = Attendee(
                     fullName = "Dick Grayson",
                     id = "222",
