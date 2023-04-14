@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.core.util.UiText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -15,6 +16,7 @@ fun ManageUIEvents(
     onNavigateAndPopCurrent: (UiEvent.NavigateAndPopCurrent) -> Unit = {},
     onPopBackStack: () -> Unit = {},
     onPopBackStackWithArguments: (UiEvent.PopBackStackWithArguments<*>) -> Unit = {},
+    onShowSnackBar: (UiText) -> Unit = {},
 ) {
     LaunchedEffect(key1 = Unit) {
         uiEvent.collectLatest { event ->
@@ -27,6 +29,9 @@ fun ManageUIEvents(
                 is UiEvent.Navigate -> { onNavigate(event) }
                 is UiEvent.NavigateAndPopCurrent -> {
                     onNavigateAndPopCurrent(event)
+                }
+                is UiEvent.ShowSnackBar -> {
+                    onShowSnackBar.invoke(event.uiText)
                 }
             }
         }

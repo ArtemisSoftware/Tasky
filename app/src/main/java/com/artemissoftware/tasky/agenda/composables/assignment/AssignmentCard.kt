@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.cards.EventCard
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.cards.ReminderCard
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.cards.TaskCard
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOption
@@ -33,6 +34,13 @@ fun AssignmentCard(
                 onCheckedChange = onCheckedChange,
                 onOptionClick = onOptionClick,
                 task = agendaItem,
+            )
+        }
+        is AgendaItem.Event -> {
+            EventCard(
+                modifier = modifier,
+                onOptionClick = onOptionClick,
+                event = agendaItem,
             )
         }
     }

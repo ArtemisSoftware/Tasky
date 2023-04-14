@@ -4,6 +4,7 @@ import android.net.Uri
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.events.TaskyEvents
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
+import com.artemissoftware.tasky.agenda.domain.models.Picture
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -36,4 +37,7 @@ sealed class DetailEvents : TaskyEvents() {
     data class DeleteVisitor(val attendeeId: String) : DetailEvents()
 
     data class AddPicture(val uri: Uri) : DetailEvents()
+
+    data class GoToPicture(val picture: Picture): DetailEvents()
+
 }

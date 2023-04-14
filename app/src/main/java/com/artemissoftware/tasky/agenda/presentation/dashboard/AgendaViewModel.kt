@@ -10,6 +10,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUs
 import com.artemissoftware.tasky.agenda.domain.usecase.task.CompleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
+import com.artemissoftware.tasky.destinations.EventDetailScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -72,6 +73,7 @@ class AgendaViewModel @Inject constructor(
                 is AgendaItem.Task -> {
                     deleteTaskUseCase.invoke(id = item.itemId)
                 }
+                is AgendaItem.Event -> TODO()
             }
         }
     }
@@ -85,6 +87,7 @@ class AgendaViewModel @Inject constructor(
                 is AgendaItem.Task -> {
                     sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
                 }
+                is AgendaItem.Event -> (UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId).route))
             }
         }
     }

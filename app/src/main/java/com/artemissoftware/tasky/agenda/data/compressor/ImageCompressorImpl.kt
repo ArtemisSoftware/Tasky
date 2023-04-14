@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.data.compressor
 
 import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -10,11 +11,11 @@ import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 class ImageCompressorImpl @Inject constructor(
-    private val application: Application,
+    private val context: Context,
 ) : ImageCompressor {
 
     override suspend fun compressUri(uri: String): ByteArray {
-        val bytes = application.contentResolver.openInputStream(Uri.parse(uri))?.use {
+        val bytes = context.contentResolver.openInputStream(Uri.parse(uri))?.use {
             it.readBytes()
         } ?: byteArrayOf()
 

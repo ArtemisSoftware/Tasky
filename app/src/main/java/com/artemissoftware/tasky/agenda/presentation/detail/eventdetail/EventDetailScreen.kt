@@ -67,12 +67,10 @@ fun EventDetailScreen(
 
             when (editResult.editType) {
                 EditType.Description -> {
-                    // TODO: add when viewmodel is ready
-                    // viewModel.onTriggerEvent(DetailEvents.UpdateDescription(editResult.text))
+                    viewModel.onTriggerEvent(DetailEvents.UpdateDescription(editResult.text))
                 }
                 EditType.Title -> {
-                    // TODO: add when viewmodel is ready
-                    // viewModel.onTriggerEvent(DetailEvents.UpdateTitle(editResult.text))
+                    viewModel.onTriggerEvent(DetailEvents.UpdateTitle(editResult.text))
                 }
             }
         }
@@ -86,9 +84,12 @@ fun EventDetailScreen(
     ManageUIEvents(
         uiEvent = viewModel.uiEvent,
         onNavigate = {
-            TODO()
+            navigator.navigate(it.route)
         },
         onPopBackStack = {
+            navigator.popBackStack()
+        },
+        onShowSnackBar = {
             TODO()
         },
     )
@@ -192,12 +193,15 @@ private fun EventDetailScreenContent(
                                         .fillMaxWidth()
                                         .height(112.dp),
                                     isEditing = state.isEditing,
-                                    onAddPhotoClick = {
+                                    onAddPicturesClick = {
                                         singlePhotoPickerLauncher.launch(
                                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
                                         )
                                     },
-                                    photos = state.pictures,
+                                    pictures = state.pictures,
+                                    onPictureClick = {
+                                        events(DetailEvents.GoToPicture(picture = it))
+                                    }
                                 )
 
                                 DetailDivider(top = 20.dp, bottom = 28.dp, modifier = Modifier.fillMaxWidth())

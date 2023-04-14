@@ -25,6 +25,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
+import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -92,8 +93,18 @@ class EventDetailViewModel @Inject constructor(
             is DetailEvents.AddPicture -> {
                 addPicture(uri = event.uri)
             }
+
             is DetailEvents.DeleteVisitor -> TODO()
+            is DetailEvents.GoToPicture -> {
+                goToPicture(event.picture)
+            }
             else -> Unit
+        }
+    }
+
+    private fun goToPicture(picture: Picture) {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture).route))
         }
     }
 

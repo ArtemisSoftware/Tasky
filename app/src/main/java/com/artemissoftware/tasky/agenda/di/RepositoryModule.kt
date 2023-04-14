@@ -3,12 +3,14 @@ package com.artemissoftware.tasky.agenda.di
 import android.content.Context
 import com.artemissoftware.core.data.database.TaskyDatabase
 import com.artemissoftware.tasky.agenda.data.alarm.AlarmSchedulerImpl
+import com.artemissoftware.tasky.agenda.data.compressor.ImageCompressorImpl
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.data.repositories.AgendaRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.AttendeeRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.ReminderRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.TaskRepositoryImpl
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.tasky.agenda.domain.compressor.ImageCompressor
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.AttendeeRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
@@ -52,5 +54,11 @@ object RepositoryModule {
     @Singleton
     fun provideAttendeeRepository(agendaApiSource: AgendaApiSource): AttendeeRepository {
         return AttendeeRepositoryImpl(agendaApiSource = agendaApiSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageCompressor(@ApplicationContext context: Context): ImageCompressor {
+        return ImageCompressorImpl(context = context)
     }
 }
