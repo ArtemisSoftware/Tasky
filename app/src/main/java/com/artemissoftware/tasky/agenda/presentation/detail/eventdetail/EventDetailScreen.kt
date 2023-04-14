@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
@@ -29,13 +32,31 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
+import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
 @Composable
-fun EventDetailScreen(/* TODO: add viewmodel here*/) {
-    // TODO: call EventDetailScreenContent when viewmodel is ready
+fun EventDetailScreen(
+    viewModel: EventDetailViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    EventDetailScreenContent(
+        state = state,
+        events = viewModel::onTriggerEvent,
+    )
+
+    ManageUIEvents(
+        uiEvent = viewModel.uiEvent,
+        onNavigate = {
+            TODO()
+        },
+        onPopBackStack = {
+            TODO()
+        },
+    )
 }
 
 @Composable
@@ -194,6 +215,9 @@ private fun EventDetailScreenContent(
                                 isEditing = state.isEditing,
                                 modifier = Modifier.fillMaxWidth(),
                                 onViewVisitorsClick = { events(DetailEvents.ViewVisitors(visitorOptionType = it)) },
+                                onOpenAttendeeDialogClick = {
+                                    events(DetailEvents.OpenAttendeeDialog)
+                                },
                             )
 
                             // TODO: add visitor list here
@@ -219,7 +243,7 @@ private fun EventDetailScreenContent(
                                 .fillMaxWidth(),
                             email = state.attendeeDialogState.email,
                             showDialog = state.attendeeDialogState.showDialog,
-                            errorText = state.attendeeDialogState.errorMessage,
+                            errorText = state.attendeeDialogState.errorMessage?.asString(),
                             onEmailChange = {
                                 events(DetailEvents.UpdateAttendeeEmail(email = it))
                             },

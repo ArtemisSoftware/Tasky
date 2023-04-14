@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,7 +47,7 @@ fun ReminderDetailScreen(
     reminderId: String? = null,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     resultRecipient.onNavResult { result ->
         result.getOr { null }?.let { editResult ->
@@ -63,7 +64,7 @@ fun ReminderDetailScreen(
     }
 
     ReminderDetailScreenContent(
-        state = state.value,
+        state = state,
         events = viewModel::onTriggerEvent,
     )
 
