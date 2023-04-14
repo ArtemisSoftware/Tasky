@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
+import android.net.Uri
 import android.provider.CalendarContract.Instances.EVENT_ID
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -17,7 +18,9 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.GetAttendeeUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
@@ -35,6 +38,7 @@ import com.artemissoftware.core.R as CoreR
 
 @HiltViewModel
 class EventDetailViewModel @Inject constructor(
+    private val validatePicturesUseCase: ValidatePicturesUseCase,
     private val getAttendeeUseCase: GetAttendeeUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
@@ -64,7 +68,7 @@ class EventDetailViewModel @Inject constructor(
                 editTitleOrDescription(event.title, EditType.Title)
             }
             DetailEvents.PopBackStack -> { popBackStack() }
-            DetailEvents.Save -> TODO()
+            DetailEvents.Save -> { validatePictures() }
             DetailEvents.ToggleEdition -> {
                 toggleEdition()
             }
@@ -85,7 +89,22 @@ class EventDetailViewModel @Inject constructor(
             is DetailEvents.ViewVisitors -> {
                 updateVisitorsSelection(event.visitorOptionType)
             }
+            is DetailEvents.AddPicture -> {
+                addPicture(uri = event.uri)
+            }
+            is DetailEvents.DeleteVisitor -> TODO()
             else -> Unit
+        }
+    }
+
+    private fun addPicture(uri: Uri) = with(_state) {
+        update {
+            val pictures = it.pictures.toMutableList()
+            pictures.add(Picture.Local(uri = uri.toString()))
+
+            it.copy(
+                pictures = pictures,
+            )
         }
     }
 
@@ -244,7 +263,43 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getSyncType(agendaItem: AgendaItem.Reminder): SyncType {
+    private fun validatePictures() = with(_state.value) {
+        viewModelScope.launch {
+            validatePicturesUseCase.invoke(pictures = pictures).collect { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        result.exception?.let {
+                            sendUiEvent(UiEvent.ShowSnackBar(it.toUiText()))
+                        }
+                    }
+                    is Resource.Success -> {
+                        result.data?.let { pictures -> saveEvent(validatedPictures = pictures) }
+                    }
+                    else -> Unit
+                }
+            }
+        }
+    }
+
+    private fun saveEvent(validatedPictures: List<Picture>) = with(_state.value) {
+        val item = AgendaItem.Event(
+            id = agendaItem.id,
+            title = title,
+            description = description,
+            remindAt = NotificationType.remindAt(time = startDate, notificationType = notification),
+            from = startDate,
+            to = endDate,
+            syncState = getSyncType(agendaItem),
+            pictures = validatedPictures,
+        )
+
+        viewModelScope.launch {
+            // TODO: saveEventUseCase(item)
+            popBackStack()
+        }
+    }
+
+    private fun getSyncType(agendaItem: AgendaItem.Event): SyncType {
         return savedStateHandle.get<String>(EVENT_ID)?.let {
             if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
         } ?: SyncType.CREATE

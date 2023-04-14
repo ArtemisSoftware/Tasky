@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard.composables
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +30,7 @@ import com.artemissoftware.core.presentation.theme.Light2
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.tasky.BuildConfig
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.presentation.detail.models.Picture
+import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
@@ -178,11 +179,10 @@ private fun PhotoDisplay(
     picture: Picture,
     modifier: Modifier = Modifier,
 ) {
-
     when (picture) {
         is Picture.Local -> {
             TaskySquareIcon(
-                source = picture.uri,
+                source = Uri.parse(picture.uri),
                 borderWidth = 2.dp,
                 iconColor = LightBlue,
                 borderColor = LightBlue,
