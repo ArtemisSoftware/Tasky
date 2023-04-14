@@ -12,6 +12,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseC
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.REMINDER_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,57 +64,52 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateDescription(text: String) {
-        _state.update {
+    private fun updateDescription(text: String) = with(_state) {
+        update {
             it.copy(
                 description = text,
             )
         }
     }
 
-    private fun updateTitle(text: String) {
-        _state.update {
+    private fun updateTitle(text: String) = with(_state) {
+        update {
             it.copy(
                 title = text,
             )
         }
     }
 
-    private fun updateNotification(notification: NotificationType) {
-        _state.update {
+    private fun updateNotification(notification: NotificationType) = with(_state) {
+        update {
             it.copy(
                 notification = notification,
             )
         }
     }
 
-    private fun updateStartDate(startDate: LocalDate) {
-        val result = _state.value.startDate
-            .withYear(startDate.year)
-            .withMonth(startDate.monthValue)
-            .withDayOfMonth(startDate.dayOfMonth)
-
-        _state.update {
+    private fun updateStartDate(startDate: LocalDate) = with(_state) {
+        update {
             it.copy(
-                startDate = result,
+                startDate = it.startDate.with(startDate),
             )
         }
     }
 
-    private fun updateStartTime(startTime: LocalTime) {
-        val result = _state.value.startDate
+    private fun updateStartTime(startTime: LocalTime) = with(_state) {
+        val result = value.startDate
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        _state.update {
+        update {
             it.copy(
                 startDate = result,
             )
         }
     }
 
-    private fun toggleEdition() {
-        _state.update {
+    private fun toggleEdition() = with(_state) {
+        update {
             it.copy(
                 isEditing = !it.isEditing,
             )
@@ -133,7 +129,7 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        savedStateHandle.get<String>("reminderId")?.let { reminderId ->
+        savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
             viewModelScope.launch {
                 val result = getReminderUseCase(reminderId)
                 result?.let { item ->
@@ -168,7 +164,7 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun getSyncType(agendaItem: AgendaItem.Reminder): SyncType {
-        return savedStateHandle.get<String>(NavigationConstants.TASK_ID)?.let {
+        return savedStateHandle.get<String>(REMINDER_ID)?.let {
             if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
         } ?: SyncType.CREATE
     }

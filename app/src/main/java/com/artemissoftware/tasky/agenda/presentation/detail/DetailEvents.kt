@@ -16,9 +16,8 @@ sealed class DetailEvents : TaskyEvents() {
     object ToggleIsDone : DetailEvents()
     object PopBackStack : DetailEvents()
 
+    object OpenAttendeeDialog : DetailEvents()
     object CloseAttendeeDialog : DetailEvents()
-
-    data class LoadDetail(val id: String? = null) : DetailEvents()
 
     data class UpdateStartDate(val startDate: LocalDate) : DetailEvents()
     data class UpdateEndDate(val endDate: LocalDate) : DetailEvents()
