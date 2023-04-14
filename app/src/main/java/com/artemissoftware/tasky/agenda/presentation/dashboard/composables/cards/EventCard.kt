@@ -20,7 +20,7 @@ import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.icon.TaskyIconToggleButton
 import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.text.TaskyText
-import com.artemissoftware.core.util.DateTimePatternsConstants
+import com.artemissoftware.core.util.constants.DateTimePatternsConstants
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType

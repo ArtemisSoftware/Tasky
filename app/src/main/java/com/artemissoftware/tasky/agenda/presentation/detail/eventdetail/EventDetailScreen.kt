@@ -1,5 +1,8 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +51,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.result.getOr
+import kotlinx.coroutines.launch
 
 @Destination
 @Composable
@@ -98,6 +102,15 @@ private fun EventDetailScreenContent(
     events: (DetailEvents) -> Unit,
 ) {
     val context = LocalContext.current
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let {
+                events(DetailEvents.AddPicture(inputStream = context.contentResolver.openInputStream(it)))
+            }
+        },
+    )
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -182,7 +195,9 @@ private fun EventDetailScreenContent(
                                         .height(112.dp),
                                     isEditing = state.isEditing,
                                     onAddPhotoClick = {
-                                        // TODO: add event here
+                                        singlePhotoPickerLauncher.launch(
+                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                                        )
                                     },
                                     photos = state.photos,
                                 )

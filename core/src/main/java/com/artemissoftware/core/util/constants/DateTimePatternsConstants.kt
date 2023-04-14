@@ -1,4 +1,4 @@
-package com.artemissoftware.core.util
+package com.artemissoftware.core.util.constants
 
 object DateTimePatternsConstants {
 
