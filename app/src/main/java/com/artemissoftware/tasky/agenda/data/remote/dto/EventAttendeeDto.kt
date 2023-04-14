@@ -1,6 +1,5 @@
 package com.artemissoftware.tasky.agenda.data.remote.dto
 
-
 import com.squareup.moshi.Json
 
 data class EventAttendeeDto(
@@ -15,5 +14,5 @@ data class EventAttendeeDto(
     @field:Json(name = "remindAt")
     val remindAt: Long,
     @field:Json(name = "userId")
-    val userId: String
+    val userId: String,
 )
