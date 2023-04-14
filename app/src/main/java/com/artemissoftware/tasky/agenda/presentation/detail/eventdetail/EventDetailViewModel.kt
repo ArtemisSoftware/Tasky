@@ -120,114 +120,104 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateVisitorsSelection(visitorOptionType: VisitorOptionType) {
-        _state.update {
+    private fun updateVisitorsSelection(visitorOptionType: VisitorOptionType) = with(_state) {
+        update {
             it.copy(
                 visitorOption = visitorOptionType,
             )
         }
     }
 
-    private fun openAttendeeDialog() {
-        _state.update {
+    private fun openAttendeeDialog() = with(_state) {
+        update {
             it.copy(
                 attendeeDialogState = AttendeeDialogState(showDialog = true),
             )
         }
     }
 
-    private fun closeAttendeeDialog() {
-        _state.update {
+    private fun closeAttendeeDialog() = with(_state) {
+        update {
             it.copy(
                 attendeeDialogState = AttendeeDialogState(),
             )
         }
     }
 
-    private fun updateAttendeeEmail(email: String) {
-        _state.update {
+    private fun updateAttendeeEmail(email: String) = with(_state) {
+        update {
             it.copy(
                 attendeeDialogState = it.attendeeDialogState.copy(email = email),
             )
         }
     }
 
-    private fun toggleEdition() {
-        _state.update {
+    private fun toggleEdition() = with(_state) {
+        update {
             it.copy(
                 isEditing = !it.isEditing,
             )
         }
     }
 
-    private fun updateDescription(text: String) {
-        _state.update {
+    private fun updateDescription(text: String) = with(_state) {
+        update {
             it.copy(
                 description = text,
             )
         }
     }
 
-    private fun updateTitle(text: String) {
-        _state.update {
+    private fun updateTitle(text: String) = with(_state) {
+        update {
             it.copy(
                 title = text,
             )
         }
     }
 
-    private fun updateNotification(notification: NotificationType) {
-        _state.update {
+    private fun updateNotification(notification: NotificationType) = with(_state) {
+        update {
             it.copy(
                 notification = notification,
             )
         }
     }
 
-    private fun updateStartDate(startDate: LocalDate) {
-        val result = _state.value.startDate
-            .withYear(startDate.year)
-            .withMonth(startDate.monthValue)
-            .withDayOfMonth(startDate.dayOfMonth)
-
-        _state.update {
+    private fun updateStartDate(startDate: LocalDate) = with(_state) {
+        update {
             it.copy(
-                startDate = result,
+                startDate = it.startDate.with(startDate),
             )
         }
     }
 
-    private fun updateStartTime(startTime: LocalTime) {
-        val result = _state.value.startDate
+    private fun updateStartTime(startTime: LocalTime) = with(_state) {
+        val result = value.startDate
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        _state.update {
+        update {
             it.copy(
                 startDate = result,
             )
         }
     }
 
-    private fun updateEndDate(endDate: LocalDate) {
-        val result = _state.value.endDate
-            .withYear(endDate.year)
-            .withMonth(endDate.monthValue)
-            .withDayOfMonth(endDate.dayOfMonth)
-
-        _state.update {
+    private fun updateEndDate(endDate: LocalDate) = with(_state) {
+        update {
             it.copy(
-                endDate = result,
+                endDate = it.endDate.with(endDate),
             )
         }
     }
 
-    private fun updateEndTime(endTime: LocalTime) {
-        val result = _state.value.endDate
+    private fun updateEndTime(endTime: LocalTime) = with(_state) {
+        val result = value.endDate
             .withHour(endTime.hour)
             .withMinute(endTime.minute)
 
-        _state.update {
+        update {
             it.copy(
                 endDate = result,
             )

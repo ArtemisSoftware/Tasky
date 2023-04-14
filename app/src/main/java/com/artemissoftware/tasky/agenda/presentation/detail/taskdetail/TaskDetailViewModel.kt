@@ -54,16 +54,16 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
-    private fun toggleEdition() {
-        _state.update {
+    private fun toggleEdition() = with(_state) {
+        update {
             it.copy(
                 isEditing = !it.isEditing,
             )
         }
     }
 
-    private fun toggleIsDone() {
-        _state.update {
+    private fun toggleIsDone() = with(_state) {
+        update {
             it.copy(
                 isDone = !it.isDone,
             )
@@ -82,49 +82,44 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateDescription(text: String) {
-        _state.update {
+    private fun updateDescription(text: String) = with(_state) {
+        update {
             it.copy(
                 description = text,
             )
         }
     }
 
-    private fun updateTitle(text: String) {
-        _state.update {
+    private fun updateTitle(text: String) = with(_state) {
+        update {
             it.copy(
                 title = text,
             )
         }
     }
 
-    private fun updateNotification(notification: NotificationType) {
-        _state.update {
+    private fun updateNotification(notification: NotificationType) = with(_state) {
+        update {
             it.copy(
                 notification = notification,
             )
         }
     }
 
-    private fun updateStartDate(startDate: LocalDate) {
-        val result = _state.value.startDate
-            .withYear(startDate.year)
-            .withMonth(startDate.monthValue)
-            .withDayOfMonth(startDate.dayOfMonth)
-
-        _state.update {
+    private fun updateStartDate(startDate: LocalDate) = with(_state) {
+        update {
             it.copy(
-                startDate = result,
+                startDate = it.startDate.with(startDate),
             )
         }
     }
 
-    private fun updateStartTime(startTime: LocalTime) {
-        val result = _state.value.startDate
+    private fun updateStartTime(startTime: LocalTime) = with(_state) {
+        val result = value.startDate
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        _state.update {
+        update {
             it.copy(
                 startDate = result,
             )
