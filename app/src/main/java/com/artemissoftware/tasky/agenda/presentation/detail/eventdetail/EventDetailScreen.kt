@@ -8,12 +8,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
@@ -37,6 +41,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.A
 import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
@@ -47,12 +52,14 @@ import com.ramcosta.composedestinations.result.getOr
 @Destination
 @Composable
 fun EventDetailScreen(
+    viewModel: EventDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     eventId: String? = null,
     userId: String,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
-/* TODO: add viewmodel here*/
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     resultRecipient.onNavResult { result ->
         result.getOr { null }?.let { editResult -> // TODO If by any chance it returns null, you could pop the backstack, so you get back to the agenda screen
 
@@ -69,7 +76,20 @@ fun EventDetailScreen(
         }
     }
 
-    // TODO: call EventDetailScreenContent when viewmodel is ready
+    EventDetailScreenContent(
+        state = state,
+        events = viewModel::onTriggerEvent,
+    )
+
+    ManageUIEvents(
+        uiEvent = viewModel.uiEvent,
+        onNavigate = {
+            TODO()
+        },
+        onPopBackStack = {
+            TODO()
+        },
+    )
 }
 
 @Composable
@@ -233,6 +253,9 @@ private fun EventDetailScreenContent(
                                     isEditing = state.isEditing,
                                     modifier = Modifier.fillMaxWidth(),
                                     onViewVisitorsClick = { events(DetailEvents.ViewVisitors(visitorOptionType = it)) },
+                                    onOpenAttendeeDialogClick = {
+                                        events(DetailEvents.OpenAttendeeDialog)
+                                    },
                                 )
                             }
                             visitors(
@@ -274,7 +297,7 @@ private fun EventDetailScreenContent(
                                 .fillMaxWidth(),
                             email = state.attendeeDialogState.email,
                             showDialog = state.attendeeDialogState.showDialog,
-                            errorText = state.attendeeDialogState.errorMessage,
+                            errorText = state.attendeeDialogState.errorMessage?.asString(),
                             onEmailChange = {
                                 events(DetailEvents.UpdateAttendeeEmail(email = it))
                             },
