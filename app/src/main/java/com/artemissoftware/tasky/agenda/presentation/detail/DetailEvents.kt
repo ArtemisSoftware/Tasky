@@ -34,5 +34,7 @@ sealed class DetailEvents : TaskyEvents() {
 
     data class ViewVisitors(val visitorOptionType: VisitorOptionType) : DetailEvents()
 
+    data class DeleteVisitor(val attendeeId: String) : DetailEvents()
+
     data class AddPicture(val inputStream: InputStream?) : DetailEvents()
 }
