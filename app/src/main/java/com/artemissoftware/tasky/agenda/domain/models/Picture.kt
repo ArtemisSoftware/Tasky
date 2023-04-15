@@ -4,9 +4,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-sealed class Picture(val source: String) : Parcelable {
+sealed class Picture(val id: String, val source: String) : Parcelable {
 
-    data class Local(val uri: String) : Picture(source = uri)
+    data class Local(val picId: String, val uri: String) : Picture(source = uri, id = picId)
 
-    data class Remote(val key: String, val url: String) : Picture(source = url)
+    data class Remote(val key: String, val url: String) : Picture(source = url, id = key)
 }

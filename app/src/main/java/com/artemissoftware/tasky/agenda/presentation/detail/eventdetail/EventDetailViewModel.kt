@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.UUID
 import javax.inject.Inject
 import com.artemissoftware.core.R as CoreR
 
@@ -110,11 +111,8 @@ class EventDetailViewModel @Inject constructor(
 
     private fun addPicture(uri: Uri) = with(_state) {
         update {
-            val pictures = it.pictures.toMutableList()
-            pictures.add(Picture.Local(uri = uri.toString()))
-
             it.copy(
-                pictures = pictures,
+                pictures = it.pictures + Picture.Local(uri = uri.toString(), picId = UUID.randomUUID().toString()),
             )
         }
     }
@@ -276,19 +274,26 @@ class EventDetailViewModel @Inject constructor(
 
     private fun validatePictures() = with(_state.value) {
         viewModelScope.launch {
-            validatePicturesUseCase.invoke(pictures = pictures).collect { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        result.exception?.let {
-                            sendUiEvent(UiEvent.ShowSnackBar(it.toUiText()))
+
+            val result = validatePicturesUseCase.invoke(pictures = pictures)
+
+            when (result) {
+                is Resource.Success -> {
+
+                    result.data?.let { validation ->
+
+                        if(validation.numberOfRejectedPictures != 0){
+                            sendUiEvent(UiEvent.ShowSnackBar(UiText.DynamicString("${validation.numberOfRejectedPictures} photos were skipped because they were too large")))
                         }
+
+                        saveEvent(validatedPictures = validation.validPictures)
+                    } ?: kotlin.run {
+                        sendUiEvent(UiEvent.ShowSnackBar(UiText.StringResource(R.string.unable_to_validate_pictures)))
                     }
-                    is Resource.Success -> {
-                        result.data?.let { pictures -> saveEvent(validatedPictures = pictures) }
-                    }
-                    else -> Unit
                 }
+                else -> Unit
             }
+
         }
     }
 
