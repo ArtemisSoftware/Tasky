@@ -1,7 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import android.net.Uri
-import android.provider.CalendarContract.Instances.EVENT_ID
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.AgendaException
@@ -24,6 +23,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUse
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -100,6 +100,9 @@ class EventDetailViewModel @Inject constructor(
                 goToPicture(event.picture)
             }
             is DetailEvents.RemovePicture -> { removePicture(event.pictureId) }
+            DetailEvents.Delete -> {
+                deleteEvent()
+            }
             else -> Unit
         }
     }
@@ -312,6 +315,15 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             // TODO: saveEventUseCase(item)
             popBackStack()
+        }
+    }
+
+    private fun deleteEvent() {
+        savedStateHandle.get<String>(EVENT_ID)?.let { taskId ->
+            viewModelScope.launch {
+                // TODO: delete event
+                popBackStack()
+            }
         }
     }
 

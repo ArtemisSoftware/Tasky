@@ -7,6 +7,7 @@ import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class ReminderDetailViewModel @Inject constructor(
     private val saveReminderUseCase: SaveReminderUseCase,
     private val getReminderUseCase: GetReminderUseCase,
+    private val deleteReminderUseCase: DeleteReminderUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -60,7 +62,19 @@ class ReminderDetailViewModel @Inject constructor(
             is DetailEvents.UpdateTitle -> {
                 updateTitle(event.title)
             }
+            DetailEvents.Delete -> {
+                deleteReminder()
+            }
             else -> Unit
+        }
+    }
+
+    private fun deleteReminder() {
+        savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
+            viewModelScope.launch {
+                deleteReminderUseCase.invoke(id = reminderId)
+                popBackStack()
+            }
         }
     }
 

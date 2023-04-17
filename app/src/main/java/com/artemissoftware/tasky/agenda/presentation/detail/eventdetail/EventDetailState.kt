@@ -13,6 +13,7 @@ data class EventDetailState(
     val isLoading: Boolean = false,
     val isEditing: Boolean = false,
     val eventCreatorId: String = "",
+    val isEventCreator: Boolean = true,
     val visitorOption: VisitorOptionType = VisitorOptionType.ALL,
     val agendaItem: AgendaItem.Event = AgendaItem.Event(),
     val startDate: LocalDateTime = LocalDateTime.now(),

@@ -301,19 +301,21 @@ private fun EventDetailScreenContent(
                                 },
                             )
                             item {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                ) {
-                                    TaskyTextButton(
-                                        modifier = Modifier.align(Alignment.Center),
-                                        text = String.format(
-                                            stringResource(id = R.string.delete_title_with_argument),
-                                            stringResource(id = R.string.event),
-                                        ),
-                                        onClick = {
-                                            events(DetailEvents.Save)
-                                        },
-                                    )
+                                if (state.isEventCreator) {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        TaskyTextButton(
+                                            modifier = Modifier.align(Alignment.Center),
+                                            text = String.format(
+                                                stringResource(id = R.string.delete_title_with_argument),
+                                                stringResource(id = R.string.event),
+                                            ),
+                                            onClick = {
+                                                events(DetailEvents.Delete)
+                                            },
+                                        )
+                                    }
                                 }
                             }
                         }
