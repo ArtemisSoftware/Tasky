@@ -8,6 +8,7 @@ import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +17,7 @@ import javax.inject.Inject
 class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(EditState())
-    val state: StateFlow<EditState> = _state
+    val state: StateFlow<EditState> = _state.asStateFlow()
 
     fun onTriggerEvent(event: EditEvents) {
         when (event) {
@@ -33,8 +34,8 @@ class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
         }
     }
 
-    private fun updateText(text: String) {
-        _state.update {
+    private fun updateText(text: String) = with(_state) {
+        update {
             it.copy(
                 text = text,
             )
@@ -47,8 +48,8 @@ class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
         }
     }
 
-    private fun loadData(text: String, editType: EditType) {
-        _state.update {
+    private fun loadData(text: String, editType: EditType) = with(_state) {
+        update {
             it.copy(
                 text = text,
                 editType = editType,

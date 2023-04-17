@@ -3,12 +3,15 @@ package com.artemissoftware.tasky.agenda.presentation.photo
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -21,7 +24,9 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.Picture
+import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
+import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -30,19 +35,38 @@ import com.artemissoftware.core.R as CoreR
 @Destination
 @Composable
 fun PhotoScreen(
+    viewModel: PhotoViewModel = hiltViewModel(),
     picture: Picture,
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<PictureRecipient>,
 ) {
-    // TODO: complete this on next PR
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    PhotoScreenContent(
+        picture = picture,
+        state = state,
+        events = viewModel::onTriggerEvent,
+    )
+
+    ManageUIEvents(
+        uiEvent = viewModel.uiEvent,
+        onPopBackStack = {
+            navigator.popBackStack()
+        },
+        onPopBackStackWithArguments = {
+            resultNavigator.navigateBack(it.arguments as PictureRecipient)
+        },
+    )
 }
 
 @Composable
 private fun PhotoScreenContent(
     picture: Picture,
     events: (PhotoEvents) -> Unit,
+    state: PhotoState,
 ) {
     TaskyScaffold(
+        isLoading = state.isLoading,
         backgroundColor = Black,
         topBar = {
             TaskyTopBar(
@@ -103,8 +127,10 @@ private fun PhotoScreenContent(
 
 @Preview(showBackground = true)
 @Composable
-private fun PhotoScreenPreview() {
-//    PhotoScreen(
-//        picture =
-//    )
+private fun PhotoScreenContentPreview() {
+    PhotoScreenContent(
+        picture = Picture.Local(picId = "123", uri = "http://www.batman.com/riddler.jpg"),
+        events = {},
+        state = PhotoState()
+    )
 }
