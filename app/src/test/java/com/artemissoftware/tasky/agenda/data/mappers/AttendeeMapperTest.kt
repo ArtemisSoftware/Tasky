@@ -37,4 +37,16 @@ class AttendeeMapperTest {
     fun `map EventAttendeeDto to AttendeeEntity`() {
         Assert.assertEquals(attendeeEntity, eventAttendeeDto.toEntity())
     }
+
+    @Test
+    fun `map AttendeeEntity to Attendee`() {
+        val attendee = Attendee(
+            fullName = "Bruce Wayne",
+            id = "123",
+            email = "batman@email.com",
+            isGoing = true,
+        )
+
+        Assert.assertEquals(attendee, attendeeEntity.toAttendee())
+    }
 }
