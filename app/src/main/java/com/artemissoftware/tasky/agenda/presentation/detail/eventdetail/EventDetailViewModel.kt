@@ -284,9 +284,22 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        savedStateHandle.get<String>(EVENT_ID)?.let { taskId ->
+        savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
-                // TODO: complete
+//                val result = getEventUseCase(eventId)
+//                result?.let { item ->
+//                    _state.update {
+//                        it.copy(
+//                            agendaItem = item,
+//                            notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.starDate),
+//                            startDate = item.time,
+//                            title = item.title,
+//                            description = item.description ?: "",
+//                            endDate = item.,
+//                            attendees = item.,
+//                        )
+//                    }
+//                }
             }
         }
     }
@@ -319,6 +332,8 @@ class EventDetailViewModel @Inject constructor(
             to = endDate,
             syncState = getSyncType(agendaItem),
             pictures = validatedPictures,
+            host = host,
+            attendees = attendees,
         )
 
         viewModelScope.launch {

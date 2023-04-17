@@ -11,5 +11,5 @@ data class EventAndSyncState( // TODO: class is incomplete. must have pictures +
         parentColumn = "id",
         entityColumn = "eventId",
     )
-    val attendeeEntity: List<AttendeeEntity>,
+    val attendees: List<AttendeeEntity>,
 )
