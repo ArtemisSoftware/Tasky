@@ -274,26 +274,13 @@ class EventDetailViewModel @Inject constructor(
 
     private fun validatePictures() = with(_state.value) {
         viewModelScope.launch {
-
             val result = validatePicturesUseCase.invoke(pictures = pictures)
 
-            when (result) {
-                is Resource.Success -> {
-
-                    result.data?.let { validation ->
-
-                        if(validation.numberOfRejectedPictures != 0){
-                            sendUiEvent(UiEvent.ShowSnackBar(UiText.DynamicString("${validation.numberOfRejectedPictures} photos were skipped because they were too large")))
-                        }
-
-                        saveEvent(validatedPictures = validation.validPictures)
-                    } ?: kotlin.run {
-                        sendUiEvent(UiEvent.ShowSnackBar(UiText.StringResource(R.string.unable_to_validate_pictures)))
-                    }
-                }
-                else -> Unit
+            if (result.numberOfRejectedPictures != 0) {
+                sendUiEvent(UiEvent.ShowSnackBar(UiText.DynamicString("${result.numberOfRejectedPictures} photos were skipped because they were too large")))
             }
 
+            saveEvent(validatedPictures = result.validPictures)
         }
     }
 
