@@ -21,13 +21,18 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.Picture
+import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.artemissoftware.core.R as CoreR
 
 @Destination
 @Composable
 fun PhotoScreen(
     picture: Picture,
+    navigator: DestinationsNavigator,
+    resultNavigator: ResultBackNavigator<PictureRecipient>,
 ) {
     // TODO: complete this on next PR
 }
@@ -51,15 +56,14 @@ private fun PhotoScreenContent(
                         iconId = R.drawable.ic_trash,
                         tint = color,
                         onClicked = {
-                            events(PhotoEvents.DeletePhoto("")) // TODO: add photo ID
+                            events(PhotoEvents.DeletePhoto(picture.id))
                         },
                     )
                 },
             )
         },
         content = {
-
-            val source: Any = when(picture){
+            val source: Any = when (picture) {
                 is Picture.Local -> Uri.parse(picture.uri)
                 is Picture.Remote -> picture.url
             }
