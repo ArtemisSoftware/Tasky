@@ -26,5 +26,6 @@ fun ValidationException.toUiText(): UiText {
         AgendaException.AttendeeError -> {
             UiText.StringResource(R.string.error_occurred_during_attendee_search)
         }
+        is AgendaException.NotValidPictures -> this.uiText
     }
 }

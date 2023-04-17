@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard.composables
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,38 +30,40 @@ import com.artemissoftware.core.presentation.theme.Light2
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.tasky.BuildConfig
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.presentation.detail.models.Picture
+import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun PhotoGallery(
-    photos: List<Picture>,
-    onAddPhotoClick: () -> Unit,
+    pictures: List<Picture>,
+    onAddPicturesClick: () -> Unit,
+    onPictureClick: (Picture) -> Unit,
     modifier: Modifier = Modifier,
     maxPictures: Int = BuildConfig.DEFAULT_MAX_PICTURES_PER_EVENT,
     backgroundColor: Color = Light2,
     isEditing: Boolean = false,
 ) {
     val display = Modifier.padding(vertical = 20.dp)
-    val placeHolder = Modifier.clickable { onAddPhotoClick() }
+    val placeHolder = Modifier.clickable { onAddPicturesClick() }
 
     val galleryModifier = Modifier
         .background(color = backgroundColor)
-        .then(if (photos.isEmpty()) placeHolder else display).then(modifier)
+        .then(if (pictures.isEmpty()) placeHolder else display).then(modifier)
 
     Row(
         modifier = galleryModifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (photos.isEmpty()) {
+        if (pictures.isEmpty()) {
             AddPhotoPlaceHolder(
                 modifier = Modifier.fillMaxWidth(),
             )
         } else {
             PhotoGalleryDisplay(
-                photos = photos,
+                photos = pictures,
                 isEditing = isEditing,
                 maxPictures = maxPictures,
+                onPictureClick = onPictureClick
             )
         }
     }
@@ -76,16 +79,18 @@ private fun PhotoGalleryPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(112.dp),
-            onAddPhotoClick = {},
-            photos = emptyList(),
+            onAddPicturesClick = {},
+            onPictureClick = {},
+            pictures = emptyList(),
         )
         PhotoGallery(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(112.dp),
             isEditing = true,
-            onAddPhotoClick = {},
-            photos = emptyList(),
+            onAddPicturesClick = {},
+            onPictureClick = {},
+            pictures = emptyList(),
         )
     }
 }
@@ -123,8 +128,9 @@ private fun AddPhotoPlaceHolderPreview() {
 @Composable
 private fun PhotoGalleryDisplay(
     photos: List<Picture>,
-    modifier: Modifier = Modifier,
+    onPictureClick: (Picture) -> Unit,
     maxPictures: Int,
+    modifier: Modifier = Modifier,
     isEditing: Boolean = false,
 ) {
     Column(
@@ -146,6 +152,8 @@ private fun PhotoGalleryDisplay(
                 itemContent = { item ->
 
                     PhotoDisplay(
+                        isEditing = isEditing,
+                        onPictureClick = onPictureClick,
                         picture = item,
                     )
                 },
@@ -176,19 +184,23 @@ private fun PhotoGalleryDisplay(
 @Composable
 private fun PhotoDisplay(
     picture: Picture,
+    isEditing: Boolean,
+    onPictureClick: (Picture) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     when (picture) {
         is Picture.Local -> {
             TaskySquareIcon(
-                source = picture.uri,
+                source = Uri.parse(picture.uri),
                 borderWidth = 2.dp,
                 iconColor = LightBlue,
                 borderColor = LightBlue,
                 padding = 8.dp,
                 size = 60.dp,
-                modifier = modifier,
+                modifier = modifier
+                    .clickable {
+                        if(isEditing) onPictureClick(picture)
+                    },
             )
         }
         is Picture.Remote -> {
@@ -199,7 +211,10 @@ private fun PhotoDisplay(
                 borderColor = LightBlue,
                 padding = 8.dp,
                 size = 60.dp,
-                modifier = modifier,
+                modifier = modifier
+                    .clickable {
+                        onPictureClick(picture)
+                    },
             )
         }
     }
@@ -211,5 +226,6 @@ private fun PhotoGalleryDisplayPreview() {
     PhotoGalleryDisplay(
         photos = emptyList(),
         maxPictures = 2,
+        onPictureClick = {}
     )
 }

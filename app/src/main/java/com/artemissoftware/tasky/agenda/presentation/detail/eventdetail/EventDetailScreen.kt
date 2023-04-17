@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
@@ -51,7 +50,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.result.getOr
-import kotlinx.coroutines.launch
 
 @Destination
 @Composable
@@ -69,12 +67,10 @@ fun EventDetailScreen(
 
             when (editResult.editType) {
                 EditType.Description -> {
-                    // TODO: add when viewmodel is ready
-                    // viewModel.onTriggerEvent(DetailEvents.UpdateDescription(editResult.text))
+                    viewModel.onTriggerEvent(DetailEvents.UpdateDescription(editResult.text))
                 }
                 EditType.Title -> {
-                    // TODO: add when viewmodel is ready
-                    // viewModel.onTriggerEvent(DetailEvents.UpdateTitle(editResult.text))
+                    viewModel.onTriggerEvent(DetailEvents.UpdateTitle(editResult.text))
                 }
             }
         }
@@ -88,9 +84,12 @@ fun EventDetailScreen(
     ManageUIEvents(
         uiEvent = viewModel.uiEvent,
         onNavigate = {
-            TODO()
+            navigator.navigate(it.route)
         },
         onPopBackStack = {
+            navigator.popBackStack()
+        },
+        onShowSnackBar = {
             TODO()
         },
     )
@@ -107,7 +106,7 @@ private fun EventDetailScreenContent(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             uri?.let {
-                events(DetailEvents.AddPicture(inputStream = context.contentResolver.openInputStream(it)))
+                events(DetailEvents.AddPicture(uri = it))
             }
         },
     )
@@ -194,12 +193,15 @@ private fun EventDetailScreenContent(
                                         .fillMaxWidth()
                                         .height(112.dp),
                                     isEditing = state.isEditing,
-                                    onAddPhotoClick = {
+                                    onAddPicturesClick = {
                                         singlePhotoPickerLauncher.launch(
                                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
                                         )
                                     },
-                                    photos = state.photos,
+                                    pictures = state.pictures,
+                                    onPictureClick = {
+                                        events(DetailEvents.GoToPicture(picture = it))
+                                    }
                                 )
 
                                 DetailDivider(top = 20.dp, bottom = 28.dp, modifier = Modifier.fillMaxWidth())

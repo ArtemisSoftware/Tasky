@@ -245,6 +245,7 @@ private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
     return when (item) {
         is AgendaItem.Reminder -> AgendaItemType.Reminder()
         is AgendaItem.Task -> AgendaItemType.Task()
+        is AgendaItem.Event -> AgendaItemType.Event()
     }
 }
 
@@ -256,6 +257,7 @@ fun AgendaScreenPreview() {
         events = {},
         state = AgendaState(
             userName = "Bruce Wayne",
+            userId = "1223",
             daysOfTheWeek = listOf(
                 DayOfWeek(date = localDate),
                 DayOfWeek(date = localDate.plusDays(1L)),

@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
+import android.net.Uri
 import android.provider.CalendarContract.Instances.EVENT_ID
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -17,11 +18,14 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.GetAttendeeUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.destinations.EditScreenDestination
+import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,11 +34,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.UUID
 import javax.inject.Inject
 import com.artemissoftware.core.R as CoreR
 
 @HiltViewModel
 class EventDetailViewModel @Inject constructor(
+    private val validatePicturesUseCase: ValidatePicturesUseCase,
     private val getAttendeeUseCase: GetAttendeeUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
@@ -64,7 +70,7 @@ class EventDetailViewModel @Inject constructor(
                 editTitleOrDescription(event.title, EditType.Title)
             }
             DetailEvents.PopBackStack -> { popBackStack() }
-            DetailEvents.Save -> TODO()
+            DetailEvents.Save -> { validatePictures() }
             DetailEvents.ToggleEdition -> {
                 toggleEdition()
             }
@@ -85,7 +91,29 @@ class EventDetailViewModel @Inject constructor(
             is DetailEvents.ViewVisitors -> {
                 updateVisitorsSelection(event.visitorOptionType)
             }
+            is DetailEvents.AddPicture -> {
+                addPicture(uri = event.uri)
+            }
+
+            is DetailEvents.DeleteVisitor -> TODO()
+            is DetailEvents.GoToPicture -> {
+                goToPicture(event.picture)
+            }
             else -> Unit
+        }
+    }
+
+    private fun goToPicture(picture: Picture) {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture).route))
+        }
+    }
+
+    private fun addPicture(uri: Uri) = with(_state) {
+        update {
+            it.copy(
+                pictures = it.pictures + Picture.Local(uri = uri.toString(), picId = UUID.randomUUID().toString()),
+            )
         }
     }
 
@@ -244,7 +272,37 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getSyncType(agendaItem: AgendaItem.Reminder): SyncType {
+    private fun validatePictures() = with(_state.value) {
+        viewModelScope.launch {
+            val result = validatePicturesUseCase.invoke(pictures = pictures)
+
+            if (result.numberOfRejectedPictures != 0) {
+                sendUiEvent(UiEvent.ShowSnackBar(UiText.DynamicString("${result.numberOfRejectedPictures} photos were skipped because they were too large")))
+            }
+
+            saveEvent(validatedPictures = result.validPictures)
+        }
+    }
+
+    private fun saveEvent(validatedPictures: List<Picture>) = with(_state.value) {
+        val item = AgendaItem.Event(
+            id = agendaItem.id,
+            title = title,
+            description = description,
+            remindAt = NotificationType.remindAt(time = startDate, notificationType = notification),
+            from = startDate,
+            to = endDate,
+            syncState = getSyncType(agendaItem),
+            pictures = validatedPictures,
+        )
+
+        viewModelScope.launch {
+            // TODO: saveEventUseCase(item)
+            popBackStack()
+        }
+    }
+
+    private fun getSyncType(agendaItem: AgendaItem.Event): SyncType {
         return savedStateHandle.get<String>(EVENT_ID)?.let {
             if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
         } ?: SyncType.CREATE
