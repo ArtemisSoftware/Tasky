@@ -18,6 +18,7 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.GetAttendeeUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
@@ -95,7 +96,9 @@ class EventDetailViewModel @Inject constructor(
                 addPicture(uri = event.uri)
             }
 
-            is DetailEvents.DeleteVisitor -> TODO()
+            is DetailEvents.DeleteVisitor -> {
+                deleteVisitor(event.attendeeId)
+            }
             is DetailEvents.GoToPicture -> {
                 goToPicture(event.picture)
             }
@@ -142,9 +145,31 @@ class EventDetailViewModel @Inject constructor(
                         }
                     }
                 }
-                is Resource.Success -> TODO()
+                is Resource.Success -> {
+                    result.data?.let { attendee ->
+                        addAttendee(attendee = attendee)
+                    }
+                }
                 is Resource.Loading -> Unit
             }
+        }
+    }
+
+    private fun addAttendee(attendee: Attendee) = with(_state) {
+        update {
+            it.copy(
+                attendees = it.attendees + attendee,
+            )
+        }
+    }
+
+    private fun deleteVisitor(attendeeId: String) = with(_state) {
+        update {
+            val list = it.attendees.toMutableList()
+            list.removeIf { it.id == attendeeId }
+            it.copy(
+                attendees = list.toList(),
+            )
         }
     }
 
