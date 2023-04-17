@@ -21,6 +21,7 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.GetAttendeeUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.GetEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
@@ -43,6 +44,7 @@ import com.artemissoftware.core.R as CoreR
 class EventDetailViewModel @Inject constructor(
     private val validatePicturesUseCase: ValidatePicturesUseCase,
     private val getAttendeeUseCase: GetAttendeeUseCase,
+    private val getEventUseCase: GetEventUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -286,20 +288,20 @@ class EventDetailViewModel @Inject constructor(
     private fun loadDetail() {
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
-//                val result = getEventUseCase(eventId)
-//                result?.let { item ->
-//                    _state.update {
-//                        it.copy(
-//                            agendaItem = item,
-//                            notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.starDate),
-//                            startDate = item.time,
-//                            title = item.title,
-//                            description = item.description ?: "",
-//                            endDate = item.,
-//                            attendees = item.,
-//                        )
-//                    }
-//                }
+                val result = getEventUseCase(eventId)
+                result?.let { item ->
+                    _state.update {
+                        it.copy(
+                            agendaItem = item,
+                            notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.from),
+                            startDate = item.from,
+                            title = item.title,
+                            description = item.description ?: "",
+                            endDate = item.to,
+                            attendees = item.attendees,
+                        )
+                    }
+                }
             }
         }
     }
