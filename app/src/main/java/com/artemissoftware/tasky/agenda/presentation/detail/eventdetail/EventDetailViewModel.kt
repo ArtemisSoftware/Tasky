@@ -99,7 +99,20 @@ class EventDetailViewModel @Inject constructor(
             is DetailEvents.GoToPicture -> {
                 goToPicture(event.picture)
             }
+            is DetailEvents.RemovePicture -> { removePicture(event.pictureId) }
             else -> Unit
+        }
+    }
+
+    private fun removePicture(pictureId: String) = with(_state) {
+        update {
+            val listPictures = it.pictures.toMutableList()
+            listPictures.removeIf { it.id == pictureId }
+
+            it.copy(
+                pictures = listPictures,
+                deletedPictures = it.deletedPictures + pictureId,
+            )
         }
     }
 
