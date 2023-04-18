@@ -1,14 +1,14 @@
-package com.artemissoftware.tasky.agenda.domain.usecase.reminder
+package com.artemissoftware.tasky.agenda.domain.usecase.event
 
 import com.artemissoftware.core.domain.models.DataResponse
-import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import javax.inject.Inject
 
-class DeleteReminderUseCase @Inject constructor(
-    private val reminderRepository: ReminderRepository,
+class DeleteEventUseCase @Inject constructor(
+    private val eventRepository: EventRepository,
 ) {
     suspend operator fun invoke(id: String) {
-        val result = reminderRepository.deleteReminderAndSync(id)
+        val result = eventRepository.deleteEventAndSync(id)
 
         when (result) {
             is DataResponse.Error -> {

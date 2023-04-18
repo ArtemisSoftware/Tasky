@@ -43,4 +43,8 @@ sealed class DetailEvents : TaskyEvents() {
     data class RemovePicture(val pictureId: String) : DetailEvents()
 
     object Delete : DetailEvents()
+
+    object LeaveEvent : DetailEvents()
+
+    object JoinEvent : DetailEvents()
 }
