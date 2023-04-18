@@ -106,7 +106,7 @@ class EventDetailViewModel @Inject constructor(
             }
             is DetailEvents.RemovePicture -> { removePicture(event.pictureId) }
             DetailEvents.Delete -> {
-                deleteEvent()
+                deleteEventWarning()
             }
             else -> Unit
         }
@@ -361,10 +361,19 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
+    private fun deleteEventWarning() {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.ShowDialog(getDeleteWarningDialogData()))
+        }
+    }
+
     private fun deleteEvent() {
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
-                // TODO: delete event
+
+                // tODO
+
+
                 popBackStack()
             }
         }
@@ -382,6 +391,20 @@ class EventDetailViewModel @Inject constructor(
             description = ex.toUiText(),
             dialogOptions = TaskyDialogOptions.SingleOption(
                 confirmationText = UiText.StringResource(CoreR.string.cancel),
+            ),
+        )
+    }
+
+    private fun getDeleteWarningDialogData(): TaskyDialogType {
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.event),
+            description = UiText.StringResource(CoreR.string.are_you_sure_delete_event),
+            dialogOptions = TaskyDialogOptions.DoubleOption(
+                confirmationText = UiText.StringResource(CoreR.string.ok),
+                confirmation = {
+                    deleteEvent()
+                },
+                cancelText = UiText.StringResource(CoreR.string.cancel),
             ),
         )
     }
