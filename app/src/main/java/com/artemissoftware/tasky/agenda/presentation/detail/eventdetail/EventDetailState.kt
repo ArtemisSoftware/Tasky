@@ -25,6 +25,7 @@ data class EventDetailState(
     val attendeeDialogState: AttendeeDialogState = AttendeeDialogState(),
     val attendees: List<Attendee> = emptyList(),
     val hostId: String = "",
+    val userId: String = "",
 ) {
 
     fun getGoingVisitors(): List<Visitor> {
@@ -36,4 +37,6 @@ data class EventDetailState(
     }
 
     private fun isEventCreator(attendeeId: String) = (attendeeId == hostId)
+
+    fun isGoing() = attendees.find { it.id == userId }?.isGoing ?: false
 }

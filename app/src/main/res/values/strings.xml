@@ -28,6 +28,8 @@
     <string name="edit_description">Edit description</string>
     <string name="at">At</string>
     <string name="delete_title_with_argument">Delete %s</string>
+    <string name="leave_title_with_argument">Leave %s</string>
+    <string name="join_title_with_argument">Join %s</string>
     <string name="login_error">An error occurred during log in</string>
     <string name="register_error">An error occurred while doing registering</string>
     <string name="today">Today</string>

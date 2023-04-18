@@ -40,4 +40,8 @@ interface EventDao {
         deleteEvent(id)
         upsertEventSync(eventSyncEntity)
     }
+
+    @Transaction
+    @Query("SELECT * FROM eventEntity WHERE from >= :currentTime")
+    suspend fun getEventsToSetAlarm(currentTime: Long): List<EventAndSyncState>
 }

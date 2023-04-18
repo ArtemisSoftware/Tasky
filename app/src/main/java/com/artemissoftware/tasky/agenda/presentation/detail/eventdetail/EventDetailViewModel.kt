@@ -113,6 +113,8 @@ class EventDetailViewModel @Inject constructor(
             DetailEvents.Delete -> {
                 deleteEventWarning()
             }
+            DetailEvents.JoinEvent -> TODO()
+            DetailEvents.LeaveEvent -> TODO()
             else -> Unit
         }
     }
