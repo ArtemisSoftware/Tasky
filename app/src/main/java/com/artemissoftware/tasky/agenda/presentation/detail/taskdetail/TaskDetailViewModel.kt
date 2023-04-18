@@ -7,6 +7,7 @@ import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class TaskDetailViewModel @Inject constructor(
     private val saveTaskUseCase: SaveTaskUseCase,
     private val getTaskUseCase: GetTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -50,20 +52,32 @@ class TaskDetailViewModel @Inject constructor(
             is DetailEvents.UpdateStartDate -> { updateStartDate(event.startDate) }
             is DetailEvents.UpdateStartTime -> { updateStartTime(event.startTime) }
             is DetailEvents.UpdateTitle -> { updateTitle(event.title) }
+            DetailEvents.Delete -> {
+                deleteTask()
+            }
             else -> Unit
         }
     }
 
-    private fun toggleEdition() {
-        _state.update {
+    private fun deleteTask() {
+        savedStateHandle.get<String>(TASK_ID)?.let { taskId ->
+            viewModelScope.launch {
+                deleteTaskUseCase(id = taskId)
+                popBackStack()
+            }
+        }
+    }
+
+    private fun toggleEdition() = with(_state) {
+        update {
             it.copy(
                 isEditing = !it.isEditing,
             )
         }
     }
 
-    private fun toggleIsDone() {
-        _state.update {
+    private fun toggleIsDone() = with(_state) {
+        update {
             it.copy(
                 isDone = !it.isDone,
             )
@@ -82,49 +96,44 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateDescription(text: String) {
-        _state.update {
+    private fun updateDescription(text: String) = with(_state) {
+        update {
             it.copy(
                 description = text,
             )
         }
     }
 
-    private fun updateTitle(text: String) {
-        _state.update {
+    private fun updateTitle(text: String) = with(_state) {
+        update {
             it.copy(
                 title = text,
             )
         }
     }
 
-    private fun updateNotification(notification: NotificationType) {
-        _state.update {
+    private fun updateNotification(notification: NotificationType) = with(_state) {
+        update {
             it.copy(
                 notification = notification,
             )
         }
     }
 
-    private fun updateStartDate(startDate: LocalDate) {
-        val result = _state.value.startDate
-            .withYear(startDate.year)
-            .withMonth(startDate.monthValue)
-            .withDayOfMonth(startDate.dayOfMonth)
-
-        _state.update {
+    private fun updateStartDate(startDate: LocalDate) = with(_state) {
+        update {
             it.copy(
-                startDate = result,
+                startDate = it.startDate.with(startDate),
             )
         }
     }
 
-    private fun updateStartTime(startTime: LocalTime) {
-        val result = _state.value.startDate
+    private fun updateStartTime(startTime: LocalTime) = with(_state) {
+        val result = value.startDate
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        _state.update {
+        update {
             it.copy(
                 startDate = result,
             )
@@ -154,6 +163,7 @@ class TaskDetailViewModel @Inject constructor(
     private fun saveTask() = with(_state.value) {
         val item = AgendaItem.Task(
             id = agendaItem.id,
+            title = title,
             description = description,
             remindAt = NotificationType.remindAt(time = startDate, notificationType = notification),
             time = startDate,

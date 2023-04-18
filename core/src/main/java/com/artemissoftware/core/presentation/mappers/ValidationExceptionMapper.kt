@@ -29,5 +29,6 @@ fun ValidationException.toUiText(): UiText {
         AgendaException.LogOutError -> {
             UiText.StringResource(R.string.error_occurred_during_user_logout)
         }
+        is AgendaException.NotValidPictures -> this.uiText
     }
 }

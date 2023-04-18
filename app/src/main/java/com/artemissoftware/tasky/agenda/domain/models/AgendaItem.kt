@@ -52,6 +52,29 @@ sealed class AgendaItem(
         itemSyncState = syncState,
     )
 
+    data class Event( // TODO: this is incomplete. Will be completed in the next PRs
+        val id: String = UUID.randomUUID().toString(),
+        val title: String = "",
+        val description: String? = null,
+        var from: LocalDateTime = LocalDateTime.now(),
+        var to: LocalDateTime = LocalDateTime.now().plusMinutes(30L),
+        val remindAt: LocalDateTime = NotificationType.remindAt(from, NotificationType.defaultNotification()),
+        val notification: NotificationType = NotificationType.getNotification(remindAt = remindAt, startDate = from),
+        val pictures: List<Picture> = emptyList(),
+        val syncState: SyncType = SyncType.CREATE,
+        val hostId: String = "",
+        val isUserEventCreator: Boolean = true,
+        val attendees: List<Attendee> = emptyList(),
+    ) : AgendaItem(
+        itemId = id,
+        itemTitle = title,
+        itemDescription = description,
+        itemRemindAt = remindAt,
+        itemNotification = notification,
+        starDate = from,
+        itemSyncState = syncState,
+    )
+
     companion object {
         val mockReminder = Reminder(
             id = "fdfgdf",

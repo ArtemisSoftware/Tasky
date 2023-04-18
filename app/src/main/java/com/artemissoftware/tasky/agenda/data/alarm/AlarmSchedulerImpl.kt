@@ -30,7 +30,7 @@ class AlarmSchedulerImpl @Inject constructor(
         if (item.itemRemindAt.isAfter(LocalDateTime.now())) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                item.starDate.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                item.itemRemindAt.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
                 PendingIntent.getBroadcast(
                     context,
                     item.itemId.hashCode(),

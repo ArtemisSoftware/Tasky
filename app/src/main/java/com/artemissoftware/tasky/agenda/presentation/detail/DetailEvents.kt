@@ -1,8 +1,10 @@
 package com.artemissoftware.tasky.agenda.presentation.detail
 
+import android.net.Uri
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.events.TaskyEvents
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
+import com.artemissoftware.tasky.agenda.domain.models.Picture
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -14,9 +16,8 @@ sealed class DetailEvents : TaskyEvents() {
     object ToggleIsDone : DetailEvents()
     object PopBackStack : DetailEvents()
 
+    object OpenAttendeeDialog : DetailEvents()
     object CloseAttendeeDialog : DetailEvents()
-
-    data class LoadDetail(val id: String? = null) : DetailEvents()
 
     data class UpdateStartDate(val startDate: LocalDate) : DetailEvents()
     data class UpdateEndDate(val endDate: LocalDate) : DetailEvents()
@@ -32,4 +33,14 @@ sealed class DetailEvents : TaskyEvents() {
     object AddAttendee : DetailEvents()
 
     data class ViewVisitors(val visitorOptionType: VisitorOptionType) : DetailEvents()
+
+    data class DeleteVisitor(val attendeeId: String) : DetailEvents()
+
+    data class AddPicture(val uri: Uri) : DetailEvents()
+
+    data class GoToPicture(val picture: Picture) : DetailEvents()
+
+    data class RemovePicture(val pictureId: String) : DetailEvents()
+
+    object Delete : DetailEvents()
 }

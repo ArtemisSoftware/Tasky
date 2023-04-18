@@ -5,6 +5,9 @@ import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import com.artemissoftware.tasky.util.FakeData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import java.time.LocalDate
 
 class FakeTaskRepository : TaskRepository {
 
@@ -13,6 +16,10 @@ class FakeTaskRepository : TaskRepository {
 
     override suspend fun getTask(id: String): AgendaItem.Task? {
         return tasks.find { it.id == id }
+    }
+
+    override fun getTasks(date: LocalDate): Flow<List<AgendaItem.Task>> = flow {
+        tasks.find { it.time.toLocalDate().isEqual(date) }
     }
 
     override suspend fun saveTaskAndSync(task: AgendaItem.Task): DataResponse<Unit> {
@@ -35,5 +42,9 @@ class FakeTaskRepository : TaskRepository {
         } else {
             DataResponse.Success(Unit)
         }
+    }
+
+    override suspend fun upsertTasks(tasks: List<AgendaItem.Task>) {
+        this.tasks.addAll(tasks)
     }
 }

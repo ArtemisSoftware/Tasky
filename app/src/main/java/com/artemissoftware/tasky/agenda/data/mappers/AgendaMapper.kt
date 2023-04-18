@@ -5,8 +5,7 @@ import com.artemissoftware.tasky.agenda.domain.models.Agenda
 
 fun AgendaResponseDto.toAgenda(): Agenda {
     return Agenda(
-        reminders = this.reminders.map { it.toReminder() },
-        // TODO: add task
+        items = this.reminders.map { it.toReminder() } + this.tasks.map { it.toTask() },
         // TODO: add event
     )
 }

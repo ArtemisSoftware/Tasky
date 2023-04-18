@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.artemissoftware.core.util.DateTimePatternsConstants
+import com.artemissoftware.core.util.constants.DateTimePatternsConstants
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentTime

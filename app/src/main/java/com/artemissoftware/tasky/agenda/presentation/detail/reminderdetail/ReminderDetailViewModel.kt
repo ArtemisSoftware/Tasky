@@ -2,13 +2,18 @@ package com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.REMINDER_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +29,7 @@ import javax.inject.Inject
 class ReminderDetailViewModel @Inject constructor(
     private val saveReminderUseCase: SaveReminderUseCase,
     private val getReminderUseCase: GetReminderUseCase,
+    private val deleteReminderUseCase: DeleteReminderUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -56,61 +62,68 @@ class ReminderDetailViewModel @Inject constructor(
             is DetailEvents.UpdateTitle -> {
                 updateTitle(event.title)
             }
+            DetailEvents.Delete -> {
+                deleteReminder()
+            }
             else -> Unit
         }
     }
 
-    private fun updateDescription(text: String) {
-        _state.update {
+    private fun deleteReminder() {
+        savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
+            viewModelScope.launch {
+                deleteReminderUseCase(id = reminderId)
+                popBackStack()
+            }
+        }
+    }
+
+    private fun updateDescription(text: String) = with(_state) {
+        update {
             it.copy(
                 description = text,
             )
         }
     }
 
-    private fun updateTitle(text: String) {
-        _state.update {
+    private fun updateTitle(text: String) = with(_state) {
+        update {
             it.copy(
                 title = text,
             )
         }
     }
 
-    private fun updateNotification(notification: NotificationType) {
-        _state.update {
+    private fun updateNotification(notification: NotificationType) = with(_state) {
+        update {
             it.copy(
                 notification = notification,
             )
         }
     }
 
-    private fun updateStartDate(startDate: LocalDate) {
-        val result = _state.value.startDate
-            .withYear(startDate.year)
-            .withMonth(startDate.monthValue)
-            .withDayOfMonth(startDate.dayOfMonth)
-
-        _state.update {
+    private fun updateStartDate(startDate: LocalDate) = with(_state) {
+        update {
             it.copy(
-                startDate = result,
+                startDate = it.startDate.with(startDate),
             )
         }
     }
 
-    private fun updateStartTime(startTime: LocalTime) {
-        val result = _state.value.startDate
+    private fun updateStartTime(startTime: LocalTime) = with(_state) {
+        val result = value.startDate
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        _state.update {
+        update {
             it.copy(
                 startDate = result,
             )
         }
     }
 
-    private fun toggleEdition() {
-        _state.update {
+    private fun toggleEdition() = with(_state) {
+        update {
             it.copy(
                 isEditing = !it.isEditing,
             )
@@ -130,7 +143,7 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        savedStateHandle.get<String>("reminderId")?.let { reminderId ->
+        savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
             viewModelScope.launch {
                 val result = getReminderUseCase(reminderId)
                 result?.let { item ->
@@ -149,14 +162,24 @@ class ReminderDetailViewModel @Inject constructor(
     }
 
     private fun saveReminder() = with(_state.value) {
-        agendaItem.title = title
-        agendaItem.description = description
-        agendaItem.remindAt = NotificationType.remindAt(time = startDate, notificationType = notification)
-        agendaItem.time = startDate
+        val item = AgendaItem.Reminder(
+            id = agendaItem.id,
+            title = title,
+            description = description,
+            remindAt = NotificationType.remindAt(time = startDate, notificationType = notification),
+            time = startDate,
+            syncState = getSyncType(agendaItem),
+        )
 
         viewModelScope.launch {
-            saveReminderUseCase(agendaItem)
+            saveReminderUseCase(item)
             popBackStack()
         }
+    }
+
+    private fun getSyncType(agendaItem: AgendaItem.Reminder): SyncType {
+        return savedStateHandle.get<String>(REMINDER_ID)?.let {
+            if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
+        } ?: SyncType.CREATE
     }
 }

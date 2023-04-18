@@ -14,6 +14,7 @@ enum class AgendaItemType(val text: UiText) {
             return when (agendaItem) {
                 is AgendaItem.Reminder -> REMINDER
                 is AgendaItem.Task -> TASK
+                is AgendaItem.Event -> EVENT
             }
         }
     }

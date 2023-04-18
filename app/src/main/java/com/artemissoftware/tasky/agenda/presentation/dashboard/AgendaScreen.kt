@@ -38,8 +38,8 @@ import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
-import com.artemissoftware.core.util.DateTimePatternsConstants
-import com.artemissoftware.core.util.DateTimePatternsConstants.DATE_PATTERN_MONTH
+import com.artemissoftware.core.util.constants.DateTimePatternsConstants
+import com.artemissoftware.core.util.constants.DateTimePatternsConstants.DATE_PATTERN_MONTH
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
@@ -223,10 +223,9 @@ private fun AgendaScreenContent(
                                     },
                                     itemContent = { item ->
                                         AssignmentCard(
-                                            agendaItemType = getAgendaItemType(item),
                                             agendaItem = item,
                                             onCheckedChange = {
-                                                if (item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item.itemId))
+                                                if(item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item))
                                             },
                                             onOptionClick = {
                                                 when (it) {
@@ -257,6 +256,7 @@ private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
     return when (item) {
         is AgendaItem.Reminder -> AgendaItemType.Reminder()
         is AgendaItem.Task -> AgendaItemType.Task()
+        is AgendaItem.Event -> AgendaItemType.Event()
     }
 }
 
@@ -268,6 +268,7 @@ fun AgendaScreenPreview() {
         events = {},
         state = AgendaState(
             userName = "Bruce Wayne",
+            userId = "1223",
             daysOfTheWeek = listOf(
                 DayOfWeek(date = localDate),
                 DayOfWeek(date = localDate.plusDays(1L)),

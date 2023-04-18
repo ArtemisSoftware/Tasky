@@ -21,7 +21,7 @@ fun TaskyIconToggleButton(
     onIconColor: Color = Black,
     offIconColor: Color = onIconColor,
     selected: Boolean = false,
-    onCheckedChange: (Boolean) -> Unit,
+    onCheckedChange: (Boolean) -> Unit = {},
 ) {
     IconToggleButton(
         checked = selected,

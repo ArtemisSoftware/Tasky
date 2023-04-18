@@ -34,6 +34,14 @@ fun LocalDate.toEpochMilli(): Long {
     return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
 
+fun LocalDate.toStartOfDayEpochMilli(): Long {
+    return this.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
+fun LocalDate.toEndOfDayEpochMilli(): Long {
+    return this.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
 fun LocalDate.nextDays(includeCurrentDay: Boolean = true, numberOfNextDays: Int): List<LocalDate> {
     val list = mutableListOf<LocalDate>()
 

@@ -18,9 +18,13 @@ import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseC
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.LogOutUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.task.CompleteTaskUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.destinations.LoginScreenDestination
+import com.artemissoftware.tasky.destinations.EventDetailScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
+import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +41,8 @@ class AgendaViewModel @Inject constructor(
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
     private val syncAgendaUseCase: SyncAgendaUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val completeTaskUseCase: CompleteTaskUseCase
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
@@ -45,7 +51,8 @@ class AgendaViewModel @Inject constructor(
     init {
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
-        updateAgenda(date = LocalDate.now())
+        getAgendaItems(date = LocalDate.now())
+        syncAgenda(date = LocalDate.now())
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -56,7 +63,9 @@ class AgendaViewModel @Inject constructor(
             is AgendaEvents.ChangeWeekDay -> {
                 changeWeekDay(event.date)
             }
-            is AgendaEvents.CompleteAssignment -> TODO()
+            is AgendaEvents.CompleteAssignment -> {
+                completeAssignment(event.item)
+            }
             is AgendaEvents.Delete -> {
                 deleteItem(item = event.item)
             }
@@ -69,6 +78,12 @@ class AgendaViewModel @Inject constructor(
             is AgendaEvents.CreateAgendaItem -> {
                 createAgendaItem(event.detailType)
             }
+        }
+    }
+
+    private fun completeAssignment(item: AgendaItem.Task) {
+        viewModelScope.launch {
+            completeTaskUseCase.invoke(task = item)
         }
     }
 
@@ -122,7 +137,10 @@ class AgendaViewModel @Inject constructor(
                 is AgendaItem.Reminder -> {
                     deleteReminderUseCase.invoke(id = item.itemId)
                 }
-                is AgendaItem.Task -> TODO()
+                is AgendaItem.Task -> {
+                    deleteTaskUseCase.invoke(id = item.itemId)
+                }
+                is AgendaItem.Event -> TODO()
             }
         }
     }
@@ -133,7 +151,10 @@ class AgendaViewModel @Inject constructor(
                 is AgendaItem.Reminder -> {
                     sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = item.itemId).route))
                 }
-                is AgendaItem.Task -> TODO()
+                is AgendaItem.Task -> {
+                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
+                }
+                is AgendaItem.Event -> (UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId).route))
             }
         }
     }
@@ -142,7 +163,9 @@ class AgendaViewModel @Inject constructor(
         viewModelScope.launch {
             when (detailType) {
                 AgendaItems.EVENT -> TODO()
-                AgendaItems.TASK -> TODO()
+                AgendaItems.TASK -> {
+                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination().route))
+                }
                 AgendaItems.REMINDER -> {
                     sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination().route))
                 }
