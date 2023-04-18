@@ -319,7 +319,7 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun deleteEvent() {
-        savedStateHandle.get<String>(EVENT_ID)?.let { taskId ->
+        savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
                 // TODO: delete event
                 popBackStack()

@@ -72,7 +72,7 @@ class ReminderDetailViewModel @Inject constructor(
     private fun deleteReminder() {
         savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
             viewModelScope.launch {
-                deleteReminderUseCase.invoke(id = reminderId)
+                deleteReminderUseCase(id = reminderId)
                 popBackStack()
             }
         }
