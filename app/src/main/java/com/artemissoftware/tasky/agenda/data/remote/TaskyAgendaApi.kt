@@ -16,9 +16,6 @@ import retrofit2.http.Query
 
 interface TaskyAgendaApi {
 
-    @GET("logout")
-    suspend fun logoutUser(): ResponseBody
-
     @GET("agenda")
     suspend fun getAgenda(
         @Query(value = "timezone") timezone: String = TimeZone.getDefault().id,

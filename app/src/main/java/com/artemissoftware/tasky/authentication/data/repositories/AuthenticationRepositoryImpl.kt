@@ -4,8 +4,8 @@ import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.authentication.User
 import com.artemissoftware.tasky.authentication.data.mappers.toUser
-import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
-import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
+import com.artemissoftware.core.data.remote.dto.authentication.LoginBodyDto
+import com.artemissoftware.core.data.remote.dto.authentication.RegistrationBodyDto
 import com.artemissoftware.tasky.authentication.data.remote.source.AuthenticationApiSource
 import com.artemissoftware.tasky.authentication.domain.repositories.AuthenticationRepository
 

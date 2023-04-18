@@ -1,9 +1,9 @@
-package com.artemissoftware.tasky.authentication.data.remote
+package com.artemissoftware.core.data.remote.api
 
+import com.artemissoftware.core.data.remote.dto.authentication.LoginBodyDto
+import com.artemissoftware.core.data.remote.dto.authentication.LoginResponseDto
+import com.artemissoftware.core.data.remote.dto.authentication.RegistrationBodyDto
 import com.artemissoftware.core.util.annotations.NoJWTHeaderRequest
-import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
-import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
-import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,4 +21,7 @@ interface TaskyAuthenticationApi {
 
     @GET("authenticate")
     suspend fun authenticate(): ResponseBody
+
+    @GET("logout")
+    suspend fun logoutUser(): ResponseBody
 }

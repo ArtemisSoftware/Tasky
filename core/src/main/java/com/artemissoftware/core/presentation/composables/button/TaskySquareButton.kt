@@ -57,7 +57,7 @@ fun <T>TaskyExpandableSquareButton(
     var expanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.wrapContentSize(),
+        modifier = modifier.wrapContentSize(),
         horizontalAlignment = Alignment.End,
     ) {
         DropdownMenu(

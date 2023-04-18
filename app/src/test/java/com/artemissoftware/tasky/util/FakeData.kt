@@ -6,7 +6,7 @@ import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeProfileDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.EventAttendeeDto
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
-import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
+import com.artemissoftware.core.data.remote.dto.authentication.LoginResponseDto
 import java.time.LocalDateTime
 
 object FakeData {
