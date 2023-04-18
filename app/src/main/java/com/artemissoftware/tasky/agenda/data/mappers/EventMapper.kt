@@ -15,7 +15,7 @@ fun AgendaItem.Event.toEntity(): EventEntity {
         to = to.toLong(),
         from = from.toLong(),
         isUserEventCreator = isUserEventCreator,
-        host = host,
+        hostId = hostId,
     )
 }
 
@@ -24,7 +24,7 @@ fun EventAndSyncState.toAgendaItem(): AgendaItem.Event {
         title = this.event.title,
         description = this.event.description,
         id = this.event.id,
-        host = this.event.host,
+        hostId = this.event.hostId,
         remindAt = this.event.remindAt.toLocalDateTime(),
         to = this.event.to.toLocalDateTime(),
         from = this.event.from.toLocalDateTime(),

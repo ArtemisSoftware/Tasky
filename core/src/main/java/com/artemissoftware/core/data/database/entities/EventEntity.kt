@@ -9,7 +9,7 @@ data class EventEntity(
     val id: String,
     val description: String,
     val from: Long,
-    val host: String,
+    val hostId: String,
     val isUserEventCreator: Boolean,
     val remindAt: Long,
     val title: String,

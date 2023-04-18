@@ -299,6 +299,7 @@ class EventDetailViewModel @Inject constructor(
                             description = item.description ?: "",
                             endDate = item.to,
                             attendees = item.attendees,
+                            hostId = item.hostId,
                         )
                     }
                 }
@@ -334,7 +335,7 @@ class EventDetailViewModel @Inject constructor(
             to = endDate,
             syncState = getSyncType(agendaItem),
             pictures = validatedPictures,
-            host = host,
+            hostId = hostId,
             attendees = attendees,
         )
 
