@@ -5,12 +5,7 @@ import androidx.room.RoomDatabase
 import com.artemissoftware.core.data.database.dao.EventDao
 import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.dao.TaskDao
-import com.artemissoftware.core.data.database.entities.AttendeeEntity
-import com.artemissoftware.core.data.database.entities.EventEntity
-import com.artemissoftware.core.data.database.entities.ReminderEntity
-import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
-import com.artemissoftware.core.data.database.entities.TaskEntity
-import com.artemissoftware.core.data.database.entities.TaskSyncEntity
+import com.artemissoftware.core.data.database.entities.*
 
 @Database(
     entities = [
@@ -19,6 +14,8 @@ import com.artemissoftware.core.data.database.entities.TaskSyncEntity
         TaskEntity::class,
         TaskSyncEntity::class,
         EventEntity::class,
+        EventSyncEntity::class,
+        PictureEntity::class,
         AttendeeEntity::class,
     ],
     version = 1,

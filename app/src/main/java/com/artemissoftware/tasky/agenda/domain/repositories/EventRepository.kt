@@ -8,4 +8,6 @@ interface EventRepository {
     suspend fun getEvent(id: String): AgendaItem.Event?
 
     suspend fun saveEventAndSync(event: AgendaItem.Event): DataResponse<Unit>
+
+    suspend fun deleteEventAndSync(id: String): DataResponse<Unit>
 }

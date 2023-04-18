@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.data.repositories
 
 import com.artemissoftware.core.data.database.dao.EventDao
+import com.artemissoftware.core.data.database.entities.EventSyncEntity
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
@@ -22,11 +23,23 @@ class EventRepositoryImpl constructor(
         eventDao.upsertSyncStateAndEvent(
             eventEntity = event.toEntity(),
             attendees = event.attendees.map { it.toEntity(eventId = event.id) },
+            eventSyncEntity = EventSyncEntity(id = event.id, syncType = syncType),
         )
 
         return try {
             // TODO: complete when remote part is ready. Next PR
 
+            DataResponse.Success(Unit)
+        } catch (ex: TaskyNetworkException) {
+            DataResponse.Error(exception = ex)
+        }
+    }
+
+    override suspend fun deleteEventAndSync(id: String): DataResponse<Unit> {
+        eventDao.upsertSyncStateAndDelete(id = id, EventSyncEntity(id = id, syncType = SyncType.DELETE))
+
+        return try {
+            // TODO: complete when remote part is ready. Next PR
             DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
