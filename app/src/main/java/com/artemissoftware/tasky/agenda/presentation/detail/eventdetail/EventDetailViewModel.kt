@@ -17,8 +17,10 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.GetAttendeeUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.GetEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
@@ -42,6 +44,7 @@ import com.artemissoftware.core.R as CoreR
 class EventDetailViewModel @Inject constructor(
     private val validatePicturesUseCase: ValidatePicturesUseCase,
     private val getAttendeeUseCase: GetAttendeeUseCase,
+    private val getEventUseCase: GetEventUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -95,7 +98,9 @@ class EventDetailViewModel @Inject constructor(
                 addPicture(uri = event.uri)
             }
 
-            is DetailEvents.DeleteVisitor -> TODO()
+            is DetailEvents.DeleteVisitor -> {
+                deleteVisitor(event.attendeeId)
+            }
             is DetailEvents.GoToPicture -> {
                 goToPicture(event.picture)
             }
@@ -158,9 +163,31 @@ class EventDetailViewModel @Inject constructor(
                         }
                     }
                 }
-                is Resource.Success -> TODO()
+                is Resource.Success -> {
+                    result.data?.let { attendee ->
+                        addAttendee(attendee = attendee)
+                    }
+                }
                 is Resource.Loading -> Unit
             }
+        }
+    }
+
+    private fun addAttendee(attendee: Attendee) = with(_state) {
+        update {
+            it.copy(
+                attendees = it.attendees + attendee,
+            )
+        }
+    }
+
+    private fun deleteVisitor(attendeeId: String) = with(_state) {
+        update {
+            val list = it.attendees.toMutableList()
+            list.removeIf { it.id == attendeeId }
+            it.copy(
+                attendees = list.toList(),
+            )
         }
     }
 
@@ -275,9 +302,23 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() {
-        savedStateHandle.get<String>(EVENT_ID)?.let { taskId ->
+        savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
-                // TODO: complete
+                val result = getEventUseCase(eventId)
+                result?.let { item ->
+                    _state.update {
+                        it.copy(
+                            agendaItem = item,
+                            notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.from),
+                            startDate = item.from,
+                            title = item.title,
+                            description = item.description ?: "",
+                            endDate = item.to,
+                            attendees = item.attendees,
+                            hostId = item.hostId,
+                        )
+                    }
+                }
             }
         }
     }
@@ -310,6 +351,8 @@ class EventDetailViewModel @Inject constructor(
             to = endDate,
             syncState = getSyncType(agendaItem),
             pictures = validatedPictures,
+            hostId = hostId,
+            attendees = attendees,
         )
 
         viewModelScope.launch {

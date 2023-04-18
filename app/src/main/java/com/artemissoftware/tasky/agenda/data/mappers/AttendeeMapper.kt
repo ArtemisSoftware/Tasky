@@ -33,3 +33,12 @@ fun EventAttendeeDto.toEntity(): AttendeeEntity {
         isGoing = isGoing,
     )
 }
+
+fun AttendeeEntity.toAttendee(): Attendee {
+    return Attendee(
+        fullName = fullName,
+        id = userId,
+        email = email,
+        isGoing = isGoing,
+    )
+}
