@@ -30,7 +30,7 @@ fun VisitorsHeader(
     visitorOptionType: VisitorOptionType,
     onOpenAttendeeDialogClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
 ) {
     Column(
         modifier = modifier,
@@ -55,10 +55,10 @@ fun VisitorsHeader(
                     size = 34.dp,
                     icon = R.drawable.ic_add,
                     iconColor = Gray,
-                    modifier = Modifier.
-                            clickable {
-                                onOpenAttendeeDialogClick()
-                            }
+                    modifier = Modifier
+                        .clickable {
+                            onOpenAttendeeDialogClick()
+                        },
                 )
             }
         }
@@ -111,14 +111,14 @@ private fun VisitorsHeaderPreview() {
             modifier = Modifier.fillMaxWidth(),
             onViewVisitorsClick = {},
             visitorOptionType = VisitorOptionType.ALL,
-            onOpenAttendeeDialogClick = {}
+            onOpenAttendeeDialogClick = {},
         )
         VisitorsHeader(
             isEditing = false,
             modifier = Modifier.fillMaxWidth(),
             onViewVisitorsClick = {},
             visitorOptionType = VisitorOptionType.NOT_GOING,
-            onOpenAttendeeDialogClick = {}
+            onOpenAttendeeDialogClick = {},
         )
     }
 }

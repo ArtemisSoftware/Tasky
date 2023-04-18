@@ -16,46 +16,45 @@ private val InterFont = FontFamily(
     Font(R.font.inter_medium, FontWeight.Medium),
     Font(R.font.inter_bold, FontWeight.Bold),
     Font(R.font.inter_semibold, FontWeight.SemiBold),
-    Font(R.font.inter_extrabold, FontWeight.ExtraBold)
+    Font(R.font.inter_extrabold, FontWeight.ExtraBold),
 )
-
 
 val InterTypography = Typography(
     h4 = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.W600,
-        fontSize = 30.sp
+        fontSize = 30.sp,
     ),
     h5 = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.W600,
-        fontSize = 24.sp
+        fontSize = 24.sp,
     ),
     h6 = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.W600,
-        fontSize = 20.sp
+        fontSize = 20.sp,
     ),
     subtitle1 = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.W600,
-        fontSize = 16.sp
+        fontSize = 16.sp,
     ),
     subtitle2 = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
     body1 = TextStyle(
         fontFamily = InterFont,
-        fontWeight = FontWeight.Normal, //W400
+        fontWeight = FontWeight.Normal, // W400
         fontSize = 16.sp,
         lineHeight = 30.sp,
-        letterSpacing = 5.sp
+        letterSpacing = 5.sp,
     ),
     body2 = TextStyle(
         fontFamily = InterFont,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
     button = TextStyle(
         fontFamily = InterFont,
@@ -72,7 +71,7 @@ val InterTypography = Typography(
     overline = TextStyle(
         fontFamily = InterFont,
         fontWeight = FontWeight.W500,
-        fontSize = 12.sp
+        fontSize = 12.sp,
     ),
 
 )

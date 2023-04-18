@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -58,7 +59,13 @@ fun TimeInterval(
         },
     )
 
-    DetailDivider(top = 28.dp, bottom = 28.dp, modifier = Modifier.fillMaxWidth())
+    DetailDivider(
+        top = 28.dp,
+        bottom = 28.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+    )
 
     AssignmentTime(
         isEditing = isEditing,

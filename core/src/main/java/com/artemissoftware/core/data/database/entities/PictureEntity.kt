@@ -10,7 +10,7 @@ import com.artemissoftware.core.data.database.types.PictureType
         ForeignKey(
             entity = EventEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("id"),
+            childColumns = arrayOf("eventId"),
             onDelete = ForeignKey.CASCADE,
         ),
     ],

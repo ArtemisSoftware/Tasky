@@ -2,8 +2,11 @@ package com.artemissoftware.tasky.agenda.presentation.photo
 
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,7 +27,6 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.Picture
-import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.ramcosta.composedestinations.annotation.Destination
@@ -100,26 +102,29 @@ private fun PhotoScreenContent(
                     .placeholder(CoreR.drawable.ic_tasky_logo)
                     .build(),
             )
-            when (painter.state) {
-                is AsyncImagePainter.State.Error -> {
-                    TaskySquareIcon(
-                        modifier = Modifier,
-                        size = 32.dp,
-                        borderWidth = 2.dp,
-                        borderColor = LightBlue,
-                        icon = CoreR.drawable.ic_tasky_logo,
-                    )
-                }
 
-                is AsyncImagePainter.State.Success -> {
-                    Image(
-                        modifier = Modifier,
-                        painter = painter,
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                    )
+            Box(modifier = Modifier.fillMaxSize()) {
+                when (painter.state) {
+                    is AsyncImagePainter.State.Error -> {
+                        TaskySquareIcon(
+                            modifier = Modifier.align(Alignment.Center),
+                            size = 32.dp,
+                            borderWidth = 2.dp,
+                            borderColor = LightBlue,
+                            icon = CoreR.drawable.ic_tasky_logo,
+                        )
+                    }
+
+                    is AsyncImagePainter.State.Success -> {
+                        Image(
+                            modifier = Modifier.align(Alignment.Center),
+                            painter = painter,
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                    else -> Unit
                 }
-                else -> Unit
             }
         },
     )
@@ -131,6 +136,6 @@ private fun PhotoScreenContentPreview() {
     PhotoScreenContent(
         picture = Picture.Local(picId = "123", uri = "http://www.batman.com/riddler.jpg"),
         events = {},
-        state = PhotoState()
+        state = PhotoState(),
     )
 }

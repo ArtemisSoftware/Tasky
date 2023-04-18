@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,18 +30,17 @@ fun AttendanceOption(
     selectedTextColor: Color = White,
     unselectedTextColor: Color = DarkGray,
     isSelected: Boolean = false,
-    onClick: (Boolean) -> Unit
+    onClick: (Boolean) -> Unit,
 ) {
-
-    var colors by remember(key1 = isSelected) {
+    val colors by remember(key1 = isSelected) {
         mutableStateOf(
             getColors(
                 isSelected = isSelected,
                 selectedColor = selectedColor,
                 unselectedColor = unselectedColor,
                 selectedTextColor = selectedTextColor,
-                unselectedTextColor = unselectedTextColor
-            )
+                unselectedTextColor = unselectedTextColor,
+            ),
         )
     }
 
@@ -52,24 +50,23 @@ fun AttendanceOption(
                 onClick.invoke(isSelected)
             },
         shape = RoundedCornerShape(100.dp),
-        elevation = 0.dp
+        elevation = 0.dp,
     ) {
         Column(
             modifier = Modifier
                 .background(color = colors.first)
                 .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             TaskyText(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.overline,
                 color = colors.second,
-                text = stringResource(id = title)
+                text = stringResource(id = title),
             )
         }
     }
-
 }
 
 private fun getColors(
@@ -78,14 +75,13 @@ private fun getColors(
     unselectedColor: Color,
     selectedTextColor: Color,
     unselectedTextColor: Color,
-): Pair<Color, Color>{
-    return if(isSelected) Pair(selectedColor, selectedTextColor) else Pair(unselectedColor, unselectedTextColor)
+): Pair<Color, Color> {
+    return if (isSelected) Pair(selectedColor, selectedTextColor) else Pair(unselectedColor, unselectedTextColor)
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun VisitorItemPreview() {
-
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         AttendanceOption(
             title = R.string.app_name,
@@ -93,8 +89,7 @@ private fun VisitorItemPreview() {
                 .height(30.dp)
                 .width(100.dp),
             onClick = {
-
-            }
+            },
         )
         AttendanceOption(
             title = R.string.app_name,
@@ -102,8 +97,7 @@ private fun VisitorItemPreview() {
             modifier = Modifier
                 .height(30.dp),
             onClick = {
-
-            }
+            },
         )
     }
 }

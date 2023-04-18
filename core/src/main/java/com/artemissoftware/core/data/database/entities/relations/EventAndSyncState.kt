@@ -17,7 +17,7 @@ data class EventAndSyncState(
 
     @Relation(
         parentColumn = "id",
-        entityColumn = "id",
+        entityColumn = "eventId",
     )
     val pictures: List<PictureEntity>,
 

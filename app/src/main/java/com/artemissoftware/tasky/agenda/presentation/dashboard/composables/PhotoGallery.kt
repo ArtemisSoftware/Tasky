@@ -51,7 +51,8 @@ fun PhotoGallery(
         .then(if (pictures.isEmpty()) placeHolder else display).then(modifier)
 
     Row(
-        modifier = galleryModifier,
+        modifier = galleryModifier
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (pictures.isEmpty()) {
@@ -63,7 +64,8 @@ fun PhotoGallery(
                 photos = pictures,
                 isEditing = isEditing,
                 maxPictures = maxPictures,
-                onPictureClick = onPictureClick
+                onAddPicturesClick = onAddPicturesClick,
+                onPictureClick = onPictureClick,
             )
         }
     }
@@ -128,6 +130,7 @@ private fun AddPhotoPlaceHolderPreview() {
 @Composable
 private fun PhotoGalleryDisplay(
     photos: List<Picture>,
+    onAddPicturesClick: () -> Unit,
     onPictureClick: (Picture) -> Unit,
     maxPictures: Int,
     modifier: Modifier = Modifier,
@@ -167,6 +170,10 @@ private fun PhotoGalleryDisplay(
                         exit = VisibilityTransitions.exitEdition(),
                     ) {
                         TaskySquareIcon(
+                            modifier = Modifier
+                                .clickable {
+                                    onAddPicturesClick()
+                                },
                             icon = R.drawable.ic_add,
                             borderWidth = 2.dp,
                             iconColor = LightBlue,
@@ -199,7 +206,7 @@ private fun PhotoDisplay(
                 size = 60.dp,
                 modifier = modifier
                     .clickable {
-                        if(isEditing) onPictureClick(picture)
+                        if (isEditing) onPictureClick(picture)
                     },
             )
         }
@@ -226,6 +233,7 @@ private fun PhotoGalleryDisplayPreview() {
     PhotoGalleryDisplay(
         photos = emptyList(),
         maxPictures = 2,
-        onPictureClick = {}
+        onAddPicturesClick = {},
+        onPictureClick = {},
     )
 }

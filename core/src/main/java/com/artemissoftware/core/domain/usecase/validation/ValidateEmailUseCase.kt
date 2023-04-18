@@ -1,6 +1,6 @@
-package com.artemissoftware.tasky.authentication.domain.usecases.validation
+package com.artemissoftware.core.domain.usecase.validation
 
-import com.artemissoftware.tasky.authentication.domain.validators.EmailPatternValidator
+import com.artemissoftware.core.domain.validators.EmailPatternValidator
 import javax.inject.Inject
 
 class ValidateEmailUseCase @Inject constructor(private val emailPatternValidator: EmailPatternValidator) {

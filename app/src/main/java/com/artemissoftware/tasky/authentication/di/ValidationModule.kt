@@ -1,7 +1,7 @@
 package com.artemissoftware.tasky.authentication.di
 
-import com.artemissoftware.tasky.authentication.data.validators.EmailPatternValidatorImpl
-import com.artemissoftware.tasky.authentication.domain.validators.EmailPatternValidator
+import com.artemissoftware.core.data.validators.EmailPatternValidatorImpl
+import com.artemissoftware.core.domain.validators.EmailPatternValidator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

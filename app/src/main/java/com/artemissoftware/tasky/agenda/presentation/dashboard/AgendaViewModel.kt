@@ -159,7 +159,7 @@ class AgendaViewModel @Inject constructor(
                     sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
                 }
                 is AgendaItem.Event -> {
-                    (UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId).route))
+                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId).route))
                 }
             }
         }

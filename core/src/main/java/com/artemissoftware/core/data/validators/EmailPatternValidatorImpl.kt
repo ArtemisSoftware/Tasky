@@ -1,7 +1,7 @@
-package com.artemissoftware.tasky.authentication.data.validators
+package com.artemissoftware.core.data.validators
 
 import android.util.Patterns
-import com.artemissoftware.tasky.authentication.domain.validators.EmailPatternValidator
+import com.artemissoftware.core.domain.validators.EmailPatternValidator
 
 class EmailPatternValidatorImpl : EmailPatternValidator {
 

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -160,8 +161,7 @@ private fun EventDetailScreenContent(
                     Box(
                         modifier = Modifier
                             .padding(top = 32.dp)
-                            .padding(bottom = 68.dp)
-                            .padding(horizontal = 16.dp),
+                            .padding(bottom = 68.dp),
                     ) {
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth(),
@@ -171,7 +171,9 @@ private fun EventDetailScreenContent(
                                 AssignmentHeader(
                                     agendaItemType = AgendaItemType.Task(),
                                     title = state.title,
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                     isEditing = state.isEditing,
                                     onEditClick = {
                                         events(DetailEvents.EditTitle(it))
@@ -181,13 +183,21 @@ private fun EventDetailScreenContent(
                                     },
                                 )
 
-                                DetailDivider(top = 20.dp, bottom = 20.dp, modifier = Modifier.fillMaxWidth())
+                                DetailDivider(
+                                    top = 20.dp,
+                                    bottom = 20.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                )
                             }
                             item {
                                 AssignmentDescription(
                                     isEditing = state.isEditing,
                                     description = state.description,
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                     onEditClick = {
                                         events(DetailEvents.EditDescription(it))
                                     },
@@ -210,11 +220,19 @@ private fun EventDetailScreenContent(
                                     },
                                 )
 
-                                DetailDivider(top = 20.dp, bottom = 28.dp, modifier = Modifier.fillMaxWidth())
+                                DetailDivider(
+                                    top = 20.dp,
+                                    bottom = 28.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                )
                             }
                             item {
                                 TimeInterval(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                     isEditing = state.isEditing,
                                     startDate = state.startDate,
                                     onStartDateClick = {
@@ -256,25 +274,41 @@ private fun EventDetailScreenContent(
                                     },
                                 )
 
-                                DetailDivider(top = 28.dp, bottom = 20.dp, modifier = Modifier.fillMaxWidth())
+                                DetailDivider(
+                                    top = 28.dp,
+                                    bottom = 20.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                )
                             }
                             item {
                                 AssignmentNotification(
                                     isEditing = state.isEditing,
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                     onNotificationSelected = {
                                         events(DetailEvents.UpdateNotification(it))
                                     },
                                     selectedNotification = state.notification,
                                 )
 
-                                DetailDivider(top = 20.dp, bottom = 30.dp, modifier = Modifier.fillMaxWidth())
+                                DetailDivider(
+                                    top = 20.dp,
+                                    bottom = 30.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                )
                             }
                             item {
                                 VisitorsHeader(
                                     visitorOptionType = state.visitorOption,
                                     isEditing = state.isEditing,
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                     onViewVisitorsClick = { events(DetailEvents.ViewVisitors(visitorOptionType = it)) },
                                     onOpenAttendeeDialogClick = {
                                         events(DetailEvents.OpenAttendeeDialog)
@@ -299,29 +333,34 @@ private fun EventDetailScreenContent(
                             )
                             item {
                                 Box(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                 ) {
                                     eventButton(state = state, events = events)
                                 }
                             }
                         }
 
-                        AttendeeDialog(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            email = state.attendeeDialogState.email,
-                            showDialog = state.attendeeDialogState.showDialog,
-                            errorText = state.attendeeDialogState.errorMessage?.asString(),
-                            onEmailChange = {
-                                events(DetailEvents.UpdateAttendeeEmail(email = it))
-                            },
-                            onCloseClick = {
-                                events(DetailEvents.CloseAttendeeDialog)
-                            },
-                            onAddClick = {
-                                events(DetailEvents.AddAttendee)
-                            },
-                        )
+                        with(state.attendeeDialogState) {
+                            AttendeeDialog(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                email = email,
+                                showDialog = showDialog,
+                                errorText = errorMessage?.asString(),
+                                validation = emailValidationStateType,
+                                onEmailChange = {
+                                    events(DetailEvents.UpdateAttendeeEmail(email = it))
+                                },
+                                onCloseClick = {
+                                    events(DetailEvents.CloseAttendeeDialog)
+                                },
+                                onAddClick = {
+                                    events(DetailEvents.AddAttendee)
+                                },
+                            )
+                        }
                     }
                 },
             )
@@ -337,7 +376,14 @@ private fun LazyListScope.visitors(
 ) {
     if ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()) {
         item {
-            TaskyText(text = stringResource(id = type.textId))
+            TaskyText(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, bottom = 16.dp)
+                    .padding(horizontal = 16.dp),
+                textAlign = TextAlign.Start,
+                text = stringResource(id = type.textId),
+            )
         }
         items(
             items = visitors,
@@ -346,6 +392,8 @@ private fun LazyListScope.visitors(
             },
             itemContent = { visitor ->
                 VisitorItem(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp),
                     visitor = visitor,
                     onDeleteVisitor = { attendeeId ->
                         onDeleteVisitor(attendeeId)

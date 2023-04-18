@@ -59,6 +59,7 @@ fun VisitorItem(
                     textColor = White,
                     circleColor = Gray,
                     size = 32.dp,
+                    textStyle = MaterialTheme.typography.overline,
                     text = visitor.attendee.fullName,
                 )
                 Spacer(modifier = Modifier.width(16.dp))

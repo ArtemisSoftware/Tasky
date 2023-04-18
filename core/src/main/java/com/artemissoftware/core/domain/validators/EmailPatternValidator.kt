@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.authentication.domain.validators
+package com.artemissoftware.core.domain.validators
 
 interface EmailPatternValidator {
     fun isValidEmailPattern(email: String): Boolean

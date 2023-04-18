@@ -14,11 +14,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.artemissoftware.core.presentation.composables.button.TaskyButton
 import com.artemissoftware.core.presentation.composables.icon.TaskyIcon
 import com.artemissoftware.core.presentation.composables.text.TaskyText
@@ -29,7 +31,7 @@ import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.tasky.R
 import com.artemissoftware.core.R as CoreR
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AttendeeDialog(
     email: String,
@@ -44,9 +46,10 @@ fun AttendeeDialog(
     if (showDialog) {
         Dialog(
             onDismissRequest = { },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             content = {
                 Surface(
-                    modifier = modifier
+                    modifier = modifier.padding(horizontal = 16.dp)
                         .wrapContentHeight(),
                     shape = RoundedCornerShape(size = 4.dp),
                 ) {
@@ -105,10 +108,24 @@ fun AttendeeDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun TAttendeeDialogPreview() {
+private fun AttendeeDialogPreview() {
     AttendeeDialog(
         email = "email",
         showDialog = true,
+        onEmailChange = {},
+        onCloseClick = {},
+        onAddClick = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AttendeeDialogWithErrorPreview() {
+    AttendeeDialog(
+        email = "email",
+        showDialog = true,
+        errorText = "You have an error",
+        validation = TaskyTextFieldValidationStateType.INVALID,
         onEmailChange = {},
         onCloseClick = {},
         onAddClick = {},

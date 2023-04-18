@@ -12,7 +12,7 @@ import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.authentication.domain.usecases.RegisterUserUseCase
-import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateEmailUseCase
+import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidatePasswordUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidateUserNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

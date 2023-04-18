@@ -8,9 +8,11 @@ import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.models.agenda.NotificationType
+import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
@@ -50,6 +52,7 @@ class EventDetailViewModel @Inject constructor(
     private val getEventUseCase: GetEventUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
     private val saveEventUseCase: SaveEventUseCase,
+    private val validateEmailUseCase: ValidateEmailUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -157,7 +160,7 @@ class EventDetailViewModel @Inject constructor(
                             AgendaException.AttendeeDoesNotExist -> {
                                 _state.update {
                                     it.copy(
-                                        attendeeDialogState = AttendeeDialogState(errorMessage = ex.toUiText()),
+                                        attendeeDialogState = it.attendeeDialogState.copy(errorMessage = ex.toUiText()),
                                     )
                                 }
                             }
@@ -174,6 +177,7 @@ class EventDetailViewModel @Inject constructor(
                     result.data?.let { attendee ->
                         addAttendee(attendee = attendee)
                     }
+                    closeAttendeeDialog()
                 }
                 is Resource.Loading -> Unit
             }
@@ -225,7 +229,10 @@ class EventDetailViewModel @Inject constructor(
     private fun updateAttendeeEmail(email: String) = with(_state) {
         update {
             it.copy(
-                attendeeDialogState = it.attendeeDialogState.copy(email = email),
+                attendeeDialogState = it.attendeeDialogState.copy(
+                    email = email,
+                    emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateEmailUseCase(email)),
+                ),
             )
         }
     }
@@ -318,7 +325,7 @@ class EventDetailViewModel @Inject constructor(
                             agendaItem = item,
                             notification = NotificationType.getNotification(
                                 remindAt = item.remindAt,
-                                startDate = item.from
+                                startDate = item.from,
                             ),
                             startDate = item.from,
                             title = item.title,
@@ -334,9 +341,9 @@ class EventDetailViewModel @Inject constructor(
         } ?: run {
             savedStateHandle.get<String>(USER_ID)?.let { userId ->
                 update {
-                        it.copy(
-                            hostId = userId,
-                        )
+                    it.copy(
+                        hostId = userId,
+                    )
                 }
             }
         }
