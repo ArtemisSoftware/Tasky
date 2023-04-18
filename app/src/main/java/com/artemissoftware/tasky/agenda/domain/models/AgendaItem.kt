@@ -61,6 +61,7 @@ sealed class AgendaItem(
         val remindAt: LocalDateTime = NotificationType.remindAt(from, NotificationType.defaultNotification()),
         val notification: NotificationType = NotificationType.getNotification(remindAt = remindAt, startDate = from),
         val pictures: List<Picture> = emptyList(),
+        val deletedPictures: List<String> = emptyList(),
         val syncState: SyncType = SyncType.CREATE,
         val hostId: String = "",
         val isUserEventCreator: Boolean = true,

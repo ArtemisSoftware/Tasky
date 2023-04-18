@@ -22,11 +22,13 @@ import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.GetAttendeeUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.DeleteEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.GetEventUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.SaveEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +49,7 @@ class EventDetailViewModel @Inject constructor(
     private val getAttendeeUseCase: GetAttendeeUseCase,
     private val getEventUseCase: GetEventUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
+    private val saveEventUseCase: SaveEventUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -303,23 +306,35 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadDetail() {
+    private fun loadDetail() = with(_state) {
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
                 val result = getEventUseCase(eventId)
                 result?.let { item ->
-                    _state.update {
+                    update {
                         it.copy(
                             agendaItem = item,
-                            notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.from),
+                            notification = NotificationType.getNotification(
+                                remindAt = item.remindAt,
+                                startDate = item.from
+                            ),
                             startDate = item.from,
                             title = item.title,
                             description = item.description ?: "",
                             endDate = item.to,
+                            pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
                         )
                     }
+                }
+            }
+        } ?: run {
+            savedStateHandle.get<String>(USER_ID)?.let { userId ->
+                update {
+                        it.copy(
+                            hostId = userId,
+                        )
                 }
             }
         }
@@ -352,13 +367,14 @@ class EventDetailViewModel @Inject constructor(
             from = startDate,
             to = endDate,
             syncState = getSyncType(agendaItem),
-            pictures = validatedPictures,
             hostId = hostId,
             attendees = attendees,
+            pictures = validatedPictures,
+            deletedPictures = deletedPictures,
         )
 
         viewModelScope.launch {
-            // TODO: saveEventUseCase(item)
+            saveEventUseCase(item)
             popBackStack()
         }
     }
