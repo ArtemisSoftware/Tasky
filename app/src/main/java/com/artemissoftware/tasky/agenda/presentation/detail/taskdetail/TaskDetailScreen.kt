@@ -215,7 +215,7 @@ private fun TaskDetailScreenContent(
                                     stringResource(id = R.string.task),
                                 ),
                                 onClick = {
-                                    events(DetailEvents.Save)
+                                    events(DetailEvents.Delete)
                                 },
                             )
                         }

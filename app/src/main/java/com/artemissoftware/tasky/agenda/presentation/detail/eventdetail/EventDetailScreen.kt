@@ -43,8 +43,10 @@ import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.A
 import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.destinations.EditScreenDestination
+import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -59,6 +61,7 @@ fun EventDetailScreen(
     eventId: String? = null,
     userId: String,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
+    pictureRecipient: ResultRecipient<PhotoScreenDestination, PictureRecipient>,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -73,6 +76,12 @@ fun EventDetailScreen(
                     viewModel.onTriggerEvent(DetailEvents.UpdateTitle(editResult.text))
                 }
             }
+        }
+    }
+
+    pictureRecipient.onNavResult { result ->
+        result.getOr { null }?.let { pictureResult ->
+            viewModel.onTriggerEvent(DetailEvents.RemovePicture(pictureResult.pictureId))
         }
     }
 
@@ -201,7 +210,7 @@ private fun EventDetailScreenContent(
                                     pictures = state.pictures,
                                     onPictureClick = {
                                         events(DetailEvents.GoToPicture(picture = it))
-                                    }
+                                    },
                                 )
 
                                 DetailDivider(top = 20.dp, bottom = 28.dp, modifier = Modifier.fillMaxWidth())
@@ -292,19 +301,21 @@ private fun EventDetailScreenContent(
                                 },
                             )
                             item {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                ) {
-                                    TaskyTextButton(
-                                        modifier = Modifier.align(Alignment.Center),
-                                        text = String.format(
-                                            stringResource(id = R.string.delete_title_with_argument),
-                                            stringResource(id = R.string.event),
-                                        ),
-                                        onClick = {
-                                            events(DetailEvents.Save)
-                                        },
-                                    )
+                                if (state.isEventCreator) {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        TaskyTextButton(
+                                            modifier = Modifier.align(Alignment.Center),
+                                            text = String.format(
+                                                stringResource(id = R.string.delete_title_with_argument),
+                                                stringResource(id = R.string.event),
+                                            ),
+                                            onClick = {
+                                                events(DetailEvents.Delete)
+                                            },
+                                        )
+                                    }
                                 }
                             }
                         }

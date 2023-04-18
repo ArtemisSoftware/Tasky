@@ -38,6 +38,9 @@ sealed class DetailEvents : TaskyEvents() {
 
     data class AddPicture(val uri: Uri) : DetailEvents()
 
-    data class GoToPicture(val picture: Picture): DetailEvents()
+    data class GoToPicture(val picture: Picture) : DetailEvents()
 
+    data class RemovePicture(val pictureId: String) : DetailEvents()
+
+    object Delete : DetailEvents()
 }
