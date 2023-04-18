@@ -1,6 +1,7 @@
 package com.artemissoftware.core.di
 
 import com.artemissoftware.core.BuildConfig
+import com.artemissoftware.core.data.remote.api.TaskyAuthenticationApi
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.util.interceptors.ApiKeyInterceptor
 import com.artemissoftware.core.util.interceptors.JwtInterceptor
@@ -42,5 +43,12 @@ object TaskyNetworkModule {
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskyAuthenticationApi(retrofit: Retrofit): TaskyAuthenticationApi {
+        return retrofit
+            .create(TaskyAuthenticationApi::class.java)
     }
 }

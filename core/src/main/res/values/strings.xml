@@ -17,4 +17,5 @@
     <string name="tasky_channel_name">Tasky channel</string>
     <string name="error_occurred_during_attendee_search">An error occurred while performing attendee search</string>
     <string name="attendee_not_exist">Attendee does not exist</string>
+    <string name="error_occurred_during_user_logout">An error occurred while performing logout</string>
 </resources>

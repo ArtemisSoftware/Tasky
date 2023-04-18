@@ -1,16 +1,19 @@
 package com.artemissoftware.tasky.agenda.data.remote.source
 
 import com.artemissoftware.core.data.remote.HandleApi
+import com.artemissoftware.core.data.remote.api.TaskyAuthenticationApi
 import com.artemissoftware.tasky.agenda.data.remote.TaskyAgendaApi
-import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.AgendaResponseDto
+import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
 import okhttp3.ResponseBody
-import java.time.LocalDate
 import javax.inject.Inject
 
-class AgendaApiSource @Inject constructor(private val taskyAgendaApi: TaskyAgendaApi) {
+class AgendaApiSource @Inject constructor(
+    private val taskyAgendaApi: TaskyAgendaApi,
+    private val taskyAuthenticationApi: TaskyAuthenticationApi
+) {
 
     suspend fun createReminder(reminder: ReminderDto): ResponseBody {
         return HandleApi.safeApiCall {
@@ -59,4 +62,11 @@ class AgendaApiSource @Inject constructor(private val taskyAgendaApi: TaskyAgend
             taskyAgendaApi.getAgenda(time = time)
         }
     }
+
+    suspend fun logOut(): ResponseBody {
+        return HandleApi.safeApiCall {
+            taskyAuthenticationApi.logoutUser()
+        }
+    }
+
 }

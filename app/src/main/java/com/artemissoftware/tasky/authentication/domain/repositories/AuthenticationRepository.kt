@@ -10,7 +10,4 @@ interface AuthenticationRepository {
     suspend fun loginUser(email: String, password: String): DataResponse<User>
 
     suspend fun authenticate(): DataResponse<Boolean>
-
-    suspend fun logoutUser(): DataResponse<Boolean>
-
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavOptions
 import com.artemissoftware.core.presentation.composables.TaskyAvatar
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyExpandableSquareButton
@@ -50,6 +52,7 @@ import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItem
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaUserOption
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
+import com.artemissoftware.tasky.destinations.AgendaScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -74,6 +77,12 @@ fun AgendaScreen(
         onNavigate = {
             navigator.navigate(it.route)
         },
+        onNavigateAndPopCurrent = {
+            navigator.navigate(
+                route = it.route,
+                navOptions = NavOptions.Builder().setPopUpTo(AgendaScreenDestination.route, inclusive = true).build(),
+            )
+        },
     )
 }
 
@@ -83,6 +92,7 @@ private fun AgendaScreenContent(
     events: (AgendaEvents) -> Unit,
 ) {
     val context = LocalContext.current
+    val listWeekDaysState = rememberLazyListState()
 
     TaskyScaffold(
         isLoading = state.isLoading,
@@ -161,6 +171,7 @@ private fun AgendaScreenContent(
                             modifier = Modifier.padding(horizontal = 16.dp),
                         ) {
                             LazyRow(
+                                state = listWeekDaysState,
                                 modifier = Modifier
                                     .padding(top = 20.dp)
                                     .fillMaxWidth(),

@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.authentication.data.remote.dto
+package com.artemissoftware.core.data.remote.dto.authentication
 
 import com.squareup.moshi.Json
 

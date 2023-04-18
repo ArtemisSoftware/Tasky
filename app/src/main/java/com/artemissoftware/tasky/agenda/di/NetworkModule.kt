@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.di
 
+import com.artemissoftware.core.data.remote.api.TaskyAuthenticationApi
 import com.artemissoftware.tasky.agenda.data.remote.TaskyAgendaApi
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import dagger.Module
@@ -22,7 +23,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAgendaApiSource(taskyAgendaApi: TaskyAgendaApi): AgendaApiSource {
-        return AgendaApiSource(taskyAgendaApi)
+    fun provideAgendaApiSource(taskyAgendaApi: TaskyAgendaApi, taskyAuthenticationApi: TaskyAuthenticationApi): AgendaApiSource {
+        return AgendaApiSource(taskyAgendaApi = taskyAgendaApi, taskyAuthenticationApi = taskyAuthenticationApi)
     }
 }

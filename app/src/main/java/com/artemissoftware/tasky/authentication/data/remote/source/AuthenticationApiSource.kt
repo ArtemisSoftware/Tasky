@@ -1,10 +1,10 @@
 package com.artemissoftware.tasky.authentication.data.remote.source
 
 import com.artemissoftware.core.data.remote.HandleApi
-import com.artemissoftware.tasky.authentication.data.remote.TaskyAuthenticationApi
-import com.artemissoftware.tasky.authentication.data.remote.dto.LoginBodyDto
-import com.artemissoftware.tasky.authentication.data.remote.dto.LoginResponseDto
-import com.artemissoftware.tasky.authentication.data.remote.dto.RegistrationBodyDto
+import com.artemissoftware.core.data.remote.api.TaskyAuthenticationApi
+import com.artemissoftware.core.data.remote.dto.authentication.LoginBodyDto
+import com.artemissoftware.core.data.remote.dto.authentication.LoginResponseDto
+import com.artemissoftware.core.data.remote.dto.authentication.RegistrationBodyDto
 import okhttp3.ResponseBody
 
 class AuthenticationApiSource constructor(private val taskyAuthenticationApi: TaskyAuthenticationApi) {
@@ -24,12 +24,6 @@ class AuthenticationApiSource constructor(private val taskyAuthenticationApi: Ta
     suspend fun authenticate(): ResponseBody {
         return HandleApi.safeApiCall {
             taskyAuthenticationApi.authenticate()
-        }
-    }
-
-    suspend fun logoutUser(): ResponseBody {
-        return HandleApi.safeApiCall {
-            taskyAuthenticationApi.logoutUser()
         }
     }
 }

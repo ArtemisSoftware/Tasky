@@ -8,4 +8,6 @@ sealed class AgendaException : ValidationException() {
     object AttendeeDoesNotExist : AgendaException()
 
     data class NotValidPictures(val uiText: UiText) : AgendaException()
+
+    object LogOutError : AgendaException()
 }

@@ -37,4 +37,13 @@ class AgendaRepositoryImpl(
 
         return reminders + tasks + events
     }
+
+    override suspend fun logOut(): DataResponse<Unit> {
+        return try {
+            agendaApiSource.logOut()
+            DataResponse.Success(data = Unit)
+        } catch (ex: TaskyNetworkException) {
+            DataResponse.Error(exception = ex)
+        }
+    }
 }

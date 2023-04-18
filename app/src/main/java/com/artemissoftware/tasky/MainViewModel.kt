@@ -13,7 +13,6 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.authentication.domain.usecases.AuthenticateUseCase
 import com.artemissoftware.tasky.destinations.AgendaScreenDestination
 import com.artemissoftware.tasky.destinations.LoginScreenDestination
-import com.artemissoftware.tasky.navigation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
