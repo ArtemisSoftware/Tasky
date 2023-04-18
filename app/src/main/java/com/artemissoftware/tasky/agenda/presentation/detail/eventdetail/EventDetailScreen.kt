@@ -3,10 +3,7 @@ package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -301,21 +298,10 @@ private fun EventDetailScreenContent(
                                 },
                             )
                             item {
-                                if (state.isEventCreator) {
-                                    Box(
-                                        modifier = Modifier.fillMaxWidth(),
-                                    ) {
-                                        TaskyTextButton(
-                                            modifier = Modifier.align(Alignment.Center),
-                                            text = String.format(
-                                                stringResource(id = R.string.delete_title_with_argument),
-                                                stringResource(id = R.string.event),
-                                            ),
-                                            onClick = {
-                                                events(DetailEvents.Delete)
-                                            },
-                                        )
-                                    }
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    eventButton(state = state, events = events)
                                 }
                             }
                         }
@@ -368,6 +354,48 @@ private fun LazyListScope.visitors(
             },
         )
     }
+}
+
+@Composable
+private fun BoxScope.eventButton(
+    state: EventDetailState,
+    events: (DetailEvents) -> Unit,
+) {
+    val (title, event) = if (state.isEventCreator) {
+        Pair(
+            String.format(
+                stringResource(id = R.string.delete_title_with_argument),
+                stringResource(id = R.string.event),
+            ),
+            DetailEvents.Delete,
+        )
+    } else {
+        if (state.isGoing()) {
+            Pair(
+                String.format(
+                    stringResource(id = R.string.leave_title_with_argument),
+                    stringResource(id = R.string.event),
+                ),
+                DetailEvents.LeaveEvent,
+            )
+        } else {
+            Pair(
+                String.format(
+                    stringResource(id = R.string.join_title_with_argument),
+                    stringResource(id = R.string.event),
+                ),
+                DetailEvents.JoinEvent,
+            )
+        }
+    }
+
+    TaskyTextButton(
+        modifier = Modifier.align(Alignment.Center),
+        text = title,
+        onClick = {
+            events(event)
+        },
+    )
 }
 
 @Preview(showBackground = true)

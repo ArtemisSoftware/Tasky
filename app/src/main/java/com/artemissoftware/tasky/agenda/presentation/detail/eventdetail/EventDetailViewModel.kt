@@ -20,12 +20,15 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.GetAttendeeUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.DeleteEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.GetEventUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.SaveEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,6 +48,8 @@ class EventDetailViewModel @Inject constructor(
     private val validatePicturesUseCase: ValidatePicturesUseCase,
     private val getAttendeeUseCase: GetAttendeeUseCase,
     private val getEventUseCase: GetEventUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
+    private val saveEventUseCase: SaveEventUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -106,8 +111,10 @@ class EventDetailViewModel @Inject constructor(
             }
             is DetailEvents.RemovePicture -> { removePicture(event.pictureId) }
             DetailEvents.Delete -> {
-                deleteEvent()
+                deleteEventWarning()
             }
+            DetailEvents.JoinEvent -> TODO()
+            DetailEvents.LeaveEvent -> TODO()
             else -> Unit
         }
     }
@@ -301,23 +308,35 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadDetail() {
+    private fun loadDetail() = with(_state) {
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
                 val result = getEventUseCase(eventId)
                 result?.let { item ->
-                    _state.update {
+                    update {
                         it.copy(
                             agendaItem = item,
-                            notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.from),
+                            notification = NotificationType.getNotification(
+                                remindAt = item.remindAt,
+                                startDate = item.from
+                            ),
                             startDate = item.from,
                             title = item.title,
                             description = item.description ?: "",
                             endDate = item.to,
+                            pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
                         )
                     }
+                }
+            }
+        } ?: run {
+            savedStateHandle.get<String>(USER_ID)?.let { userId ->
+                update {
+                        it.copy(
+                            hostId = userId,
+                        )
                 }
             }
         }
@@ -350,21 +369,28 @@ class EventDetailViewModel @Inject constructor(
             from = startDate,
             to = endDate,
             syncState = getSyncType(agendaItem),
-            pictures = validatedPictures,
             hostId = hostId,
             attendees = attendees,
+            pictures = validatedPictures,
+            deletedPictures = deletedPictures,
         )
 
         viewModelScope.launch {
-            // TODO: saveEventUseCase(item)
+            saveEventUseCase(item)
             popBackStack()
+        }
+    }
+
+    private fun deleteEventWarning() {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.ShowDialog(getDeleteWarningDialogData()))
         }
     }
 
     private fun deleteEvent() {
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
-                // TODO: delete event
+                deleteEventUseCase(id = eventId)
                 popBackStack()
             }
         }
@@ -382,6 +408,20 @@ class EventDetailViewModel @Inject constructor(
             description = ex.toUiText(),
             dialogOptions = TaskyDialogOptions.SingleOption(
                 confirmationText = UiText.StringResource(CoreR.string.cancel),
+            ),
+        )
+    }
+
+    private fun getDeleteWarningDialogData(): TaskyDialogType {
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.event),
+            description = UiText.StringResource(R.string.are_you_sure_delete_event),
+            dialogOptions = TaskyDialogOptions.DoubleOption(
+                confirmationText = UiText.StringResource(CoreR.string.ok),
+                confirmation = {
+                    deleteEvent()
+                },
+                cancelText = UiText.StringResource(CoreR.string.cancel),
             ),
         )
     }

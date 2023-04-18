@@ -28,6 +28,8 @@
     <string name="edit_description">Edit description</string>
     <string name="at">At</string>
     <string name="delete_title_with_argument">Delete %s</string>
+    <string name="leave_title_with_argument">Leave %s</string>
+    <string name="join_title_with_argument">Join %s</string>
     <string name="login_error">An error occurred during log in</string>
     <string name="register_error">An error occurred while doing registering</string>
     <string name="today">Today</string>
@@ -41,4 +43,5 @@
     <string name="add">Add</string>
     <string name="attendee">Attendee</string>
     <string name="unable_to_validate_pictures">Unable to validate pictures</string>
+    <string name="are_you_sure_delete_event">Are you sure you want to delete this event?</string>
 </resources>

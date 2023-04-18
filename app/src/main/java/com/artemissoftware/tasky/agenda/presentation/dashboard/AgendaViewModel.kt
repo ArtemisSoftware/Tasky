@@ -6,6 +6,7 @@ import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.event.DeleteEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.CompleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
@@ -27,6 +28,7 @@ class AgendaViewModel @Inject constructor(
     private val syncAgendaUseCase: SyncAgendaUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
     private val completeTaskUseCase: CompleteTaskUseCase
 ) : TaskyUiEventViewModel() {
 
@@ -68,12 +70,14 @@ class AgendaViewModel @Inject constructor(
         viewModelScope.launch {
             when (item) {
                 is AgendaItem.Reminder -> {
-                    deleteReminderUseCase.invoke(id = item.itemId)
+                    deleteReminderUseCase(id = item.itemId)
                 }
                 is AgendaItem.Task -> {
-                    deleteTaskUseCase.invoke(id = item.itemId)
+                    deleteTaskUseCase(id = item.itemId)
                 }
-                is AgendaItem.Event -> TODO()
+                is AgendaItem.Event -> {
+                    deleteEventUseCase(id = item.itemId)
+                }
             }
         }
     }
@@ -87,7 +91,9 @@ class AgendaViewModel @Inject constructor(
                 is AgendaItem.Task -> {
                     sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
                 }
-                is AgendaItem.Event -> (UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId).route))
+                is AgendaItem.Event -> {
+                    (UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId).route))
+                }
             }
         }
     }
@@ -95,7 +101,9 @@ class AgendaViewModel @Inject constructor(
     private fun createAgendaItem(detailType: AgendaItems) {
         viewModelScope.launch {
             when (detailType) {
-                AgendaItems.EVENT -> TODO()
+                AgendaItems.EVENT -> {
+                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(userId = _state.value.userId).route))
+                }
                 AgendaItems.TASK -> {
                     sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination().route))
                 }

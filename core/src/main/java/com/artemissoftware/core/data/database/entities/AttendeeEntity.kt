@@ -2,6 +2,7 @@ package com.artemissoftware.core.data.database.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -13,6 +14,7 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE,
         ),
     ],
+    indices = [Index(value = ["eventId"])],
 )
 data class AttendeeEntity(
     val eventId: String,
