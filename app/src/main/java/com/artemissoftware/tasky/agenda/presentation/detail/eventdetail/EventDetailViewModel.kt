@@ -415,7 +415,7 @@ class EventDetailViewModel @Inject constructor(
     private fun getDeleteWarningDialogData(): TaskyDialogType {
         return TaskyDialogType.Error(
             title = UiText.StringResource(R.string.event),
-            description = UiText.StringResource(CoreR.string.are_you_sure_delete_event),
+            description = UiText.StringResource(R.string.are_you_sure_delete_event),
             dialogOptions = TaskyDialogOptions.DoubleOption(
                 confirmationText = UiText.StringResource(CoreR.string.ok),
                 confirmation = {

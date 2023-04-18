@@ -1,5 +1,7 @@
 package com.artemissoftware.tasky.agenda.data.repositories
 
+import androidx.room.withTransaction
+import com.artemissoftware.core.data.database.TaskyDatabase
 import com.artemissoftware.core.data.database.dao.AttendeeDao
 import com.artemissoftware.core.data.database.dao.EventDao
 import com.artemissoftware.core.data.database.dao.PictureDao
@@ -18,9 +20,10 @@ import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class EventRepositoryImpl constructor(
+    private val database: TaskyDatabase,
     private val eventDao: EventDao,
     private val pictureDao: PictureDao,
-    private val attendeeDao: AttendeeDao
+    private val attendeeDao: AttendeeDao,
 ) : EventRepository {
 
     override suspend fun getEvent(id: String): AgendaItem.Event? {
@@ -35,9 +38,12 @@ class EventRepositoryImpl constructor(
 
     override suspend fun saveEventAndSync(event: AgendaItem.Event): DataResponse<Unit> {
         val syncType = if (event.syncState == SyncType.SYNCED) SyncType.UPDATE else event.syncState
-        eventDao.upsertSyncStateAndEvent(eventEntity = event.toEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = syncType))
-        pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
-        attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
+
+        database.withTransaction {
+            eventDao.upsertSyncStateAndEvent(eventEntity = event.toEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = syncType))
+            pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
+            attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
+        }
 
         return try {
             // TODO: complete when remote part is ready. Next PR
@@ -47,11 +53,6 @@ class EventRepositoryImpl constructor(
             DataResponse.Error(exception = ex)
         }
     }
-
-    private fun saveEventAndSync(){
-
-    }
-
 
     override suspend fun deleteEventAndSync(id: String): DataResponse<Unit> {
         eventDao.upsertSyncStateAndDelete(id = id, EventSyncEntity(id = id, syncType = SyncType.DELETE))

@@ -17,8 +17,12 @@ interface EventDao {
     suspend fun getEventAndSyncState(id: String): EventAndSyncState?
 
     @Transaction
-    @Query("SELECT * FROM eventEntity WHERE from >= :initialDate AND from < :endDate")
+    @Query("SELECT * FROM eventEntity WHERE startDate >= :initialDate AND startDate < :endDate")
     fun getEvents(initialDate: Long, endDate: Long): Flow<List<EventAndSyncState>>
+
+    @Transaction
+    @Query("SELECT * FROM eventEntity")
+    fun getEvents(): Flow<List<EventAndSyncState>>
 
     @Upsert
     fun upsert(eventEntity: EventEntity)
@@ -42,6 +46,6 @@ interface EventDao {
     }
 
     @Transaction
-    @Query("SELECT * FROM eventEntity WHERE from >= :currentTime")
+    @Query("SELECT * FROM eventEntity WHERE startDate >= :currentTime")
     suspend fun getEventsToSetAlarm(currentTime: Long): List<EventAndSyncState>
 }
