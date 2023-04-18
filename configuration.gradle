@@ -57,7 +57,8 @@ ext.versions = [
         composeDestinationsCore     : '1.8.36-beta',
         composeDestinationsKsp      : '1.8.36-beta',
 
-        devtoolsKsp                 : '1.8.10-1.0.9'
+        devtoolsKsp                 : '1.8.10-1.0.9',
+        workRuntimeKtx              : '2.7.1',
 ]
 
 ext.libraries = [
@@ -106,7 +107,8 @@ ext.libraries = [
         hiltNavigationCompose           : "androidx.hilt:hilt-navigation-compose:$versions.hiltNavigationCompose",
 
 
-        coreSplashscreen                :  "androidx.core:core-splashscreen:$versions.coreSplashscreen"
+        coreSplashscreen                :  "androidx.core:core-splashscreen:$versions.coreSplashscreen",
+        workRuntimeKtx                  :  "androidx.work:work-runtime-ktx:$versions.workRuntimeKtx",
 
 ]
 
