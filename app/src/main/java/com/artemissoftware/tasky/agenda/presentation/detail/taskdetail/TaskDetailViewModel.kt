@@ -7,6 +7,7 @@ import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class TaskDetailViewModel @Inject constructor(
     private val saveTaskUseCase: SaveTaskUseCase,
     private val getTaskUseCase: GetTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -50,7 +52,19 @@ class TaskDetailViewModel @Inject constructor(
             is DetailEvents.UpdateStartDate -> { updateStartDate(event.startDate) }
             is DetailEvents.UpdateStartTime -> { updateStartTime(event.startTime) }
             is DetailEvents.UpdateTitle -> { updateTitle(event.title) }
+            DetailEvents.Delete -> {
+                deleteTask()
+            }
             else -> Unit
+        }
+    }
+
+    private fun deleteTask() {
+        savedStateHandle.get<String>(TASK_ID)?.let { taskId ->
+            viewModelScope.launch {
+                deleteTaskUseCase(id = taskId)
+                popBackStack()
+            }
         }
     }
 

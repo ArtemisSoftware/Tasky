@@ -208,7 +208,7 @@ fun ReminderDetailScreenContent(
                                     stringResource(id = R.string.reminder),
                                 ),
                                 onClick = {
-                                    events(DetailEvents.Save)
+                                    events(DetailEvents.Delete)
                                 },
                             )
                         }
