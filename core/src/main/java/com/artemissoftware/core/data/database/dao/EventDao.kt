@@ -28,12 +28,24 @@ interface EventDao {
     fun upsert(eventEntity: EventEntity)
 
     @Upsert
+    fun upsert(eventEntity: List<EventEntity>)
+
+    @Upsert
     suspend fun upsertEventSync(eventSyncEntity: EventSyncEntity)
+
+    @Upsert
+    suspend fun upsertEventSync(eventSyncEntity: List<EventSyncEntity>)
 
     @Transaction
     suspend fun upsertSyncStateAndEvent(eventEntity: EventEntity, eventSyncEntity: EventSyncEntity) {
         upsert(eventEntity)
         upsertEventSync(eventSyncEntity)
+    }
+
+    @Transaction
+    suspend fun upsertSyncStateAndEvents(events: List<EventEntity>, eventsSyncType: List<EventSyncEntity>) {
+        upsert(events)
+        upsertEventSync(eventsSyncType)
     }
 
     @Query("DELETE FROM eventEntity WHERE id = :id")

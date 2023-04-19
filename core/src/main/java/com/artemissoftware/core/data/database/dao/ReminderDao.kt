@@ -32,10 +32,19 @@ interface ReminderDao {
     @Upsert
     suspend fun upsertReminderSync(reminderSyncEntity: ReminderSyncEntity)
 
+    @Upsert
+    suspend fun upsertReminderSync(reminderEntities: List<ReminderSyncEntity>)
+
     @Transaction
     suspend fun upsertSyncStateAndReminder(reminderEntity: ReminderEntity, reminderSyncEntity: ReminderSyncEntity) {
         upsert(reminderEntity)
         upsertReminderSync(reminderSyncEntity)
+    }
+
+    @Transaction
+    suspend fun upsertSyncStateAndReminders(reminders: List<ReminderEntity>, remindersSyncType: List<ReminderSyncEntity>) {
+        upsert(reminders)
+        upsertReminderSync(remindersSyncType)
     }
 
     @Query("DELETE FROM reminderEntity WHERE id = :id")

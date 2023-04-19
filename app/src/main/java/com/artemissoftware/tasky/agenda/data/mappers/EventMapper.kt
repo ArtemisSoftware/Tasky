@@ -78,3 +78,16 @@ fun EventDto.toEvent(loggedInUserId: String): AgendaItem.Event {
         syncState = SyncType.SYNCED,
     )
 }
+
+fun EventDto.toEntity(loggedInUserId: String): EventEntity {
+    return EventEntity(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        remindAt = this.remindAt,
+        startDate = this.from,
+        endDate = this.to,
+        hostId = host,
+        isUserEventCreator = (host == loggedInUserId),
+    )
+}

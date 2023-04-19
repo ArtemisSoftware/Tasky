@@ -33,10 +33,19 @@ interface TaskDao {
     @Upsert
     suspend fun upsertTaskSync(taskSyncEntity: TaskSyncEntity)
 
+    @Upsert
+    suspend fun upsertTaskSync(taskSyncEntity: List<TaskSyncEntity>)
+
     @Transaction
     suspend fun upsertSyncStateAndTask(taskEntity: TaskEntity, taskSyncEntity: TaskSyncEntity) {
         upsert(taskEntity)
         upsertTaskSync(taskSyncEntity)
+    }
+
+    @Transaction
+    suspend fun upsertSyncStateAndTasks(tasks: List<TaskEntity>, tasksSyncType: List<TaskSyncEntity>) {
+        upsert(tasks)
+        upsertTaskSync(tasksSyncType)
     }
 
     @Query("DELETE FROM taskEntity WHERE id = :id")
