@@ -11,7 +11,7 @@ interface EventRepository {
 
     fun getEvents(date: LocalDate): Flow<List<AgendaItem.Event>>
 
-    suspend fun saveEventAndSync(event: AgendaItem.Event): DataResponse<Unit>
+    suspend fun saveEventAndSync(event: AgendaItem.Event)
 
     suspend fun deleteEventAndSync(id: String): DataResponse<Unit>
 }

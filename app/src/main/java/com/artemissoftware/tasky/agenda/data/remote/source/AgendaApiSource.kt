@@ -7,12 +7,13 @@ import com.artemissoftware.tasky.agenda.data.remote.dto.AgendaResponseDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class AgendaApiSource @Inject constructor(
     private val taskyAgendaApi: TaskyAgendaApi,
-    private val taskyAuthenticationApi: TaskyAuthenticationApi
+    private val taskyAuthenticationApi: TaskyAuthenticationApi,
 ) {
 
     suspend fun createReminder(reminder: ReminderDto): ResponseBody {
@@ -69,4 +70,21 @@ class AgendaApiSource @Inject constructor(
         }
     }
 
+    suspend fun createEvent(eventBody: MultipartBody.Part, pictures: List<MultipartBody.Part>): ResponseBody {
+        return HandleApi.safeApiCall {
+            taskyAgendaApi.createEvent(body = eventBody, files = pictures)
+        }
+    }
+
+    suspend fun updateEvent(eventBody: MultipartBody.Part, pictures: List<MultipartBody.Part>): ResponseBody {
+        return HandleApi.safeApiCall {
+            taskyAgendaApi.updateEvent(body = eventBody, files = pictures)
+        }
+    }
+
+    suspend fun deleteEvent(eventId: String): ResponseBody {
+        return HandleApi.safeApiCall {
+            taskyAgendaApi.deleteEvent(eventId)
+        }
+    }
 }

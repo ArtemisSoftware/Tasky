@@ -1,6 +1,5 @@
 package com.artemissoftware.tasky.agenda.data.remote.dto
 
-
 import com.squareup.moshi.Json
 
 data class EventDto(
@@ -23,5 +22,5 @@ data class EventDto(
     @field:Json(name = "attendees")
     val attendees: List<EventAttendeeDto>,
     @field:Json(name = "photos")
-    val photos: List<PhotoDto>
+    val photos: List<PhotoDto>,
 )

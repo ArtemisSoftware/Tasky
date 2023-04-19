@@ -36,21 +36,13 @@ class EventRepositoryImpl constructor(
         }
     }
 
-    override suspend fun saveEventAndSync(event: AgendaItem.Event): DataResponse<Unit> {
+    override suspend fun saveEventAndSync(event: AgendaItem.Event) {
         val syncType = if (event.syncState == SyncType.SYNCED) SyncType.UPDATE else event.syncState
 
         database.withTransaction {
             eventDao.upsertSyncStateAndEvent(eventEntity = event.toEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = syncType))
             pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
             attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
-        }
-
-        return try {
-            // TODO: complete when remote part is ready. Next PR
-
-            DataResponse.Success(Unit)
-        } catch (ex: TaskyNetworkException) {
-            DataResponse.Error(exception = ex)
         }
     }
 
