@@ -1,17 +1,22 @@
 package com.artemissoftware.tasky.agenda.di
 
 import android.content.Context
-import androidx.work.WorkManager
 import com.artemissoftware.core.data.database.TaskyDatabase
 import com.artemissoftware.tasky.agenda.data.alarm.AlarmSchedulerImpl
 import com.artemissoftware.tasky.agenda.data.compressor.ImageCompressorImpl
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
-import com.artemissoftware.tasky.agenda.data.remote.upload.EventUploaderImpl
-import com.artemissoftware.tasky.agenda.data.repositories.*
+import com.artemissoftware.tasky.agenda.data.repositories.AgendaRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.AttendeeRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.EventRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.ReminderRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.TaskRepositoryImpl
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.compressor.ImageCompressor
-import com.artemissoftware.tasky.agenda.domain.repositories.*
-import com.artemissoftware.tasky.agenda.domain.uploader.EventUploader
+import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.AttendeeRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,19 +69,4 @@ object RepositoryModule {
     fun provideImageCompressor(@ApplicationContext context: Context): ImageCompressor {
         return ImageCompressorImpl(context = context)
     }
-
-    @Provides
-    @Singleton
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
-        return WorkManager.getInstance(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideEventUploader(workManager: WorkManager): EventUploader {
-        return EventUploaderImpl(workManager = workManager)
-    }
-
-
-
 }
