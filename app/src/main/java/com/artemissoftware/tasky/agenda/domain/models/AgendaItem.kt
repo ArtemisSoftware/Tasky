@@ -65,6 +65,7 @@ sealed class AgendaItem(
         val syncState: SyncType = SyncType.CREATE,
         val hostId: String = "",
         val isUserEventCreator: Boolean = true,
+        val isGoing: Boolean = true,
         val attendees: List<Attendee> = emptyList(),
     ) : AgendaItem(
         itemId = id,

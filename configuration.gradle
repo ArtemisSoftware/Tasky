@@ -49,6 +49,7 @@ ext.versions = [
 
         hilt                        : '2.45',
         hiltNavigationCompose       : '1.0.0-alpha03',
+        hiltWork                    : '1.0.0',
 
         retrofit                    : '2.9.0',
         room                        : '2.5.0',
@@ -57,7 +58,8 @@ ext.versions = [
         composeDestinationsCore     : '1.8.36-beta',
         composeDestinationsKsp      : '1.8.36-beta',
 
-        devtoolsKsp                 : '1.8.10-1.0.9'
+        devtoolsKsp                 : '1.8.10-1.0.9',
+        workRuntimeKtx              : '2.7.1',
 ]
 
 ext.libraries = [
@@ -104,9 +106,10 @@ ext.libraries = [
         hiltAndroid                     : "com.google.dagger:hilt-android:$versions.hilt",
         hiltAndroidCompiler             : "com.google.dagger:hilt-android-compiler:$versions.hilt",
         hiltNavigationCompose           : "androidx.hilt:hilt-navigation-compose:$versions.hiltNavigationCompose",
+        hiltWork                        : "androidx.hilt:hilt-work:$versions.hiltWork",
 
-
-        coreSplashscreen                :  "androidx.core:core-splashscreen:$versions.coreSplashscreen"
+        coreSplashscreen                :  "androidx.core:core-splashscreen:$versions.coreSplashscreen",
+        workRuntimeKtx                  :  "androidx.work:work-runtime-ktx:$versions.workRuntimeKtx",
 
 ]
 

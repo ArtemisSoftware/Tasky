@@ -45,3 +45,10 @@ fun Picture.toEntity(eventId: String): PictureEntity {
         }
     }
 }
+
+fun PhotoDto.toPicture(): Picture {
+    return Picture.Remote(
+        key = this.key,
+        url = this.url,
+    )
+}

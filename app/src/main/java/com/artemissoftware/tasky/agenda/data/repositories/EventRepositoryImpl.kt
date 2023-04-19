@@ -13,6 +13,7 @@ import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
+import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,7 @@ class EventRepositoryImpl constructor(
     private val eventDao: EventDao,
     private val pictureDao: PictureDao,
     private val attendeeDao: AttendeeDao,
+    private val agendaApiSource: AgendaApiSource,
 ) : EventRepository {
 
     override suspend fun getEvent(id: String): AgendaItem.Event? {
@@ -36,7 +38,7 @@ class EventRepositoryImpl constructor(
         }
     }
 
-    override suspend fun saveEventAndSync(event: AgendaItem.Event): DataResponse<Unit> {
+    override suspend fun saveEventAndSync(event: AgendaItem.Event) {
         val syncType = if (event.syncState == SyncType.SYNCED) SyncType.UPDATE else event.syncState
 
         database.withTransaction {
@@ -44,24 +46,26 @@ class EventRepositoryImpl constructor(
             pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
             attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
         }
-
-        return try {
-            // TODO: complete when remote part is ready. Next PR
-
-            DataResponse.Success(Unit)
-        } catch (ex: TaskyNetworkException) {
-            DataResponse.Error(exception = ex)
-        }
     }
 
     override suspend fun deleteEventAndSync(id: String): DataResponse<Unit> {
         eventDao.upsertSyncStateAndDelete(id = id, EventSyncEntity(id = id, syncType = SyncType.DELETE))
 
         return try {
-            // TODO: complete when remote part is ready. Next PR
+            agendaApiSource.deleteEvent(eventId = id)
             DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
+        }
+    }
+
+    override suspend fun upsertEvents(events: List<AgendaItem.Event>) {
+        events.forEach { event ->
+            database.withTransaction { // TODO: not sure about this. What is I syncronize with the api but the version of the event localy is more up to date. How to solve this conflict?
+                eventDao.upsertSyncStateAndEvent(eventEntity = event.toEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = SyncType.SYNCED))
+                pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
+                attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
+            }
         }
     }
 }

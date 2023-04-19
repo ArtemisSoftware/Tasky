@@ -21,10 +21,10 @@ class AgendaRepositoryImpl(
     private val eventDao: EventDao,
 ) : AgendaRepository {
 
-    override suspend fun getAgenda(date: LocalDate): DataResponse<Agenda> {
+    override suspend fun getAgenda(date: LocalDate, loggedInUserId: String): DataResponse<Agenda> {
         return try {
             val result = agendaApiSource.getAgenda(time = date.toEpochMilli())
-            DataResponse.Success(data = result.toAgenda())
+            DataResponse.Success(data = result.toAgenda(loggedInUserId = loggedInUserId))
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
         }

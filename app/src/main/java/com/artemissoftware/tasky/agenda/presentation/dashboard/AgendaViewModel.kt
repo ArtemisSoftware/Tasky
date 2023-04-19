@@ -22,8 +22,8 @@ import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUs
 import com.artemissoftware.tasky.agenda.domain.usecase.task.CompleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItems
-import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.EventDetailScreenDestination
+import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,7 +44,7 @@ class AgendaViewModel @Inject constructor(
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
-    private val completeTaskUseCase: CompleteTaskUseCase
+    private val completeTaskUseCase: CompleteTaskUseCase,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
@@ -193,17 +193,17 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    private fun syncAgenda(date: LocalDate) {
-        _state.update {
+    private fun syncAgenda(date: LocalDate) = with(_state) {
+        update {
             it.copy(
                 isLoading = true,
             )
         }
 
         viewModelScope.launch {
-            syncAgendaUseCase(date = date)
+            syncAgendaUseCase(date = date, loggedInUserId = value.userId)
 
-            _state.update {
+            update {
                 it.copy(
                     isLoading = false,
                 )
