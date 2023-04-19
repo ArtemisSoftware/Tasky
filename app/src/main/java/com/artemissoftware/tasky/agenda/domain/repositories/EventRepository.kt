@@ -14,4 +14,6 @@ interface EventRepository {
     suspend fun saveEventAndSync(event: AgendaItem.Event)
 
     suspend fun deleteEventAndSync(id: String): DataResponse<Unit>
+
+    suspend fun upsertEvents(events: List<AgendaItem.Event>)
 }
