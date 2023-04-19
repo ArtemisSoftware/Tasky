@@ -70,19 +70,19 @@ class AgendaApiSource @Inject constructor(
         }
     }
 
-    suspend fun createEvent(eventBody: MultipartBody.Part, pictures: List<MultipartBody.Part>): ResponseBody {
+    suspend fun createEvent(eventBody: MultipartBody.Part, pictures: List<MultipartBody.Part>) {
         return HandleApi.safeApiCall {
             taskyAgendaApi.createEvent(body = eventBody, files = pictures)
         }
     }
 
-    suspend fun updateEvent(eventBody: MultipartBody.Part, pictures: List<MultipartBody.Part>): ResponseBody {
+    suspend fun updateEvent(eventBody: MultipartBody.Part, pictures: List<MultipartBody.Part>) {
         return HandleApi.safeApiCall {
             taskyAgendaApi.updateEvent(body = eventBody, files = pictures)
         }
     }
 
-    suspend fun deleteEvent(eventId: String): ResponseBody {
+    suspend fun deleteEvent(eventId: String) {
         return HandleApi.safeApiCall {
             taskyAgendaApi.deleteEvent(eventId)
         }

@@ -59,11 +59,11 @@ fun AgendaItem.Event.toUpdateBodyDto(): EventUpdateBodyDto {
         to = to.toLong(),
         attendeeIds = this.attendees.map { it.id },
         deletedPhotoKeys = this.deletedPictures,
-        isGoing = true, // TODO: ask about this. Dont know who is this referring to. The creator? The attende who received the event and edit it?
+        isGoing = isGoing,
     )
 }
 
-fun EventDto.toEvent(): AgendaItem.Event {
+fun EventDto.toEvent(loggedInUserId: String): AgendaItem.Event {
     return AgendaItem.Event(
         title = this.title,
         description = this.description,
@@ -74,7 +74,7 @@ fun EventDto.toEvent(): AgendaItem.Event {
         pictures = this.photos.map { it.toPicture() },
         attendees = this.attendees.map { it.toAttendee() },
         hostId = host,
-        // isUserEventCreator = , // TODO how to know is user is event creator?
+        isUserEventCreator = (host == loggedInUserId),
         syncState = SyncType.SYNCED,
     )
 }

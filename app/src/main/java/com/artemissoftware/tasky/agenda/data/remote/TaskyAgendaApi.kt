@@ -8,7 +8,14 @@ import com.artemissoftware.tasky.agenda.data.remote.dto.ReminderDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.TaskDto
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface TaskyAgendaApi {
 
@@ -41,14 +48,14 @@ interface TaskyAgendaApi {
 
     @Multipart
     @POST("event")
-    suspend fun createEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>): ResponseBody
+    suspend fun createEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>)
 
     @Multipart
     @PUT("event")
-    suspend fun updateEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>): ResponseBody
+    suspend fun updateEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>)
 
     @DELETE("event")
-    suspend fun deleteEvent(@Query("eventId") id: String): ResponseBody
+    suspend fun deleteEvent(@Query("eventId") id: String)
 
     @GET("attendee")
     suspend fun getAttendee(@Query(value = "email") email: String): AttendeeDto
