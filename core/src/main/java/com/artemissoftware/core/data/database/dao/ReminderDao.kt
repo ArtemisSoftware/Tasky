@@ -48,6 +48,6 @@ interface ReminderDao {
         upsertReminderSync(reminderSyncEntity)
     }
 
-    @Query("SELECT * FROM reminderSyncEntity syncType IN (:types)")
+    @Query("SELECT * FROM reminderSyncEntity WHERE syncType IN (:types)")
     suspend fun getRemindersToSync(types: Array<SyncType> = arrayOf(SyncType.CREATE, SyncType.UPDATE, SyncType.DELETE)): List<ReminderSyncEntity>
 }

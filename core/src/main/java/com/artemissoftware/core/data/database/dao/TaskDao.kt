@@ -50,6 +50,6 @@ interface TaskDao {
         upsertTaskSync(taskSyncEntity)
     }
 
-    @Query("SELECT * FROM taskSyncEntity syncType IN (:types)")
+    @Query("SELECT * FROM taskSyncEntity WHERE syncType IN (:types)")
     suspend fun getTasksToSync(types: Array<SyncType> = arrayOf(SyncType.CREATE, SyncType.UPDATE, SyncType.DELETE)): List<TaskSyncEntity>
 }

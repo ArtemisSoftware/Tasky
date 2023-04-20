@@ -51,6 +51,6 @@ interface EventDao {
     @Query("SELECT * FROM eventEntity WHERE startDate >= :currentTime")
     suspend fun getEventsToSetAlarm(currentTime: Long): List<EventAndSyncState>
 
-    @Query("SELECT * FROM eventSyncEntity syncType IN (:types)")
+    @Query("SELECT * FROM eventSyncEntity WHERE syncType IN (:types)")
     suspend fun getEventsToSync(types: Array<SyncType> = arrayOf(SyncType.CREATE, SyncType.UPDATE, SyncType.DELETE)): List<EventSyncEntity>
 }
