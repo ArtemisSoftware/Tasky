@@ -6,9 +6,11 @@ import com.artemissoftware.core.data.database.dao.AttendeeDao
 import com.artemissoftware.core.data.database.dao.EventDao
 import com.artemissoftware.core.data.database.dao.PictureDao
 import com.artemissoftware.core.data.database.entities.EventSyncEntity
+import com.artemissoftware.core.data.database.mappers.toSyncState
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
@@ -67,5 +69,9 @@ class EventRepositoryImpl constructor(
                 attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
             }
         }
+    }
+
+    override suspend fun getEventsToSync(): List<SyncState> {
+        return eventDao.getEventsToSync().map { it.toSyncState() }
     }
 }

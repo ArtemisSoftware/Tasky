@@ -2,9 +2,11 @@ package com.artemissoftware.tasky.agenda.data.repositories
 
 import com.artemissoftware.core.data.database.dao.TaskDao
 import com.artemissoftware.core.data.database.entities.TaskSyncEntity
+import com.artemissoftware.core.data.database.mappers.toSyncState
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
@@ -68,5 +70,9 @@ class TaskRepositoryImpl constructor(
     override suspend fun upsertTasks(tasks: List<AgendaItem.Task>) {
         val result = tasks.map { it.toEntity() }
         taskDao.upsert(result)
+    }
+
+    override suspend fun getTasksToSync(): List<SyncState> {
+        return taskDao.getTasksToSync().map { it.toSyncState() }
     }
 }
