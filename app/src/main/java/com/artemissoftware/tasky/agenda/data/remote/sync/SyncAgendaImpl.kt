@@ -31,13 +31,9 @@ class SyncAgendaImpl(
             .build()
 
         workManager.enqueueUniquePeriodicWork(
-            SYNC_LOCAL_WITH_REMOTE,
+            "sync_local_with_remote",
             ExistingPeriodicWorkPolicy.KEEP,
             syncWorker,
         )
-    }
-
-    companion object{
-        private const val SYNC_LOCAL_WITH_REMOTE = "sync_local_with_remote"
     }
 }

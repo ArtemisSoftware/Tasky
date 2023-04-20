@@ -18,7 +18,6 @@ fun AgendaItem.Event.toEntity(): EventEntity {
         remindAt = remindAt.toLong(),
         endDate = to.toLong(),
         startDate = from.toLong(),
-        isUserEventCreator = isUserEventCreator,
         hostId = hostId,
     )
 }
@@ -63,7 +62,7 @@ fun AgendaItem.Event.toUpdateBodyDto(): EventUpdateBodyDto {
     )
 }
 
-fun EventDto.toEvent(loggedInUserId: String): AgendaItem.Event {
+fun EventDto.toEvent(): AgendaItem.Event {
     return AgendaItem.Event(
         title = this.title,
         description = this.description,
@@ -74,12 +73,11 @@ fun EventDto.toEvent(loggedInUserId: String): AgendaItem.Event {
         pictures = this.photos.map { it.toPicture() },
         attendees = this.attendees.map { it.toAttendee() },
         hostId = host,
-        isUserEventCreator = (host == loggedInUserId),
         syncState = SyncType.SYNCED,
     )
 }
 
-fun EventDto.toEntity(loggedInUserId: String): EventEntity {
+fun EventDto.toEntity(): EventEntity {
     return EventEntity(
         id = this.id,
         title = this.title,
@@ -88,6 +86,5 @@ fun EventDto.toEntity(loggedInUserId: String): EventEntity {
         startDate = this.from,
         endDate = this.to,
         hostId = host,
-        isUserEventCreator = (host == loggedInUserId),
     )
 }

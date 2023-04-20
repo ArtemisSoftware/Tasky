@@ -13,11 +13,14 @@ import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
+import com.artemissoftware.tasky.agenda.data.mappers.toEvent
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
+import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
 import java.time.LocalDate
 
 class EventRepositoryImpl constructor(
@@ -26,6 +29,7 @@ class EventRepositoryImpl constructor(
     private val pictureDao: PictureDao,
     private val attendeeDao: AttendeeDao,
     private val agendaApiSource: AgendaApiSource,
+    private val alarmScheduler: AlarmScheduler
 ) : EventRepository {
 
     override suspend fun getEvent(id: String): AgendaItem.Event? {
@@ -65,6 +69,47 @@ class EventRepositoryImpl constructor(
                 eventDao.upsertSyncStateAndEvent(eventEntity = event.toEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = SyncType.SYNCED))
                 pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
                 attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
+            }
+        }
+    }
+
+    override suspend fun syncEvent(
+        eventJson: String,
+        pictures: List<MultipartBody.Part>,
+        syncType: SyncType,
+    ) {
+        when (syncType) {
+            SyncType.CREATE -> {
+                agendaApiSource.createEvent(
+                    eventBody = MultipartBody.Part.createFormData("create_event_request", eventJson),
+                    pictures = pictures,
+                )
+            }
+            SyncType.UPDATE -> {
+                agendaApiSource.updateEvent(
+                    eventBody = MultipartBody.Part.createFormData("update_event_request", eventJson),
+                    pictures = pictures,
+                )
+            }
+            else -> Unit
+        }
+    }
+
+    override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>) {
+        if (events.isNotEmpty()) {
+            val eventsEntities = events.map { it.toEntity() }
+            val eventsSyncType = events.map { EventSyncEntity(id = it.id, syncType = SyncType.SYNCED) }
+            val pictures = events.flatMap { event -> event.pictures.map { it.toEntity(eventId = event.id) } }
+
+            database.withTransaction {
+                eventDao.upsertSyncStateAndEvents(events = eventsEntities, eventsSyncType = eventsSyncType)
+                pictureDao.upsert(pictures = pictures)
+                val attendees = events.flatMap { event -> event.attendees.map { it.toEntity(eventId = event.id) } }
+                attendeeDao.upsert(attendees = attendees)
+            }
+
+            events.forEach {
+                alarmScheduler.schedule(it)
             }
         }
     }

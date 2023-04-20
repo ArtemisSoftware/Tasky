@@ -10,7 +10,9 @@ import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
+import com.artemissoftware.tasky.agenda.data.mappers.toTask
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
+import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +22,7 @@ import java.time.LocalDate
 class TaskRepositoryImpl constructor(
     private val taskDao: TaskDao,
     private val agendaApiSource: AgendaApiSource,
+    private val alarmScheduler: AlarmScheduler,
 ) : TaskRepository {
 
     override suspend fun getTask(id: String): AgendaItem.Task? {
@@ -68,5 +71,18 @@ class TaskRepositoryImpl constructor(
     override suspend fun upsertTasks(tasks: List<AgendaItem.Task>) {
         val result = tasks.map { it.toEntity() }
         taskDao.upsert(result)
+    }
+
+    override suspend fun syncTasksWithRemote(tasks: List<AgendaItem.Task>) {
+        if (tasks.isNotEmpty()) {
+            val tasksEntities = tasks.map { it.toEntity() }
+            val tasksSyncType = tasks.map { TaskSyncEntity(id = it.id, syncType = SyncType.SYNCED) }
+
+            taskDao.upsertSyncStateAndTasks(tasks = tasksEntities, tasksSyncType = tasksSyncType)
+
+            tasks.forEach {
+                alarmScheduler.schedule(it)
+            }
+        }
     }
 }

@@ -30,14 +30,14 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideReminderRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): ReminderRepository {
-        return ReminderRepositoryImpl(agendaApiSource = agendaApiSource, reminderDao = database.reminderDao)
+    fun provideReminderRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase, alarmScheduler: AlarmScheduler): ReminderRepository {
+        return ReminderRepositoryImpl(agendaApiSource = agendaApiSource, reminderDao = database.reminderDao, alarmScheduler = alarmScheduler)
     }
 
     @Provides
     @Singleton
-    fun provideTaskRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): TaskRepository {
-        return TaskRepositoryImpl(agendaApiSource = agendaApiSource, taskDao = database.taskDao)
+    fun provideTaskRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase, alarmScheduler: AlarmScheduler): TaskRepository {
+        return TaskRepositoryImpl(agendaApiSource = agendaApiSource, taskDao = database.taskDao, alarmScheduler = alarmScheduler)
     }
 
     @Provides
@@ -60,8 +60,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideEventRepository(database: TaskyDatabase, agendaApiSource: AgendaApiSource): EventRepository {
-        return EventRepositoryImpl(database = database, eventDao = database.eventDao, attendeeDao = database.attendeeDao, pictureDao = database.pictureDao, agendaApiSource = agendaApiSource)
+    fun provideEventRepository(database: TaskyDatabase, agendaApiSource: AgendaApiSource, alarmScheduler: AlarmScheduler): EventRepository {
+        return EventRepositoryImpl(database = database, eventDao = database.eventDao, attendeeDao = database.attendeeDao, pictureDao = database.pictureDao, agendaApiSource = agendaApiSource, alarmScheduler = alarmScheduler)
     }
 
     @Provides

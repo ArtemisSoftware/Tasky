@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 interface AgendaRepository {
 
-    suspend fun getAgenda(date: LocalDate, loggedInUserId: String): DataResponse<Agenda>
+    suspend fun getAgenda(date: LocalDate): DataResponse<Agenda>
 
     suspend fun getFutureAgenda(currentDate: Long): List<AgendaItem>
 

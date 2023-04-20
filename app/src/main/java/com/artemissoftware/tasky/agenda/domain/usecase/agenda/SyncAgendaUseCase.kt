@@ -16,8 +16,8 @@ class SyncAgendaUseCase @Inject constructor(
     private val agendaRepository: AgendaRepository,
 ) {
 
-    suspend operator fun invoke(date: LocalDate, loggedInUserId: String) {
-        val result = agendaRepository.getAgenda(date, loggedInUserId = loggedInUserId)
+    suspend operator fun invoke(date: LocalDate) {
+        val result = agendaRepository.getAgenda(date)
 
         when (result) {
             is DataResponse.Error -> {
