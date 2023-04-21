@@ -4,9 +4,11 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.TaskEntity
 import com.artemissoftware.core.data.database.entities.TaskSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.TaskAndSyncState
+import com.artemissoftware.core.domain.SyncType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -47,4 +49,7 @@ interface TaskDao {
         deleteTask(id)
         upsertTaskSync(taskSyncEntity)
     }
+
+    @Query("SELECT * FROM taskSyncEntity WHERE syncType IN (:types)")
+    suspend fun getTasksToSync(types: Array<SyncType> = arrayOf(SyncType.CREATE, SyncType.UPDATE, SyncType.DELETE)): List<TaskSyncEntity>
 }
