@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.data.mappers
 
 import com.artemissoftware.core.data.database.entities.EventEntity
+import com.artemissoftware.core.data.database.entities.EventSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.EventAndSyncState
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.util.extensions.toLocalDateTime
@@ -10,7 +11,7 @@ import com.artemissoftware.tasky.agenda.data.remote.dto.EventDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.EventUpdateBodyDto
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 
-fun AgendaItem.Event.toEntity(): EventEntity {
+fun AgendaItem.Event.toEventEntity(): EventEntity {
     return EventEntity(
         title = title,
         description = this.description ?: "",
@@ -77,7 +78,7 @@ fun EventDto.toEvent(): AgendaItem.Event {
     )
 }
 
-fun EventDto.toEntity(): EventEntity {
+fun EventDto.toEventEntity(): EventEntity {
     return EventEntity(
         id = this.id,
         title = this.title,
@@ -86,5 +87,14 @@ fun EventDto.toEntity(): EventEntity {
         startDate = this.from,
         endDate = this.to,
         hostId = host,
+    )
+}
+
+fun AgendaItem.Event.toEventAndSyncState(): EventAndSyncState {
+    return EventAndSyncState(
+        event = this.toEventEntity(),
+        attendees = this.attendees.map { it.toEntity(eventId = this.id) },
+        pictures = this.pictures.map { it.toEntity(eventId = this.id) },
+        syncState = EventSyncEntity(id = this.id, syncType = SyncType.SYNCED),
     )
 }

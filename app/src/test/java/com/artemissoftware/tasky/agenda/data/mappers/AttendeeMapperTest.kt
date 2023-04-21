@@ -35,7 +35,7 @@ class AttendeeMapperTest {
 
     @Test
     fun `map EventAttendeeDto to AttendeeEntity`() {
-        Assert.assertEquals(attendeeEntity, eventAttendeeDto.toEntity())
+        Assert.assertEquals(attendeeEntity, eventAttendeeDto.toEventEntity())
     }
 
     @Test

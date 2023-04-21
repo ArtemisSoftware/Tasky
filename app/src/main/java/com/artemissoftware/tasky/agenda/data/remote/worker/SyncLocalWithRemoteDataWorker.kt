@@ -4,43 +4,59 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
-import com.artemissoftware.core.util.extensions.toLong
-import com.artemissoftware.tasky.agenda.data.mappers.toEvent
-import com.artemissoftware.tasky.agenda.data.mappers.toReminder
-import com.artemissoftware.tasky.agenda.data.mappers.toTask
-import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
+import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import java.time.LocalDateTime
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
+import java.time.LocalDate
 
 @HiltWorker
 class SyncLocalWithRemoteDataWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParameters: WorkerParameters,
     private val reminderRepository: ReminderRepository,
+    private val agendaRepository: AgendaRepository,
     private val taskRepository: TaskRepository,
     private val eventRepository: EventRepository,
-    private val agendaApiSource: AgendaApiSource,
 ) : CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        return try {
-            val today = LocalDateTime.now().toLong()
-            val agendaDto = agendaApiSource.getAgenda(today)
+        val result = agendaRepository.getAgenda(LocalDate.now())
 
-            // TODO: should I delete all local data before saving the remote data locally?
+        when (result) {
+            is DataResponse.Error -> {
+                return Result.retry()
+            }
+            is DataResponse.Success -> {
+                result.data?.let { agenda ->
 
-            reminderRepository.syncRemindersWithRemote(agendaDto.reminders.map { it.toReminder() })
-            taskRepository.syncTasksWithRemote(agendaDto.tasks.map { it.toTask() })
-            eventRepository.syncEventsWithRemote(agendaDto.events.map { it.toEvent() })
+                    agendaRepository.deleteLocalAgenda(LocalDate.now())
 
-            Result.success()
-        } catch (ex: TaskyNetworkException) {
-            Result.retry()
+                    supervisorScope {
+                        val reminderJob = launch {
+                            reminderRepository.syncRemindersWithRemote(agenda.items.filterIsInstance<AgendaItem.Reminder>())
+                        }
+                        val taskJob = launch {
+                            taskRepository.syncTasksWithRemote(agenda.items.filterIsInstance<AgendaItem.Task>())
+                        }
+                        val eventJob = launch {
+                            eventRepository.syncEventsWithRemote(agenda.items.filterIsInstance<AgendaItem.Event>())
+                        }
+
+                        listOf(reminderJob, taskJob, eventJob).forEach { it.join() }
+                    }
+
+                    return Result.success()
+                } ?: run {
+                    return Result.retry()
+                }
+            }
         }
     }
 }

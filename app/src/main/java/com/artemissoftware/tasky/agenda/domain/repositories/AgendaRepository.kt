@@ -12,4 +12,6 @@ interface AgendaRepository {
     suspend fun getFutureAgenda(currentDate: Long): List<AgendaItem>
 
     suspend fun logOut(): DataResponse<Unit>
+
+    suspend fun deleteLocalAgenda(date: LocalDate)
 }

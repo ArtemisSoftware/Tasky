@@ -13,7 +13,8 @@ import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
-import com.artemissoftware.tasky.agenda.data.mappers.toEvent
+import com.artemissoftware.tasky.agenda.data.mappers.toEventAndSyncState
+import com.artemissoftware.tasky.agenda.data.mappers.toEventEntity
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -29,7 +30,7 @@ class EventRepositoryImpl constructor(
     private val pictureDao: PictureDao,
     private val attendeeDao: AttendeeDao,
     private val agendaApiSource: AgendaApiSource,
-    private val alarmScheduler: AlarmScheduler
+    private val alarmScheduler: AlarmScheduler,
 ) : EventRepository {
 
     override suspend fun getEvent(id: String): AgendaItem.Event? {
@@ -46,7 +47,7 @@ class EventRepositoryImpl constructor(
         val syncType = if (event.syncState == SyncType.SYNCED) SyncType.UPDATE else event.syncState
 
         database.withTransaction {
-            eventDao.upsertSyncStateAndEvent(eventEntity = event.toEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = syncType))
+            eventDao.upsertSyncStateAndEvent(eventEntity = event.toEventEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = syncType))
             pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
             attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
         }
@@ -66,7 +67,7 @@ class EventRepositoryImpl constructor(
     override suspend fun upsertEvents(events: List<AgendaItem.Event>) {
         events.forEach { event ->
             database.withTransaction { // TODO: not sure about this. What is I syncronize with the api but the version of the event localy is more up to date. How to solve this conflict?
-                eventDao.upsertSyncStateAndEvent(eventEntity = event.toEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = SyncType.SYNCED))
+                eventDao.upsertSyncStateAndEvent(eventEntity = event.toEventEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = SyncType.SYNCED))
                 pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
                 attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
             }
@@ -97,19 +98,15 @@ class EventRepositoryImpl constructor(
 
     override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>) {
         if (events.isNotEmpty()) {
-            val eventsEntities = events.map { it.toEntity() }
-            val eventsSyncType = events.map { EventSyncEntity(id = it.id, syncType = SyncType.SYNCED) }
-            val pictures = events.flatMap { event -> event.pictures.map { it.toEntity(eventId = event.id) } }
+            events.map { it.toEventAndSyncState() }.forEachIndexed { index, item ->
 
-            database.withTransaction {
-                eventDao.upsertSyncStateAndEvents(events = eventsEntities, eventsSyncType = eventsSyncType)
-                pictureDao.upsert(pictures = pictures)
-                val attendees = events.flatMap { event -> event.attendees.map { it.toEntity(eventId = event.id) } }
-                attendeeDao.upsert(attendees = attendees)
-            }
+                database.withTransaction {
+                    eventDao.upsertSyncStateAndEvent(eventEntity = item.event, eventSyncEntity = item.syncState)
+                    pictureDao.upsert(pictures = item.pictures)
+                    attendeeDao.upsert(attendees = item.attendees)
+                }
 
-            events.forEach {
-                alarmScheduler.schedule(it)
+                alarmScheduler.schedule(events[index])
             }
         }
     }

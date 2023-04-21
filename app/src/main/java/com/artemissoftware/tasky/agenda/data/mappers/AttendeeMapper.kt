@@ -24,7 +24,7 @@ fun Attendee.toEntity(eventId: String): AttendeeEntity {
     )
 }
 
-fun EventAttendeeDto.toEntity(): AttendeeEntity {
+fun EventAttendeeDto.toEventEntity(): AttendeeEntity {
     return AttendeeEntity(
         eventId = eventId,
         userId = userId,
