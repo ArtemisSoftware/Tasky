@@ -26,15 +26,13 @@ class SyncRemoteWithLocalData @AssistedInject constructor(
     private val eventUploader: EventUploader,
 ) : CoroutineWorker(context, workerParameters) {
 
-    private var jobs = mutableListOf<Job>()
-
     override suspend fun doWork(): Result {
         return try {
             supervisorScope {
-                remindersSync(coroutineScope = this)
-                tasksSync(coroutineScope = this)
-                eventsSync(coroutineScope = this)
-                jobs.forEach { it.join() }
+                val reminderJobs = remindersSync(coroutineScope = this)
+                val taskJobs = tasksSync(coroutineScope = this)
+                val eventJobs = eventsSync(coroutineScope = this)
+                (reminderJobs + taskJobs + eventJobs).forEach { it.join() }
             }
             Result.success()
         } catch (e: Exception) {
@@ -42,8 +40,8 @@ class SyncRemoteWithLocalData @AssistedInject constructor(
         }
     }
 
-    private suspend fun remindersSync(coroutineScope: CoroutineScope) = with(reminderRepository) {
-        val job = getRemindersToSync().map { syncState ->
+    private suspend fun remindersSync(coroutineScope: CoroutineScope): List<Job> = with(reminderRepository) {
+        val jobs = getRemindersToSync().map { syncState ->
 
             coroutineScope.launch {
                 when (syncState.syncType) {
@@ -60,11 +58,11 @@ class SyncRemoteWithLocalData @AssistedInject constructor(
             }
         }
 
-        jobs.addAll(job)
+        return jobs
     }
 
-    private suspend fun tasksSync(coroutineScope: CoroutineScope) = with(taskRepository) {
-        val job = getTasksToSync().map { syncState ->
+    private suspend fun tasksSync(coroutineScope: CoroutineScope): List<Job> = with(taskRepository) {
+        val jobs = getTasksToSync().map { syncState ->
 
             coroutineScope.launch {
                 when (syncState.syncType) {
@@ -81,11 +79,11 @@ class SyncRemoteWithLocalData @AssistedInject constructor(
             }
         }
 
-        jobs.addAll(job)
+        return jobs
     }
 
-    private suspend fun eventsSync(coroutineScope: CoroutineScope) = with(eventRepository) {
-        val job = getEventsToSync().map { syncState ->
+    private suspend fun eventsSync(coroutineScope: CoroutineScope): List<Job> = with(eventRepository) {
+        val jobs = getEventsToSync().map { syncState ->
 
             coroutineScope.launch {
                 when (syncState.syncType) {
@@ -102,6 +100,6 @@ class SyncRemoteWithLocalData @AssistedInject constructor(
             }
         }
 
-        jobs.addAll(job)
+        return jobs
     }
 }
