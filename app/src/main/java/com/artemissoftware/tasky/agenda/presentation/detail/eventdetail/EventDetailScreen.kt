@@ -3,7 +3,12 @@ package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -46,6 +51,7 @@ import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvent
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
+import com.artemissoftware.tasky.util.VisibilityTransitions
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -201,6 +207,14 @@ private fun EventDetailScreenContent(
                                     onEditClick = {
                                         events(DetailEvents.EditDescription(it))
                                     },
+                                )
+
+                                DetailDivider(
+                                    top = 20.dp,
+                                    bottom = 20.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
                                 )
                             }
                             item {
@@ -374,8 +388,12 @@ private fun LazyListScope.visitors(
     visitors: List<Visitor>,
     onDeleteVisitor: (String) -> Unit,
 ) {
-    if ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()) {
-        item {
+    item {
+        AnimatedVisibility(
+            visible = ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()),
+            enter = VisibilityTransitions.enterEdition(),
+            exit = VisibilityTransitions.exitEdition(),
+        ) {
             TaskyText(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -385,12 +403,19 @@ private fun LazyListScope.visitors(
                 text = stringResource(id = type.textId),
             )
         }
-        items(
-            items = visitors,
-            key = {
-                it.attendee.id
-            },
-            itemContent = { visitor ->
+    }
+    items(
+        items = visitors,
+        key = {
+            it.attendee.id
+        },
+        itemContent = { visitor ->
+
+            AnimatedVisibility(
+                visible = ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()),
+                enter = VisibilityTransitions.enterEdition(),
+                exit = VisibilityTransitions.exitEdition(),
+            ) {
                 VisitorItem(
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
@@ -399,9 +424,9 @@ private fun LazyListScope.visitors(
                         onDeleteVisitor(attendeeId)
                     },
                 )
-            },
-        )
-    }
+            }
+        },
+    )
 }
 
 @Composable
