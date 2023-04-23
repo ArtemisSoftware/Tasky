@@ -10,9 +10,10 @@ sealed class AgendaItemType(
     val color: Color,
     val borderColor: Color,
     val generalTextColor: Color = Black,
-    val secondaryTextColor: Color = DarkGray
-){
-    class Reminder(): AgendaItemType(color = Light2, borderColor = Gray, title = R.string.reminder)
-    class Task(color: Color = Green): AgendaItemType(color = color, borderColor = color, title = R.string.task, generalTextColor = White, secondaryTextColor = White)
-    class Event(color: Color = LightGreen): AgendaItemType(color = color, borderColor = color, title = R.string.event)
+    val secondaryTextColor: Color = DarkGray,
+    val bulletColor: Color = Black,
+) {
+    class Reminder() : AgendaItemType(color = Light2, borderColor = Gray, title = R.string.reminder)
+    class Task(color: Color = Green) : AgendaItemType(color = color, borderColor = color, title = R.string.task, generalTextColor = White, secondaryTextColor = White)
+    class Event(color: Color = LightGreen) : AgendaItemType(color = color, borderColor = color, title = R.string.event)
 }

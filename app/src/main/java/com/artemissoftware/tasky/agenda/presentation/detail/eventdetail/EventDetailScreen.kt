@@ -64,6 +64,7 @@ fun EventDetailScreen(
     navigator: DestinationsNavigator,
     eventId: String? = null,
     userId: String,
+    userName: String,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
     pictureRecipient: ResultRecipient<PhotoScreenDestination, PictureRecipient>,
 ) {
@@ -167,7 +168,7 @@ private fun EventDetailScreenContent(
                     Box(
                         modifier = Modifier
                             .padding(top = 32.dp)
-                            .padding(bottom = 68.dp),
+                            .padding(bottom = 12.dp),
                     ) {
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth(),
@@ -175,7 +176,7 @@ private fun EventDetailScreenContent(
                         ) {
                             item {
                                 AssignmentHeader(
-                                    agendaItemType = AgendaItemType.Task(),
+                                    agendaItemType = AgendaItemType.Event(),
                                     title = state.title,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -349,7 +350,8 @@ private fun EventDetailScreenContent(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
+                                        .padding(horizontal = 16.dp)
+                                        .padding(top = 40.dp, bottom = 32.dp),
                                 ) {
                                     eventButton(state = state, events = events)
                                 }
@@ -418,7 +420,8 @@ private fun LazyListScope.visitors(
             ) {
                 VisitorItem(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 4.dp),
                     visitor = visitor,
                     onDeleteVisitor = { attendeeId ->
                         onDeleteVisitor(attendeeId)

@@ -16,6 +16,7 @@ import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFiel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
+import com.artemissoftware.core.util.safeLet
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -28,9 +29,11 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.SaveEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
+import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_ID
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_NAME
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -334,15 +337,25 @@ class EventDetailViewModel @Inject constructor(
                             pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
+                            isEventCreator = item.isUserEventCreator,
                         )
+                    }
+                    safeLet(savedStateHandle.get<String>(USER_ID), savedStateHandle.get<String>(USER_NAME)) { userId, userName ->
+                        update {
+                            it.copy(
+                                creator = if (item.isUserEventCreator) { Visitor(attendee = Attendee(fullName = userName, id = userId, email = "", isGoing = true), isEventCreator = true) } else null,
+                            )
+                        }
                     }
                 }
             }
         } ?: run {
-            savedStateHandle.get<String>(USER_ID)?.let { userId ->
+            safeLet(savedStateHandle.get<String>(USER_ID), savedStateHandle.get<String>(USER_NAME)) { userId, userName ->
                 update {
                     it.copy(
                         hostId = userId,
+                        hostName = userName,
+                        creator = Visitor(attendee = Attendee(fullName = userName, id = userId, email = "", isGoing = true), isEventCreator = true),
                     )
                 }
             }

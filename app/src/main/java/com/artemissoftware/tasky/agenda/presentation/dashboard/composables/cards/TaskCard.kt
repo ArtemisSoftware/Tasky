@@ -95,7 +95,7 @@ fun TaskCard(
                         color = agendaItemType.secondaryTextColor,
                         maxLines = 2,
                         text = task.description ?: "",
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.body2,
                     )
                 }
             }

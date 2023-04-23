@@ -64,6 +64,7 @@ fun ReminderCard(
                             color = agendaItemType.generalTextColor,
                             modifier = Modifier.weight(0.9F),
                             text = reminder.title,
+                            style = MaterialTheme.typography.h6,
                         )
 
                         TaskyPopupMenu(
@@ -90,7 +91,7 @@ fun ReminderCard(
                         color = agendaItemType.secondaryTextColor,
                         maxLines = 2,
                         text = reminder.description ?: "",
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.body2,
                     )
                 }
             }

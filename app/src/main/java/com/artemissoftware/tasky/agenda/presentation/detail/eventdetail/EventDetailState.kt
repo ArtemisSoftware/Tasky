@@ -25,11 +25,16 @@ data class EventDetailState(
     val attendeeDialogState: AttendeeDialogState = AttendeeDialogState(),
     val attendees: List<Attendee> = emptyList(),
     val hostId: String = "",
+    val hostName: String = "",
     val userId: String = "",
+    val creator: Visitor? = null,
 ) {
 
     fun getGoingVisitors(): List<Visitor> {
-        return attendees.filter { it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) }
+        val list = mutableListOf<Visitor>()
+        creator?.let { list.add(it) }
+        list.addAll(attendees.filter { it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) })
+        return list
     }
 
     fun getNotGoingVisitors(): List<Visitor> {

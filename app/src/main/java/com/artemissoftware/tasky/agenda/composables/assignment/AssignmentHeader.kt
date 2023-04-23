@@ -75,7 +75,7 @@ fun AssignmentHeader(
                         size = 20.dp,
                         onIcon = R.drawable.ic_round_check,
                         offIcon = R.drawable.ic_circle,
-                        onIconColor = agendaItemType.generalTextColor,
+                        onIconColor = agendaItemType.bulletColor,
                         onCheckedChange = onIsDoneClick,
                     )
 
@@ -110,7 +110,7 @@ fun AssignmentHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 private fun AssignmentHeaderPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

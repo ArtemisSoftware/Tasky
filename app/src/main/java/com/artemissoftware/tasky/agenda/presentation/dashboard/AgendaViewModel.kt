@@ -159,7 +159,7 @@ class AgendaViewModel @Inject constructor(
                     sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
                 }
                 is AgendaItem.Event -> {
-                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId).route))
+                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, userId = _state.value.userId, userName = _state.value.userName).route))
                 }
             }
         }
@@ -169,7 +169,7 @@ class AgendaViewModel @Inject constructor(
         viewModelScope.launch {
             when (detailType) {
                 AgendaItems.EVENT -> {
-                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(userId = _state.value.userId).route))
+                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(userId = _state.value.userId, userName = _state.value.userName).route))
                 }
                 AgendaItems.TASK -> {
                     sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination().route))

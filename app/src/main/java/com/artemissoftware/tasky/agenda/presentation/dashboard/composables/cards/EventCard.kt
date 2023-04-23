@@ -65,6 +65,7 @@ fun EventCard(
                             color = agendaItemType.generalTextColor,
                             modifier = Modifier.weight(0.9F),
                             text = event.itemTitle,
+                            style = MaterialTheme.typography.h6,
                         )
 
                         TaskyPopupMenu(
@@ -91,7 +92,7 @@ fun EventCard(
                         color = agendaItemType.secondaryTextColor,
                         maxLines = 2,
                         text = event.itemDescription ?: "",
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.body2,
                     )
                 }
             }
