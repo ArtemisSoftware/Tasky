@@ -33,12 +33,11 @@ class EventUploaderWorker @AssistedInject constructor(
         with(workerParameters.inputData) {
             safeLet(getString(EVENT_JSON), SyncType.getSyncTypeByName(getString(SYNC_TYPE).orEmpty())) { eventJson, syncType ->
 
-                val pictures = workerParameters.inputData.getStringArray(EVENT_PICTURE_LIST) ?: emptyArray()
-
+                val pictures = getStringArray(EVENT_PICTURE_LIST) ?: emptyArray()
                 val picturesMultipart = pictureToMultipart(pictures.toList())
 
                 return try {
-                    uploadEvent(eventJson, picturesMultipart, syncType)
+                    syncEvent(eventJson = eventJson, pictures = picturesMultipart, syncType = syncType)
                     Result.success()
                 } catch (ex: TaskyNetworkException) {
                     Result.failure(
@@ -46,7 +45,7 @@ class EventUploaderWorker @AssistedInject constructor(
                     )
                 }
             } ?: return Result.failure(
-                workDataOf(ERROR_MSG to UiText.DynamicString(ERROR_UPLOAD)),
+                workDataOf(ERROR_MSG to UiText.DynamicString("No data to upload or a synchronization type")),
             )
         }
     }
@@ -63,31 +62,25 @@ class EventUploaderWorker @AssistedInject constructor(
         }
     }
 
-    private suspend fun uploadEvent(
-        json: String,
+    private suspend fun syncEvent(
+        eventJson: String,
         pictures: List<MultipartBody.Part>,
         syncType: SyncType,
     ) {
         when (syncType) {
             SyncType.CREATE -> {
                 agendaApiSource.createEvent(
-                    eventBody = MultipartBody.Part.createFormData(CREATE_EVENT_REQUEST, json),
+                    eventBody = MultipartBody.Part.createFormData("create_event_request", eventJson),
                     pictures = pictures,
                 )
             }
             SyncType.UPDATE -> {
                 agendaApiSource.updateEvent(
-                    eventBody = MultipartBody.Part.createFormData(UPDATE_EVENT_REQUEST, json),
+                    eventBody = MultipartBody.Part.createFormData("update_event_request", eventJson),
                     pictures = pictures,
                 )
             }
             else -> Unit
         }
-    }
-
-    companion object {
-        private const val CREATE_EVENT_REQUEST = "create_event_request"
-        private const val UPDATE_EVENT_REQUEST = "update_event_request"
-        private const val ERROR_UPLOAD = "No data to upload or a synchronization type"
     }
 }

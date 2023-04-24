@@ -64,7 +64,6 @@ sealed class AgendaItem(
         val deletedPictures: List<String> = emptyList(),
         val syncState: SyncType = SyncType.CREATE,
         val hostId: String = "",
-        val isUserEventCreator: Boolean = true,
         val isGoing: Boolean = true,
         val attendees: List<Attendee> = emptyList(),
     ) : AgendaItem(

@@ -12,7 +12,9 @@ import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
+import com.artemissoftware.tasky.agenda.data.mappers.toReminderAndSyncState
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
+import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +24,7 @@ import java.time.LocalDate
 class ReminderRepositoryImpl constructor(
     private val reminderDao: ReminderDao,
     private val agendaApiSource: AgendaApiSource,
+    private val alarmScheduler: AlarmScheduler,
 ) : ReminderRepository {
 
     override suspend fun getReminder(id: String): AgendaItem.Reminder? {
@@ -74,5 +77,12 @@ class ReminderRepositoryImpl constructor(
 
     override suspend fun getRemindersToSync(): List<SyncState> {
         return reminderDao.getRemindersToSync().map { it.toSyncState() }
+    }
+
+    override suspend fun syncRemindersWithRemote(reminders: List<AgendaItem.Reminder>) {
+        reminders.map { it.toReminderAndSyncState() }.forEachIndexed { index, item ->
+            reminderDao.upsertSyncStateAndReminder(reminderEntity = item.reminder, reminderSyncEntity = item.syncState)
+            alarmScheduler.schedule(reminders[index])
+        }
     }
 }

@@ -5,11 +5,13 @@ import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.dao.TaskDao
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toEpochMilli
+import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgenda
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
-import com.artemissoftware.tasky.agenda.domain.models.Agenda
+import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import java.time.LocalDate
@@ -19,12 +21,13 @@ class AgendaRepositoryImpl(
     private val reminderDao: ReminderDao,
     private val taskDao: TaskDao,
     private val eventDao: EventDao,
+    private val alarmScheduler: AlarmScheduler,
 ) : AgendaRepository {
 
-    override suspend fun getAgenda(date: LocalDate, loggedInUserId: String): DataResponse<Agenda> {
+    override suspend fun getAgenda(date: LocalDate): DataResponse<List<AgendaItem>> {
         return try {
             val result = agendaApiSource.getAgenda(time = date.toEpochMilli())
-            DataResponse.Success(data = result.toAgenda(loggedInUserId = loggedInUserId))
+            DataResponse.Success(data = result.toAgenda())
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
         }
@@ -44,6 +47,18 @@ class AgendaRepositoryImpl(
             DataResponse.Success(data = Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
+        }
+    }
+
+    override suspend fun deleteLocalAgenda(date: LocalDate) {
+        val initialDate = date.toStartOfDayEpochMilli()
+        val endDate = date.toEndOfDayEpochMilli()
+        val deletedRemindersId = reminderDao.deleteRemindersAndSyncState(initialDate = initialDate, endDate = endDate)
+        val deletedTasksId = taskDao.deleteTasksAndSyncState(initialDate = initialDate, endDate = endDate)
+        val deletedEventsId = eventDao.deleteEventsAndSyncState(initialDate = initialDate, endDate = endDate)
+
+        (deletedRemindersId + deletedTasksId + deletedEventsId).forEach { id ->
+            alarmScheduler.cancel(id)
         }
     }
 }

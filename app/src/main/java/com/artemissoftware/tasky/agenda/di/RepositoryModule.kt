@@ -1,17 +1,22 @@
 package com.artemissoftware.tasky.agenda.di
 
 import android.content.Context
-import androidx.work.WorkManager
 import com.artemissoftware.core.data.database.TaskyDatabase
 import com.artemissoftware.tasky.agenda.data.alarm.AlarmSchedulerImpl
 import com.artemissoftware.tasky.agenda.data.compressor.ImageCompressorImpl
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
-import com.artemissoftware.tasky.agenda.data.remote.upload.EventUploaderImpl
-import com.artemissoftware.tasky.agenda.data.repositories.*
+import com.artemissoftware.tasky.agenda.data.repositories.AgendaRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.AttendeeRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.EventRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.ReminderRepositoryImpl
+import com.artemissoftware.tasky.agenda.data.repositories.TaskRepositoryImpl
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.compressor.ImageCompressor
-import com.artemissoftware.tasky.agenda.domain.repositories.*
-import com.artemissoftware.tasky.agenda.domain.uploader.EventUploader
+import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.AttendeeRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
+import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,20 +30,20 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideReminderRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): ReminderRepository {
-        return ReminderRepositoryImpl(agendaApiSource = agendaApiSource, reminderDao = database.reminderDao)
+    fun provideReminderRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase, alarmScheduler: AlarmScheduler): ReminderRepository {
+        return ReminderRepositoryImpl(agendaApiSource = agendaApiSource, reminderDao = database.reminderDao, alarmScheduler = alarmScheduler)
     }
 
     @Provides
     @Singleton
-    fun provideTaskRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): TaskRepository {
-        return TaskRepositoryImpl(agendaApiSource = agendaApiSource, taskDao = database.taskDao)
+    fun provideTaskRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase, alarmScheduler: AlarmScheduler): TaskRepository {
+        return TaskRepositoryImpl(agendaApiSource = agendaApiSource, taskDao = database.taskDao, alarmScheduler = alarmScheduler)
     }
 
     @Provides
     @Singleton
-    fun provideAgendaRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): AgendaRepository {
-        return AgendaRepositoryImpl(agendaApiSource = agendaApiSource, taskDao = database.taskDao, reminderDao = database.reminderDao, eventDao = database.eventDao)
+    fun provideAgendaRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase, alarmScheduler: AlarmScheduler): AgendaRepository {
+        return AgendaRepositoryImpl(agendaApiSource = agendaApiSource, taskDao = database.taskDao, reminderDao = database.reminderDao, eventDao = database.eventDao, alarmScheduler = alarmScheduler)
     }
 
     @Provides
@@ -55,8 +60,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideEventRepository(database: TaskyDatabase, agendaApiSource: AgendaApiSource): EventRepository {
-        return EventRepositoryImpl(database = database, eventDao = database.eventDao, attendeeDao = database.attendeeDao, pictureDao = database.pictureDao, agendaApiSource = agendaApiSource)
+    fun provideEventRepository(database: TaskyDatabase, agendaApiSource: AgendaApiSource, alarmScheduler: AlarmScheduler): EventRepository {
+        return EventRepositoryImpl(database = database, eventDao = database.eventDao, attendeeDao = database.attendeeDao, pictureDao = database.pictureDao, agendaApiSource = agendaApiSource, alarmScheduler = alarmScheduler)
     }
 
     @Provides
@@ -64,19 +69,4 @@ object RepositoryModule {
     fun provideImageCompressor(@ApplicationContext context: Context): ImageCompressor {
         return ImageCompressorImpl(context = context)
     }
-
-    @Provides
-    @Singleton
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
-        return WorkManager.getInstance(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideEventUploader(workManager: WorkManager): EventUploader {
-        return EventUploaderImpl(workManager = workManager)
-    }
-
-
-
 }

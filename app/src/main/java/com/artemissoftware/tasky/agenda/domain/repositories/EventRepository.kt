@@ -19,4 +19,6 @@ interface EventRepository {
     suspend fun upsertEvents(events: List<AgendaItem.Event>)
 
     suspend fun getEventsToSync(): List<SyncState>
+
+    suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>)
 }

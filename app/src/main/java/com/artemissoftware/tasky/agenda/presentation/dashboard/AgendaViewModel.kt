@@ -201,7 +201,7 @@ class AgendaViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            syncAgendaUseCase(date = date, loggedInUserId = value.userId)
+            syncAgendaUseCase(date = date)
 
             update {
                 it.copy(

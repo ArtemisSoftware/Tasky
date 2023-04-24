@@ -19,4 +19,6 @@ interface ReminderRepository {
     suspend fun upsertReminders(reminders: List<AgendaItem.Reminder>)
 
     suspend fun getRemindersToSync(): List<SyncState>
+
+    suspend fun syncRemindersWithRemote(reminders: List<AgendaItem.Reminder>)
 }

@@ -19,4 +19,6 @@ interface TaskRepository {
     suspend fun upsertTasks(tasks: List<AgendaItem.Task>)
 
     suspend fun getTasksToSync(): List<SyncState>
+
+    suspend fun syncTasksWithRemote(tasks: List<AgendaItem.Task>)
 }

@@ -10,7 +10,6 @@ data class EventEntity(
     val description: String,
     val startDate: Long,
     val hostId: String,
-    val isUserEventCreator: Boolean,
     val remindAt: Long,
     val title: String,
     val endDate: Long,

@@ -16,16 +16,16 @@ class SyncAgendaUseCase @Inject constructor(
     private val agendaRepository: AgendaRepository,
 ) {
 
-    suspend operator fun invoke(date: LocalDate, loggedInUserId: String) {
-        val result = agendaRepository.getAgenda(date, loggedInUserId = loggedInUserId)
+    suspend operator fun invoke(date: LocalDate) {
+        val result = agendaRepository.getAgenda(date)
 
         when (result) {
             is DataResponse.Error -> {
                 // TODO: should send message to the ui saying the sync failed?
             }
             is DataResponse.Success -> {
-                result.data?.let {
-                    with(it.items) {
+                result.data?.let { items ->
+                    with(items) {
                         reminderRepository.upsertReminders(filterIsInstance<AgendaItem.Reminder>())
 
                         taskRepository.upsertTasks(filterIsInstance<AgendaItem.Task>())
