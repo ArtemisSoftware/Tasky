@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 data class EventDetailState(
     val isLoading: Boolean = false,
     val isEditing: Boolean = false,
+    val isEditingNotification: Boolean = false,
     val isEventCreator: Boolean = true,
     val visitorOption: VisitorOptionType = VisitorOptionType.ALL,
     val agendaItem: AgendaItem.Event = AgendaItem.Event(),
@@ -28,12 +29,14 @@ data class EventDetailState(
     val hostName: String = "",
     val userId: String = "",
     val creator: Visitor? = null,
+    val isGoing: Boolean = true,
 ) {
 
     fun getGoingVisitors(): List<Visitor> {
         val list = mutableListOf<Visitor>()
         creator?.let { list.add(it) }
         list.addAll(attendees.filter { it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) })
+        list.sortBy { !it.isEventCreator }
         return list
     }
 
@@ -43,5 +46,5 @@ data class EventDetailState(
 
     private fun isEventCreator(attendeeId: String) = (attendeeId == hostId)
 
-    fun isGoing() = attendees.find { it.id == userId }?.isGoing ?: false
+    fun isEditionOccurring() = isEditing || isEditingNotification
 }

@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,12 +30,15 @@ import com.artemissoftware.core.presentation.theme.Light2
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
+import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
+import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun VisitorItem(
     visitor: Visitor,
+    isEditing: Boolean,
     onDeleteVisitor: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -81,16 +85,22 @@ fun VisitorItem(
                         color = LightBlue,
                     )
                 } else {
-                    TaskyIcon(
-                        size = 20.dp,
-                        icon = R.drawable.ic_trash,
-                        color = DarkGray,
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .clickable {
-                                onDeleteVisitor(visitor.attendee.id)
-                            },
-                    )
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = isEditing,
+                        enter = VisibilityTransitions.enterEdition(),
+                        exit = VisibilityTransitions.exitEdition(),
+                    ) {
+                        TaskyIcon(
+                            size = 20.dp,
+                            icon = R.drawable.ic_trash,
+                            color = DarkGray,
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .clickable {
+                                    onDeleteVisitor(visitor.attendee.id)
+                                },
+                        )
+                    }
                 }
             }
         }
@@ -111,6 +121,7 @@ private fun VisitorItemPreview() {
                 ),
                 isEventCreator = true,
             ),
+            isEditing = false,
             onDeleteVisitor = {},
             modifier = Modifier.fillMaxWidth().height(46.dp),
         )
@@ -124,6 +135,7 @@ private fun VisitorItemPreview() {
                 ),
                 isEventCreator = true,
             ),
+            isEditing = true,
             onDeleteVisitor = {},
             modifier = Modifier.fillMaxWidth().height(46.dp),
         )

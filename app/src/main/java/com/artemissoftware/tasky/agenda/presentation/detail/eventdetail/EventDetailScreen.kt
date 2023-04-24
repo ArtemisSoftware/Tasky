@@ -141,7 +141,7 @@ private fun EventDetailScreenContent(
                 ),
                 toolbarActions = { color ->
 
-                    if (state.isEditing) {
+                    if (state.isEditionOccurring()) {
                         TaskyToolBarAction(
                             text = stringResource(id = R.string.save),
                             tint = color,
@@ -299,7 +299,7 @@ private fun EventDetailScreenContent(
                             }
                             item {
                                 AssignmentNotification(
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditingNotification,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
@@ -334,6 +334,7 @@ private fun EventDetailScreenContent(
                                 type = VisitorOptionType.GOING,
                                 selectedOption = state.visitorOption,
                                 visitors = state.getGoingVisitors(),
+                                isEditing = state.isEditing,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
                                 },
@@ -388,6 +389,7 @@ private fun LazyListScope.visitors(
     type: VisitorOptionType,
     selectedOption: VisitorOptionType,
     visitors: List<Visitor>,
+    isEditing: Boolean = false,
     onDeleteVisitor: (String) -> Unit,
 ) {
     item {
@@ -423,6 +425,7 @@ private fun LazyListScope.visitors(
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 4.dp),
                     visitor = visitor,
+                    isEditing = isEditing,
                     onDeleteVisitor = { attendeeId ->
                         onDeleteVisitor(attendeeId)
                     },
@@ -437,16 +440,17 @@ private fun BoxScope.eventButton(
     state: EventDetailState,
     events: (DetailEvents) -> Unit,
 ) {
-    val (title, event) = if (state.isEventCreator) {
-        Pair(
-            String.format(
-                stringResource(id = R.string.delete_title_with_argument),
-                stringResource(id = R.string.event),
-            ),
-            DetailEvents.Delete,
-        )
-    } else {
-        if (state.isGoing()) {
+    val (title, event) = when {
+        state.isEventCreator -> {
+            Pair(
+                String.format(
+                    stringResource(id = R.string.delete_title_with_argument),
+                    stringResource(id = R.string.event),
+                ),
+                DetailEvents.Delete,
+            )
+        }
+        state.isGoing -> {
             Pair(
                 String.format(
                     stringResource(id = R.string.leave_title_with_argument),
@@ -454,7 +458,8 @@ private fun BoxScope.eventButton(
                 ),
                 DetailEvents.LeaveEvent,
             )
-        } else {
+        }
+        else -> {
             Pair(
                 String.format(
                     stringResource(id = R.string.join_title_with_argument),

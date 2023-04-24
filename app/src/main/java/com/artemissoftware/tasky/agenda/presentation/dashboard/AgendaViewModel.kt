@@ -231,6 +231,7 @@ class AgendaViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         userName = user.fullName,
+                        userId = user.id,
                     )
                 }
             }

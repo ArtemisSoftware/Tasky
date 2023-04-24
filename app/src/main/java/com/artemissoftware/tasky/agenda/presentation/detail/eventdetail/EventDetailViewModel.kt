@@ -243,7 +243,8 @@ class EventDetailViewModel @Inject constructor(
     private fun toggleEdition() = with(_state) {
         update {
             it.copy(
-                isEditing = !it.isEditing,
+                isEditingNotification = !it.isEditing,
+                isEditing = if (value.isEventCreator) !it.isEditing else false,
             )
         }
     }
@@ -337,13 +338,15 @@ class EventDetailViewModel @Inject constructor(
                             pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
-                            isEventCreator = item.isUserEventCreator,
                         )
                     }
                     safeLet(savedStateHandle.get<String>(USER_ID), savedStateHandle.get<String>(USER_NAME)) { userId, userName ->
+                        val isEventCreator = (item.hostId == userId)
                         update {
                             it.copy(
-                                creator = if (item.isUserEventCreator) { Visitor(attendee = Attendee(fullName = userName, id = userId, email = "", isGoing = true), isEventCreator = true) } else null,
+                                isEventCreator = isEventCreator,
+                                creator = if (isEventCreator) { Visitor(attendee = Attendee(fullName = userName, id = userId, email = "", isGoing = true), isEventCreator = true) } else null,
+                                isGoing = item.attendees.find { it.id == userId }?.isGoing ?: false,
                             )
                         }
                     }
