@@ -333,7 +333,7 @@ private fun EventDetailScreenContent(
                             visitors(
                                 type = VisitorOptionType.GOING,
                                 selectedOption = state.visitorOption,
-                                visitors = state.getGoingVisitors(),
+                                visitors = state.goingVisitors,
                                 isEditing = state.isEditing,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
@@ -342,7 +342,7 @@ private fun EventDetailScreenContent(
                             visitors(
                                 type = VisitorOptionType.NOT_GOING,
                                 selectedOption = state.visitorOption,
-                                visitors = state.getNotGoingVisitors(),
+                                visitors = state.notGoingVisitors,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
                                 },

@@ -30,6 +30,8 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUse
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
+import com.artemissoftware.tasky.agenda.presentation.detail.mappers.toGoingVisitors
+import com.artemissoftware.tasky.agenda.presentation.detail.mappers.toNotGoingVisitors
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_ID
@@ -119,10 +121,27 @@ class EventDetailViewModel @Inject constructor(
             DetailEvents.Delete -> {
                 deleteEventWarning()
             }
-            DetailEvents.JoinEvent -> TODO()
-            DetailEvents.LeaveEvent -> TODO()
+            DetailEvents.JoinEvent -> {
+                setAttendeeGoingStatus(isGoing = true)
+            }
+            DetailEvents.LeaveEvent -> {
+                setAttendeeGoingStatus(isGoing = false)
+            }
             else -> Unit
         }
+    }
+
+    private fun setAttendeeGoingStatus(isGoing: Boolean) = with(_state) {
+        update {
+            val list = value.attendees.toMutableList()
+            list.find { item -> item.id == value.userId }?.isGoing = isGoing
+
+            it.copy(
+                attendees = list.toList(),
+                isGoing = isGoing,
+            )
+        }
+        saveEvent()
     }
 
     private fun removePicture(pictureId: String) = with(_state) {
@@ -338,15 +357,18 @@ class EventDetailViewModel @Inject constructor(
                             pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
+                            goingVisitors = item.attendees.toGoingVisitors(hostId = item.hostId),
+                            notGoingVisitors = item.attendees.toNotGoingVisitors(),
                         )
                     }
                     safeLet(savedStateHandle.get<String>(USER_ID), savedStateHandle.get<String>(USER_NAME)) { userId, userName ->
                         val isEventCreator = (item.hostId == userId)
                         update {
                             it.copy(
+                                userId = userId,
                                 isEventCreator = isEventCreator,
                                 creator = if (isEventCreator) { Visitor(attendee = Attendee(fullName = userName, id = userId, email = "", isGoing = true), isEventCreator = true) } else null,
-                                isGoing = item.attendees.find { it.id == userId }?.isGoing ?: false,
+                                isGoing = item.attendees.find { attendee -> attendee.id == userId }?.isGoing ?: false,
                             )
                         }
                     }
@@ -383,7 +405,7 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveEvent(validatedPictures: List<Picture>) = with(_state.value) {
+    private fun saveEvent(validatedPictures: List<Picture> = emptyList()) = with(_state.value) {
         val item = AgendaItem.Event(
             id = agendaItem.id,
             title = title,
@@ -396,6 +418,7 @@ class EventDetailViewModel @Inject constructor(
             attendees = attendees,
             pictures = validatedPictures,
             deletedPictures = deletedPictures,
+            isGoing = isGoing,
         )
 
         viewModelScope.launch {

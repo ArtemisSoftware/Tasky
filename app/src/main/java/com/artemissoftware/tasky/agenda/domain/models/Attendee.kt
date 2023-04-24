@@ -4,5 +4,5 @@ data class Attendee(
     val fullName: String,
     val id: String,
     val email: String,
-    val isGoing: Boolean
+    var isGoing: Boolean
 )
