@@ -7,9 +7,7 @@ import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
-import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
-import com.artemissoftware.tasky.agenda.data.mappers.toDto
-import com.artemissoftware.tasky.agenda.data.mappers.toEntity
+import com.artemissoftware.tasky.agenda.data.mappers.*
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -73,15 +71,9 @@ class TaskRepositoryImpl constructor(
     }
 
     override suspend fun syncTasksWithRemote(tasks: List<AgendaItem.Task>) {
-        if (tasks.isNotEmpty()) {
-            val tasksEntities = tasks.map { it.toEntity() }
-            val tasksSyncType = tasks.map { TaskSyncEntity(id = it.id, syncType = SyncType.SYNCED) }
-
-            taskDao.upsertSyncStateAndTasks(tasks = tasksEntities, tasksSyncType = tasksSyncType)
-
-            tasks.forEach {
-                alarmScheduler.schedule(it)
-            }
+        tasks.map { it.toTaskAndSyncState() }.forEachIndexed { index, item ->
+            taskDao.upsertSyncStateAndTask(taskEntity = item.task, taskSyncEntity = item.syncState)
+            alarmScheduler.schedule(tasks[index])
         }
     }
 }

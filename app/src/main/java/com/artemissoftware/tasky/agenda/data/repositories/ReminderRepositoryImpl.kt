@@ -10,6 +10,7 @@ import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
+import com.artemissoftware.tasky.agenda.data.mappers.toReminderAndSyncState
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -73,15 +74,9 @@ class ReminderRepositoryImpl constructor(
     }
 
     override suspend fun syncRemindersWithRemote(reminders: List<AgendaItem.Reminder>) {
-        if (reminders.isNotEmpty()) {
-            val remindersEntities = reminders.map { it.toEntity() }
-            val remindersSyncType = reminders.map { ReminderSyncEntity(id = it.id, syncType = SyncType.SYNCED) }
-
-            reminderDao.upsertSyncStateAndReminders(reminders = remindersEntities, remindersSyncType = remindersSyncType)
-
-            reminders.forEach {
-                alarmScheduler.schedule(it)
-            }
+        reminders.map { it.toReminderAndSyncState() }.forEachIndexed { index, item ->
+            reminderDao.upsertSyncStateAndReminder(reminderEntity = item.reminder, reminderSyncEntity = item.syncState)
+            alarmScheduler.schedule(reminders[index])
         }
     }
 }

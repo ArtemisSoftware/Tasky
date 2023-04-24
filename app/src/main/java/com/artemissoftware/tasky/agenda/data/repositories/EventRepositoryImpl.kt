@@ -74,28 +74,6 @@ class EventRepositoryImpl constructor(
         }
     }
 
-    override suspend fun syncEvent(
-        eventJson: String,
-        pictures: List<MultipartBody.Part>,
-        syncType: SyncType,
-    ) {
-        when (syncType) {
-            SyncType.CREATE -> {
-                agendaApiSource.createEvent(
-                    eventBody = MultipartBody.Part.createFormData("create_event_request", eventJson),
-                    pictures = pictures,
-                )
-            }
-            SyncType.UPDATE -> {
-                agendaApiSource.updateEvent(
-                    eventBody = MultipartBody.Part.createFormData("update_event_request", eventJson),
-                    pictures = pictures,
-                )
-            }
-            else -> Unit
-        }
-    }
-
     override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>) {
         events.map { it.toEventAndSyncState() }.forEachIndexed { index, item ->
 

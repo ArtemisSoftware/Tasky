@@ -62,10 +62,7 @@ interface ReminderDao {
     suspend fun deleteSyncState(idList: List<String>)
 
     @Transaction
-    suspend fun deleteRemindersAndSyncState(date: LocalDate): List<String> {
-        val initialDate = date.toStartOfDayEpochMilli()
-        val endDate = date.toEndOfDayEpochMilli()
-
+    suspend fun deleteRemindersAndSyncState(initialDate: Long, endDate: Long): List<String> {
         val reminders = getReminders(initialDate = initialDate, endDate = endDate).first()
         deleteAllReminders(reminders = reminders.map { it.reminder })
         deleteSyncState(reminders.map { it.reminder.id })

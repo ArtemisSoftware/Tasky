@@ -63,10 +63,7 @@ interface TaskDao {
     suspend fun deleteSyncState(idList: List<String>)
 
     @Transaction
-    suspend fun deleteTasksAndSyncState(date: LocalDate): List<String> {
-        val initialDate = date.toStartOfDayEpochMilli()
-        val endDate = date.toEndOfDayEpochMilli()
-
+    suspend fun deleteTasksAndSyncState(initialDate: Long, endDate: Long): List<String> {
         val tasks = getTasks(initialDate = initialDate, endDate = endDate).first()
         deleteAllTasks(tasks = tasks.map { it.task })
         deleteSyncState(tasks.map { it.task.id })

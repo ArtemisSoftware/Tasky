@@ -64,27 +64,14 @@ class SyncLocalWithRemoteDataWorker @AssistedInject constructor(
     private fun getWorkResult(isSuccess: Boolean): Result {
         return when {
             isSuccess -> {
-                retry = 0
                 Result.success()
             }
-            (retry < MAX_NUMBER_OF_RETRIES) -> {
-                ++retry
+            (runAttemptCount < MAX_NUMBER_OF_RETRIES) -> {
                 return Result.retry()
             }
             else -> {
-                retry = 0
                 Result.failure()
             }
-        }
-    }
-
-    private fun shouldRetry(): Boolean {
-        return if (retry == MAX_NUMBER_OF_RETRIES) {
-            retry = 0
-            return false
-        } else {
-            ++retry
-            return true
         }
     }
 

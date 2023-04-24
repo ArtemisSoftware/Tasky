@@ -63,10 +63,7 @@ interface EventDao {
     suspend fun deleteSyncState(idList: List<String>)
 
     @Transaction
-    suspend fun deleteEventsAndSyncState(date: LocalDate): List<String> {
-        val initialDate = date.toStartOfDayEpochMilli()
-        val endDate = date.toEndOfDayEpochMilli()
-
+    suspend fun deleteEventsAndSyncState(initialDate: Long, endDate: Long): List<String> {
         val events = getEvents(initialDate = initialDate, endDate = endDate).first()
         deleteAllEvents(events = events.map { it.event })
         deleteSyncState(events.map { it.event.id })

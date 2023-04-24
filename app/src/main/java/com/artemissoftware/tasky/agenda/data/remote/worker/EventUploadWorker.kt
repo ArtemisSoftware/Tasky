@@ -11,7 +11,6 @@ import com.artemissoftware.core.util.UiText
 import com.artemissoftware.core.util.safeLet
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.compressor.ImageCompressor
-import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import com.artemissoftware.tasky.agenda.util.WorkerKeys.ERROR_MSG
 import com.artemissoftware.tasky.agenda.util.WorkerKeys.EVENT_JSON
 import com.artemissoftware.tasky.agenda.util.WorkerKeys.EVENT_PICTURE_LIST
@@ -26,7 +25,6 @@ import java.util.*
 class EventUploaderWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParameters: WorkerParameters,
-    private val eventRepository: EventRepository,
     private val imageCompressor: ImageCompressor,
     private val agendaApiSource: AgendaApiSource,
 ) : CoroutineWorker(context, workerParameters) {
@@ -39,8 +37,7 @@ class EventUploaderWorker @AssistedInject constructor(
                 val picturesMultipart = pictureToMultipart(pictures.toList())
 
                 return try {
-
-                    eventRepository.syncEvent(eventJson = eventJson, pictures = picturesMultipart, syncType = syncType)
+                    syncEvent(eventJson = eventJson, pictures = picturesMultipart, syncType = syncType)
                     Result.success()
                 } catch (ex: TaskyNetworkException) {
                     Result.failure(
@@ -62,6 +59,28 @@ class EventUploaderWorker @AssistedInject constructor(
                 filename = UUID.randomUUID().toString(),
                 imageCompressed.toRequestBody(),
             )
+        }
+    }
+
+    private suspend fun syncEvent(
+        eventJson: String,
+        pictures: List<MultipartBody.Part>,
+        syncType: SyncType,
+    ) {
+        when (syncType) {
+            SyncType.CREATE -> {
+                agendaApiSource.createEvent(
+                    eventBody = MultipartBody.Part.createFormData("create_event_request", eventJson),
+                    pictures = pictures,
+                )
+            }
+            SyncType.UPDATE -> {
+                agendaApiSource.updateEvent(
+                    eventBody = MultipartBody.Part.createFormData("update_event_request", eventJson),
+                    pictures = pictures,
+                )
+            }
+            else -> Unit
         }
     }
 }

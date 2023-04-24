@@ -5,7 +5,9 @@ import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.dao.TaskDao
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toEpochMilli
+import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgenda
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
@@ -49,9 +51,11 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun deleteLocalAgenda(date: LocalDate) {
-        val deletedRemindersId = reminderDao.deleteRemindersAndSyncState(date = date)
-        val deletedTasksId = taskDao.deleteTasksAndSyncState(date = date)
-        val deletedEventsId = eventDao.deleteEventsAndSyncState(date = date)
+        val initialDate = date.toStartOfDayEpochMilli()
+        val endDate = date.toEndOfDayEpochMilli()
+        val deletedRemindersId = reminderDao.deleteRemindersAndSyncState(initialDate = initialDate, endDate = endDate)
+        val deletedTasksId = taskDao.deleteTasksAndSyncState(initialDate = initialDate, endDate = endDate)
+        val deletedEventsId = eventDao.deleteEventsAndSyncState(initialDate = initialDate, endDate = endDate)
 
         (deletedRemindersId + deletedTasksId + deletedEventsId).forEach { id ->
             alarmScheduler.cancel(id)
