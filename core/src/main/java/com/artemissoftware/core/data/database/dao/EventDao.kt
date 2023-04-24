@@ -7,9 +7,9 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import com.artemissoftware.core.data.database.entities.EventEntity
 import com.artemissoftware.core.data.database.entities.EventSyncEntity
+import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.EventAndSyncState
-import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
-import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
+import com.artemissoftware.core.domain.SyncType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
@@ -80,4 +80,7 @@ interface EventDao {
     @Transaction
     @Query("SELECT * FROM eventEntity WHERE startDate >= :currentTime")
     suspend fun getEventsToSetAlarm(currentTime: Long): List<EventAndSyncState>
+
+    @Query("SELECT * FROM eventSyncEntity WHERE syncType IN (:types)")
+    suspend fun getEventsToSync(types: Array<SyncType> = arrayOf(SyncType.CREATE, SyncType.UPDATE, SyncType.DELETE)): List<EventSyncEntity>
 }

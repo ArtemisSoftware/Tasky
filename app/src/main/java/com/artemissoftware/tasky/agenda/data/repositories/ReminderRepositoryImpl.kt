@@ -2,9 +2,11 @@ package com.artemissoftware.tasky.agenda.data.repositories
 
 import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
+import com.artemissoftware.core.data.database.mappers.toSyncState
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
@@ -71,6 +73,10 @@ class ReminderRepositoryImpl constructor(
     override suspend fun upsertReminders(reminders: List<AgendaItem.Reminder>) {
         val result = reminders.map { it.toEntity() }
         reminderDao.upsert(result)
+    }
+
+    override suspend fun getRemindersToSync(): List<SyncState> {
+        return reminderDao.getRemindersToSync().map { it.toSyncState() }
     }
 
     override suspend fun syncRemindersWithRemote(reminders: List<AgendaItem.Reminder>) {

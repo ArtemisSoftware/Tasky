@@ -8,8 +8,7 @@ import androidx.room.Upsert
 import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.ReminderSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.ReminderAndSyncState
-import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
-import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
+import com.artemissoftware.core.domain.SyncType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
@@ -75,4 +74,7 @@ interface ReminderDao {
         deleteReminder(id)
         upsertReminderSync(reminderSyncEntity)
     }
+
+    @Query("SELECT * FROM reminderSyncEntity WHERE syncType IN (:types)")
+    suspend fun getRemindersToSync(types: Array<SyncType> = arrayOf(SyncType.CREATE, SyncType.UPDATE, SyncType.DELETE)): List<ReminderSyncEntity>
 }

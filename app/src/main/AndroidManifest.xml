@@ -35,6 +35,11 @@
                 <data android:host="tasky.com" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove">
+        </provider>
         <receiver android:name=".agenda.data.alarm.AlarmReceiver" />
         <receiver
             android:name=".agenda.data.alarm.AlarmBootUpReceiver"

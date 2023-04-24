@@ -102,6 +102,7 @@ dependencies {
     kapt rootProject.libraries.hiltAndroidCompiler
     implementation rootProject.libraries.hiltNavigationCompose
     implementation rootProject.libraries.hiltWork
+    kapt rootProject.libraries.hiltCompiler
 
     implementation project(':core')
 

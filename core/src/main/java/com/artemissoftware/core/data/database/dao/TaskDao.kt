@@ -5,11 +5,11 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.TaskEntity
 import com.artemissoftware.core.data.database.entities.TaskSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.TaskAndSyncState
-import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
-import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
+import com.artemissoftware.core.domain.SyncType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
@@ -76,4 +76,7 @@ interface TaskDao {
         deleteTask(id)
         upsertTaskSync(taskSyncEntity)
     }
+
+    @Query("SELECT * FROM taskSyncEntity WHERE syncType IN (:types)")
+    suspend fun getTasksToSync(types: Array<SyncType> = arrayOf(SyncType.CREATE, SyncType.UPDATE, SyncType.DELETE)): List<TaskSyncEntity>
 }

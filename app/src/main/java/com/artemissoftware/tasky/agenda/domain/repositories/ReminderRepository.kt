@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.domain.repositories
 
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -16,6 +17,8 @@ interface ReminderRepository {
     suspend fun deleteReminderAndSync(id: String): DataResponse<Unit>
 
     suspend fun upsertReminders(reminders: List<AgendaItem.Reminder>)
+
+    suspend fun getRemindersToSync(): List<SyncState>
 
     suspend fun syncRemindersWithRemote(reminders: List<AgendaItem.Reminder>)
 }
