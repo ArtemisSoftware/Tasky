@@ -97,17 +97,15 @@ class EventRepositoryImpl constructor(
     }
 
     override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>) {
-        if (events.isNotEmpty()) {
-            events.map { it.toEventAndSyncState() }.forEachIndexed { index, item ->
+        events.map { it.toEventAndSyncState() }.forEachIndexed { index, item ->
 
-                database.withTransaction {
-                    eventDao.upsertSyncStateAndEvent(eventEntity = item.event, eventSyncEntity = item.syncState)
-                    pictureDao.upsert(pictures = item.pictures)
-                    attendeeDao.upsert(attendees = item.attendees)
-                }
-
-                alarmScheduler.schedule(events[index])
+            database.withTransaction {
+                eventDao.upsertSyncStateAndEvent(eventEntity = item.event, eventSyncEntity = item.syncState)
+                pictureDao.upsert(pictures = item.pictures)
+                attendeeDao.upsert(attendees = item.attendees)
             }
+
+            alarmScheduler.schedule(events[index])
         }
     }
 }

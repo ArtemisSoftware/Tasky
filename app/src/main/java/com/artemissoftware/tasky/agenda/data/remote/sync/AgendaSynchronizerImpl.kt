@@ -7,13 +7,13 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.artemissoftware.tasky.agenda.data.remote.worker.SyncLocalWithRemoteDataWorker
-import com.artemissoftware.tasky.agenda.domain.sync.SyncAgenda
+import com.artemissoftware.tasky.agenda.domain.sync.AgendaSynchronizer
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-class SyncAgendaImpl(
+class AgendaSynchronizerImpl(
     private val workManager: WorkManager,
-) : SyncAgenda {
+) : AgendaSynchronizer {
 
     override fun syncLocalWithRemoteData() {
         val syncWorker = PeriodicWorkRequestBuilder<SyncLocalWithRemoteDataWorker>(
@@ -32,7 +32,7 @@ class SyncAgendaImpl(
 
         workManager.enqueueUniquePeriodicWork(
             "sync_local_with_remote",
-            ExistingPeriodicWorkPolicy.KEEP,
+            ExistingPeriodicWorkPolicy.REPLACE,
             syncWorker,
         )
     }

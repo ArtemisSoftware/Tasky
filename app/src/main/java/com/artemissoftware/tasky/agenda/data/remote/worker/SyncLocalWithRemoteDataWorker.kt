@@ -26,37 +26,69 @@ class SyncLocalWithRemoteDataWorker @AssistedInject constructor(
     private val eventRepository: EventRepository,
 ) : CoroutineWorker(context, workerParameters) {
 
+    private var retry = 0
+
     override suspend fun doWork(): Result {
         val result = agendaRepository.getAgenda(LocalDate.now())
 
         when (result) {
             is DataResponse.Error -> {
-                return Result.retry()
+                return getWorkResult(isSuccess = false)
             }
             is DataResponse.Success -> {
-                result.data?.let { agenda ->
+                result.data?.let { items ->
 
                     agendaRepository.deleteLocalAgenda(LocalDate.now())
 
                     supervisorScope {
                         val reminderJob = launch {
-                            reminderRepository.syncRemindersWithRemote(agenda.items.filterIsInstance<AgendaItem.Reminder>())
+                            reminderRepository.syncRemindersWithRemote(items.filterIsInstance<AgendaItem.Reminder>())
                         }
                         val taskJob = launch {
-                            taskRepository.syncTasksWithRemote(agenda.items.filterIsInstance<AgendaItem.Task>())
+                            taskRepository.syncTasksWithRemote(items.filterIsInstance<AgendaItem.Task>())
                         }
                         val eventJob = launch {
-                            eventRepository.syncEventsWithRemote(agenda.items.filterIsInstance<AgendaItem.Event>())
+                            eventRepository.syncEventsWithRemote(items.filterIsInstance<AgendaItem.Event>())
                         }
 
                         listOf(reminderJob, taskJob, eventJob).forEach { it.join() }
                     }
-
-                    return Result.success()
+                    return getWorkResult(isSuccess = true)
                 } ?: run {
-                    return Result.retry()
+                    return getWorkResult(isSuccess = false)
                 }
             }
         }
+    }
+
+    private fun getWorkResult(isSuccess: Boolean): Result {
+        return when {
+            isSuccess -> {
+                retry = 0
+                Result.success()
+            }
+            (retry < MAX_NUMBER_OF_RETRIES) -> {
+                ++retry
+                return Result.retry()
+            }
+            else -> {
+                retry = 0
+                Result.failure()
+            }
+        }
+    }
+
+    private fun shouldRetry(): Boolean {
+        return if (retry == MAX_NUMBER_OF_RETRIES) {
+            retry = 0
+            return false
+        } else {
+            ++retry
+            return true
+        }
+    }
+
+    companion object {
+        private val MAX_NUMBER_OF_RETRIES = 3
     }
 }

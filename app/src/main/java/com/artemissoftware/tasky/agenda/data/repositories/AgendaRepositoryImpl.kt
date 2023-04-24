@@ -10,7 +10,6 @@ import com.artemissoftware.tasky.agenda.data.mappers.toAgenda
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
-import com.artemissoftware.tasky.agenda.domain.models.Agenda
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import java.time.LocalDate
@@ -23,7 +22,7 @@ class AgendaRepositoryImpl(
     private val alarmScheduler: AlarmScheduler,
 ) : AgendaRepository {
 
-    override suspend fun getAgenda(date: LocalDate): DataResponse<Agenda> {
+    override suspend fun getAgenda(date: LocalDate): DataResponse<List<AgendaItem>> {
         return try {
             val result = agendaApiSource.getAgenda(time = date.toEpochMilli())
             DataResponse.Success(data = result.toAgenda())

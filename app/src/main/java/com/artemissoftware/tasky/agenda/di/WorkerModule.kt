@@ -2,9 +2,9 @@ package com.artemissoftware.tasky.agenda.di
 
 import android.content.Context
 import androidx.work.WorkManager
-import com.artemissoftware.tasky.agenda.data.remote.sync.SyncAgendaImpl
+import com.artemissoftware.tasky.agenda.data.remote.sync.AgendaSynchronizerImpl
 import com.artemissoftware.tasky.agenda.data.remote.upload.EventUploaderImpl
-import com.artemissoftware.tasky.agenda.domain.sync.SyncAgenda
+import com.artemissoftware.tasky.agenda.domain.sync.AgendaSynchronizer
 import com.artemissoftware.tasky.agenda.domain.uploader.EventUploader
 import dagger.Module
 import dagger.Provides
@@ -31,7 +31,7 @@ object WorkerModule {
 
     @Provides
     @Singleton
-    fun provideSyncAgenda(workManager: WorkManager): SyncAgenda {
-        return SyncAgendaImpl(workManager = workManager)
+    fun provideSyncAgenda(workManager: WorkManager): AgendaSynchronizer {
+        return AgendaSynchronizerImpl(workManager = workManager)
     }
 }

@@ -24,8 +24,8 @@ class SyncAgendaUseCase @Inject constructor(
                 // TODO: should send message to the ui saying the sync failed?
             }
             is DataResponse.Success -> {
-                result.data?.let {
-                    with(it.items) {
+                result.data?.let { items ->
+                    with(items) {
                         reminderRepository.upsertReminders(filterIsInstance<AgendaItem.Reminder>())
 
                         taskRepository.upsertTasks(filterIsInstance<AgendaItem.Task>())
