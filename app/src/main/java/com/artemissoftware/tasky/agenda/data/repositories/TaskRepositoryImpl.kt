@@ -12,6 +12,7 @@ import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
 import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
 import com.artemissoftware.tasky.agenda.data.mappers.toDto
 import com.artemissoftware.tasky.agenda.data.mappers.toEntity
+import com.artemissoftware.tasky.agenda.data.mappers.toTaskAndSyncState
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
