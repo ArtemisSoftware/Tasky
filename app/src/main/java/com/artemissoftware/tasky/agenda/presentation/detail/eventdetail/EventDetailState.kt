@@ -33,16 +33,5 @@ data class EventDetailState(
     val creator: Visitor? = null,
     val isGoing: Boolean = true,
 ) {
-
-//    fun getGoingVisitors(): List<Visitor> {
-//        val list = mutableListOf<Visitor>()
-//        creator?.let { list.add(it) }
-//        list.addAll(attendees.filter { it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) })
-//        list.sortBy { !it.isEventCreator }
-//        return list
-//    }
-
-    private fun isEventCreator(attendeeId: String) = (attendeeId == hostId)
-
     fun isEditionOccurring() = isEditing || isEditingNotification
 }

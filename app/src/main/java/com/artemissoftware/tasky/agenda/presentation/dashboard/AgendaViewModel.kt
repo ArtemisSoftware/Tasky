@@ -17,6 +17,7 @@ import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.LogOutUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.attendee.DeleteAttendeeUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.DeleteEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.CompleteTaskUseCase
@@ -44,6 +45,7 @@ class AgendaViewModel @Inject constructor(
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
+    private val deleteAttendeeUseCase: DeleteAttendeeUseCase,
     private val completeTaskUseCase: CompleteTaskUseCase,
 ) : TaskyUiEventViewModel() {
 
@@ -143,7 +145,11 @@ class AgendaViewModel @Inject constructor(
                     deleteTaskUseCase(id = item.itemId)
                 }
                 is AgendaItem.Event -> {
-                    deleteEventUseCase(id = item.itemId)
+                    if (item.hostId == _state.value.userId) {
+                        deleteEventUseCase(id = item.itemId)
+                    } else {
+                        deleteAttendeeUseCase(eventId = item.itemId)
+                    }
                 }
             }
         }

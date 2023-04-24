@@ -8,6 +8,7 @@ import com.artemissoftware.core.data.database.dao.PictureDao
 import com.artemissoftware.core.data.database.dao.ReminderDao
 import com.artemissoftware.core.data.database.dao.TaskDao
 import com.artemissoftware.core.data.database.entities.AttendeeEntity
+import com.artemissoftware.core.data.database.entities.AttendeeSyncEntity
 import com.artemissoftware.core.data.database.entities.EventEntity
 import com.artemissoftware.core.data.database.entities.EventSyncEntity
 import com.artemissoftware.core.data.database.entities.PictureEntity
@@ -26,6 +27,7 @@ import com.artemissoftware.core.data.database.entities.TaskSyncEntity
         EventSyncEntity::class,
         PictureEntity::class,
         AttendeeEntity::class,
+        AttendeeSyncEntity::class,
     ],
     version = 1,
 )
