@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
@@ -45,8 +44,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     val navController = rememberNavController()
-                    MainScreen(viewModel)
-                    LogOut(navController = navController)
+                    MainScreen(viewModel, navController)
                 }
             }
         }
@@ -54,7 +52,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun MainScreen(viewModel: MainViewModel) {
+private fun MainScreen(viewModel: MainViewModel, navController: NavHostController) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     state.taskyDialogState.dialog.value?.let {
@@ -68,21 +66,32 @@ private fun MainScreen(viewModel: MainViewModel) {
         DestinationsNavHost(
             navGraph = NavGraphs.root,
             startRoute = it,
+            navController = navController,
+        )
+    } ?: run {
+        DestinationsNavHost(
+            navGraph = NavGraphs.root,
+            startRoute = LoginScreenDestination,
+            navController = navController,
         )
     }
+    LogOut(navController = navController)
 
     ManageUIEvents(
         uiEvent = viewModel.uiEvent,
+        showDialog = {
+            state.taskyDialogState.showDialog(it)
+        },
     )
 }
 
 @Composable
 fun LogOut(navController: NavHostController) {
-    DestinationsNavHost(
-        navGraph = NavGraphs.root,
-        startRoute = LoginScreenDestination,
-        navController = navController
-    )
+//    DestinationsNavHost(
+//        navGraph = NavGraphs.root,
+//        startRoute = LoginScreenDestination,
+//        navController = navController
+//    )
     LaunchedEffect(key1 = Unit) {
         logOutState.collect {
             navController.navigate(

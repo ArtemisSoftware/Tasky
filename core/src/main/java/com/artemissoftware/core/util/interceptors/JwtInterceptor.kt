@@ -20,8 +20,8 @@ class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseC
     override fun intercept(chain: Interceptor.Chain): Response {
         val original: Request = chain.request()
 
-        original.tag(Invocation::class.java)?.let { invocation ->
-            val chain = if (invocation.method().isAnnotationPresent(NoJWTHeaderRequest::class.java)) {
+        val chain = original.tag(Invocation::class.java)?.let { invocation ->
+            if (invocation.method().isAnnotationPresent(NoJWTHeaderRequest::class.java)) {
                 chain.proceed(original)
             } else {
                 val request: Request = original.newBuilder()
@@ -29,23 +29,15 @@ class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseC
                     .method(original.method, original.body)
                     .build()
 
-               chain.proceed(request)
+                chain.proceed(request)
             }
-
-            return chain.also { response ->
-                if (response.code == 401) {
-                    runBlocking {
-                        _logOutState.emit(Unit)
-                    }
-                }
-            }
-
         } ?: kotlin.run {
-            return chain.proceed(original).also { response ->
-                if (response.code == 401) {
-                    runBlocking {
-                        _logOutState.emit(Unit)
-                    }
+            chain.proceed(original)
+        }
+        return chain.also { response ->
+            if (response.code == 401) {
+                runBlocking {
+                    _logOutState.emit(Unit)
                 }
             }
         }
