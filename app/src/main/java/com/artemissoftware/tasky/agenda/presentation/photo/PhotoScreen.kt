@@ -39,6 +39,7 @@ import com.artemissoftware.core.R as CoreR
 fun PhotoScreen(
     viewModel: PhotoViewModel = hiltViewModel(),
     picture: Picture,
+    isEventCreator: Boolean,
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<PictureRecipient>,
 ) {
@@ -46,6 +47,7 @@ fun PhotoScreen(
 
     PhotoScreenContent(
         picture = picture,
+        isEventCreator = isEventCreator,
         state = state,
         events = viewModel::onTriggerEvent,
     )
@@ -64,6 +66,7 @@ fun PhotoScreen(
 @Composable
 private fun PhotoScreenContent(
     picture: Picture,
+    isEventCreator: Boolean,
     events: (PhotoEvents) -> Unit,
     state: PhotoState,
 ) {
@@ -78,13 +81,15 @@ private fun PhotoScreenContent(
                 backGroundColor = Black,
                 title = stringResource(id = R.string.photo),
                 toolbarActions = { color ->
-                    TaskyToolBarAction(
-                        iconId = R.drawable.ic_trash,
-                        tint = color,
-                        onClicked = {
-                            events(PhotoEvents.DeletePhoto(picture.id))
-                        },
-                    )
+                    if(isEventCreator) {
+                        TaskyToolBarAction(
+                            iconId = R.drawable.ic_trash,
+                            tint = color,
+                            onClicked = {
+                                events(PhotoEvents.DeletePhoto(picture.id))
+                            },
+                        )
+                    }
                 },
             )
         },
@@ -136,6 +141,7 @@ private fun PhotoScreenContentPreview() {
     PhotoScreenContent(
         picture = Picture.Local(picId = "123", uri = "http://www.batman.com/riddler.jpg"),
         events = {},
+        isEventCreator = true,
         state = PhotoState(),
     )
 }

@@ -37,8 +37,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -155,9 +155,9 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun goToPicture(picture: Picture) {
+    private fun goToPicture(picture: Picture) = with(_state.value) {
         viewModelScope.launch {
-            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture).route))
+            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture, isEventCreator = isEventCreator).route))
         }
     }
 
