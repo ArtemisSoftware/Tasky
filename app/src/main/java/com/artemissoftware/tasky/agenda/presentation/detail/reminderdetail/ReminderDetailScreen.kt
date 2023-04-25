@@ -138,7 +138,7 @@ fun ReminderDetailScreenContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             AssignmentHeader(
-                                agendaItemType = AgendaItemType.Reminder(),
+                                agendaItemType = AgendaItemType.Reminder,
                                 title = state.title,
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,

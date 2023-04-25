@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +45,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDi
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
 import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
+import com.artemissoftware.tasky.agenda.presentation.detail.mappers.toVisitor
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
@@ -63,8 +65,6 @@ fun EventDetailScreen(
     viewModel: EventDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     eventId: String? = null,
-    userId: String,
-    userName: String,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
     pictureRecipient: ResultRecipient<PhotoScreenDestination, PictureRecipient>,
 ) {
@@ -125,6 +125,16 @@ private fun EventDetailScreenContent(
         },
     )
 
+    val visitorsGoing = remember(key1 = state.attendees) {
+        val list = state.attendees.filter { it.isGoing }.map { it.toVisitor(isEventCreator = (it.id == state.hostId)) }.toMutableList()
+        list.sortBy { !it.isEventCreator }
+        list.toList()
+    }
+
+    val visitorsNotGoing = remember(key1 = state.attendees) {
+        state.attendees.filter { !it.isGoing }.map { it.toVisitor(isEventCreator = false) }
+    }
+
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -141,7 +151,7 @@ private fun EventDetailScreenContent(
                 ),
                 toolbarActions = { color ->
 
-                    if (state.isEditionOccurring()) {
+                    if (state.isEditing) {
                         TaskyToolBarAction(
                             text = stringResource(id = R.string.save),
                             tint = color,
@@ -176,17 +186,14 @@ private fun EventDetailScreenContent(
                         ) {
                             item {
                                 AssignmentHeader(
-                                    agendaItemType = AgendaItemType.Event(),
+                                    agendaItemType = AgendaItemType.Event,
                                     title = state.title,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     onEditClick = {
                                         events(DetailEvents.EditTitle(it))
-                                    },
-                                    onIsDoneClick = {
-                                        events(DetailEvents.ToggleIsDone)
                                     },
                                 )
 
@@ -200,7 +207,7 @@ private fun EventDetailScreenContent(
                             }
                             item {
                                 AssignmentDescription(
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     description = state.description,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -223,7 +230,7 @@ private fun EventDetailScreenContent(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(112.dp),
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     onAddPicturesClick = {
                                         singlePhotoPickerLauncher.launch(
                                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
@@ -248,7 +255,7 @@ private fun EventDetailScreenContent(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     startDate = state.startDate,
                                     onStartDateClick = {
                                         DateTimePicker.datePickerDialog(
@@ -299,7 +306,7 @@ private fun EventDetailScreenContent(
                             }
                             item {
                                 AssignmentNotification(
-                                    isEditing = state.isEditingNotification,
+                                    isEditing = state.isEditing,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
@@ -320,7 +327,7 @@ private fun EventDetailScreenContent(
                             item {
                                 VisitorsHeader(
                                     visitorOptionType = state.visitorOption,
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
@@ -333,8 +340,8 @@ private fun EventDetailScreenContent(
                             visitors(
                                 type = VisitorOptionType.GOING,
                                 selectedOption = state.visitorOption,
-                                visitors = state.goingVisitors,
-                                isEditing = state.isEditing,
+                                visitors = visitorsGoing,
+                                isEditing = state.isEditing && state.isEventCreator,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
                                 },
@@ -342,7 +349,7 @@ private fun EventDetailScreenContent(
                             visitors(
                                 type = VisitorOptionType.NOT_GOING,
                                 selectedOption = state.visitorOption,
-                                visitors = state.notGoingVisitors,
+                                visitors = visitorsNotGoing,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
                                 },

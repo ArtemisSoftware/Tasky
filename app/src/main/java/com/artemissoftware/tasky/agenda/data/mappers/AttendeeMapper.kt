@@ -1,9 +1,12 @@
 package com.artemissoftware.tasky.agenda.data.mappers
 
 import com.artemissoftware.core.data.database.entities.AttendeeEntity
+import com.artemissoftware.core.util.extensions.toLocalDateTime
+import com.artemissoftware.core.util.extensions.toLong
 import com.artemissoftware.tasky.agenda.data.remote.dto.AttendeeDto
 import com.artemissoftware.tasky.agenda.data.remote.dto.EventAttendeeDto
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
+import java.time.LocalDateTime
 
 fun AttendeeDto.toAttendee(): Attendee {
     return Attendee(
@@ -11,6 +14,7 @@ fun AttendeeDto.toAttendee(): Attendee {
         email = attendeeProfile.email,
         fullName = attendeeProfile.fullName,
         isGoing = true,
+        remindAt = LocalDateTime.now(),
     )
 }
 
@@ -21,6 +25,7 @@ fun Attendee.toEntity(eventId: String): AttendeeEntity {
         email = email,
         fullName = fullName,
         isGoing = isGoing,
+        remindAt = remindAt.toLong(),
     )
 }
 
@@ -31,6 +36,7 @@ fun EventAttendeeDto.toEntity(): AttendeeEntity {
         email = email,
         fullName = fullName,
         isGoing = isGoing,
+        remindAt = remindAt,
     )
 }
 
@@ -40,6 +46,7 @@ fun AttendeeEntity.toAttendee(): Attendee {
         id = userId,
         email = email,
         isGoing = isGoing,
+        remindAt = remindAt.toLocalDateTime(),
     )
 }
 
@@ -49,5 +56,6 @@ fun EventAttendeeDto.toAttendee(): Attendee {
         email = email,
         fullName = fullName,
         isGoing = isGoing,
+        remindAt = remindAt.toLocalDateTime(),
     )
 }

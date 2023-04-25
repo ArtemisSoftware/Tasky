@@ -1,6 +1,5 @@
 package com.artemissoftware.tasky.agenda.composables.assignment
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,10 +29,10 @@ import com.artemissoftware.core.presentation.theme.Light2
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import com.artemissoftware.tasky.util.VisibilityTransitions
+import java.time.LocalDateTime
 
 @Composable
 fun VisitorItem(
@@ -118,6 +117,7 @@ private fun VisitorItemPreview() {
                     id = "222",
                     email = "Bruce@email.com",
                     isGoing = false,
+                    remindAt = LocalDateTime.now(),
                 ),
                 isEventCreator = true,
             ),
@@ -132,6 +132,7 @@ private fun VisitorItemPreview() {
                     id = "222",
                     email = "Bruce@email.com",
                     isGoing = false,
+                    remindAt = LocalDateTime.now(),
                 ),
                 isEventCreator = true,
             ),

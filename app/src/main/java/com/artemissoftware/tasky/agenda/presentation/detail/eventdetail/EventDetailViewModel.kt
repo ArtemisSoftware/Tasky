@@ -8,6 +8,7 @@ import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.models.agenda.NotificationType
+import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
@@ -16,7 +17,6 @@ import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFiel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
-import com.artemissoftware.core.util.safeLet
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -29,13 +29,8 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.SaveEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
-import com.artemissoftware.tasky.agenda.presentation.detail.mappers.toGoingVisitors
-import com.artemissoftware.tasky.agenda.presentation.detail.mappers.toNotGoingVisitors
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_ID
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_NAME
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,8 +38,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 import javax.inject.Inject
@@ -58,6 +55,7 @@ class EventDetailViewModel @Inject constructor(
     private val deleteEventUseCase: DeleteEventUseCase,
     private val saveEventUseCase: SaveEventUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -133,15 +131,16 @@ class EventDetailViewModel @Inject constructor(
 
     private fun setAttendeeGoingStatus(isGoing: Boolean) = with(_state) {
         update {
-            val list = value.attendees.toMutableList()
-            list.find { item -> item.id == value.userId }?.isGoing = isGoing
+            val list = value.attendees.map { attendee ->
+                if (attendee.id == value.userId) attendee.copy(isGoing = isGoing) else attendee
+            }
 
             it.copy(
                 attendees = list.toList(),
                 isGoing = isGoing,
             )
         }
-        saveEvent()
+        saveEvent(shouldPopBackStack = false)
     }
 
     private fun removePicture(pictureId: String) = with(_state) {
@@ -262,8 +261,7 @@ class EventDetailViewModel @Inject constructor(
     private fun toggleEdition() = with(_state) {
         update {
             it.copy(
-                isEditingNotification = !it.isEditing,
-                isEditing = if (value.isEventCreator) !it.isEditing else false,
+                isEditing = !it.isEditing,
             )
         }
     }
@@ -339,15 +337,28 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() = with(_state) {
+        viewModelScope.launch {
+            val user = getUserUseCase().first()
+            update {
+                it.copy(userId = user.id)
+            }
+            loadEventDetail()
+        }
+    }
+
+    private fun loadEventDetail() = with(_state) {
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
                 val result = getEventUseCase(eventId)
                 result?.let { item ->
+
+                    val attendee = item.attendees.find { attendee -> attendee.id == value.userId }
+
                     update {
                         it.copy(
                             agendaItem = item,
                             notification = NotificationType.getNotification(
-                                remindAt = item.remindAt,
+                                remindAt = getRemindAtTime(eventRemindAt = item.remindAt, attendee = attendee),
                                 startDate = item.from,
                             ),
                             startDate = item.from,
@@ -357,34 +368,19 @@ class EventDetailViewModel @Inject constructor(
                             pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
-                            goingVisitors = item.attendees.toGoingVisitors(hostId = item.hostId),
-                            notGoingVisitors = item.attendees.toNotGoingVisitors(),
+                            isEventCreator = (item.hostId == value.userId),
+                            isGoing = attendee?.isGoing ?: false,
                         )
                     }
-                    safeLet(savedStateHandle.get<String>(USER_ID), savedStateHandle.get<String>(USER_NAME)) { userId, userName ->
-                        val isEventCreator = (item.hostId == userId)
-                        update {
-                            it.copy(
-                                userId = userId,
-                                isEventCreator = isEventCreator,
-                                creator = if (isEventCreator) { Visitor(attendee = Attendee(fullName = userName, id = userId, email = "", isGoing = true), isEventCreator = true) } else null,
-                                isGoing = item.attendees.find { attendee -> attendee.id == userId }?.isGoing ?: false,
-                            )
-                        }
-                    }
-                }
-            }
-        } ?: run {
-            safeLet(savedStateHandle.get<String>(USER_ID), savedStateHandle.get<String>(USER_NAME)) { userId, userName ->
-                update {
-                    it.copy(
-                        hostId = userId,
-                        hostName = userName,
-                        creator = Visitor(attendee = Attendee(fullName = userName, id = userId, email = "", isGoing = true), isEventCreator = true),
-                    )
                 }
             }
         }
+    }
+
+    private fun getRemindAtTime(eventRemindAt: LocalDateTime, attendee: Attendee?): LocalDateTime {
+        return attendee?.let {
+            it.remindAt
+        } ?: eventRemindAt
     }
 
     private fun editTitleOrDescription(text: String, editType: EditType) {
@@ -405,7 +401,7 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveEvent(validatedPictures: List<Picture> = emptyList()) = with(_state.value) {
+    private fun saveEvent(validatedPictures: List<Picture> = emptyList(), shouldPopBackStack: Boolean = true) = with(_state.value) {
         val item = AgendaItem.Event(
             id = agendaItem.id,
             title = title,
@@ -423,7 +419,7 @@ class EventDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             saveEventUseCase(item)
-            popBackStack()
+            if (shouldPopBackStack) popBackStack()
         }
     }
 

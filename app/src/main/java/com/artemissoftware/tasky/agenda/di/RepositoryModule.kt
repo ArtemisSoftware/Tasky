@@ -49,8 +49,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideAttendeeRepository(agendaApiSource: AgendaApiSource): AttendeeRepository {
-        return AttendeeRepositoryImpl(agendaApiSource = agendaApiSource)
+    fun provideAttendeeRepository(agendaApiSource: AgendaApiSource, database: TaskyDatabase): AttendeeRepository {
+        return AttendeeRepositoryImpl(agendaApiSource = agendaApiSource, attendeeDao = database.attendeeDao)
     }
 
     @Provides

@@ -254,9 +254,9 @@ private fun AgendaScreenContent(
 
 private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
     return when (item) {
-        is AgendaItem.Reminder -> AgendaItemType.Reminder()
-        is AgendaItem.Task -> AgendaItemType.Task()
-        is AgendaItem.Event -> AgendaItemType.Event()
+        is AgendaItem.Reminder -> AgendaItemType.Reminder
+        is AgendaItem.Task -> AgendaItemType.Task
+        is AgendaItem.Event -> AgendaItemType.Event
     }
 }
 

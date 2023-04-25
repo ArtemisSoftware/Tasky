@@ -114,8 +114,8 @@ fun AssignmentHeader(
 @Composable
 private fun AssignmentHeaderPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentHeader(agendaItemType = AgendaItemType.Reminder(), title = "First title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
-        AssignmentHeader(agendaItemType = AgendaItemType.Task(), isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
-        AssignmentHeader(agendaItemType = AgendaItemType.Event(), isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Reminder, title = "First title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Task, isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Event, isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
     }
 }
