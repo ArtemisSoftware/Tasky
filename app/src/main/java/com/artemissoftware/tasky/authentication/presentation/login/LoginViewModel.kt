@@ -19,6 +19,7 @@ import com.artemissoftware.tasky.destinations.RegisterScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class LoginViewModel @Inject constructor(
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
-    val state: StateFlow<LoginState> = _state
+    val state: StateFlow<LoginState> = _state.asStateFlow()
 
     fun onTriggerEvent(event: LoginEvents) {
         when (event) {

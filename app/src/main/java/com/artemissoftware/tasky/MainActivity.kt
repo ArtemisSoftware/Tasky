@@ -9,12 +9,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.rememberNavController
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
+import com.artemissoftware.core.util.interceptors.logOutState
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
+import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,7 +44,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background,
                 ) {
+                    val navController = rememberNavController()
                     MainScreen(viewModel)
+                    LogOut(navController = navController)
                 }
             }
         }
@@ -64,10 +73,24 @@ private fun MainScreen(viewModel: MainViewModel) {
 
     ManageUIEvents(
         uiEvent = viewModel.uiEvent,
-        showDialog = {
-            state.taskyDialogState.showDialog(it)
-        },
     )
+}
+
+@Composable
+fun LogOut(navController: NavHostController) {
+    DestinationsNavHost(
+        navGraph = NavGraphs.root,
+        startRoute = LoginScreenDestination,
+        navController = navController
+    )
+    LaunchedEffect(key1 = Unit) {
+        logOutState.collect {
+            navController.navigate(
+                route = LoginScreenDestination().route,
+                navOptions = NavOptions.Builder().setPopUpTo(navController.currentDestination?.route, inclusive = true).build(),
+            )
+        }
+    }
 }
 
 @Composable
