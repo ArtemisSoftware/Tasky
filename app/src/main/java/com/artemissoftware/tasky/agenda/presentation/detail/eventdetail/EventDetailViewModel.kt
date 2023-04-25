@@ -131,12 +131,12 @@ class EventDetailViewModel @Inject constructor(
 
     private fun setAttendeeGoingStatus(isGoing: Boolean) = with(_state) {
         update {
-            val list = value.attendees.map { attendee ->
-                if (attendee.id == value.userId) attendee.copy(isGoing = isGoing) else attendee
+            val attendees = value.attendees.map { attendee ->
+                if (attendee.id == value.hostId) attendee.copy(isGoing = isGoing) else attendee
             }
 
             it.copy(
-                attendees = list.toList(),
+                attendees = attendees,
                 isGoing = isGoing,
             )
         }
@@ -340,7 +340,9 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val user = getUserUseCase().first()
             update {
-                it.copy(userId = user.id)
+                it.copy(
+                    hostId = user.id
+                )
             }
             loadEventDetail()
         }
@@ -352,13 +354,13 @@ class EventDetailViewModel @Inject constructor(
                 val result = getEventUseCase(eventId)
                 result?.let { item ->
 
-                    val attendee = item.attendees.find { attendee -> attendee.id == value.userId }
+                    val attendee = item.attendees.find { attendee -> attendee.id == value.hostId }
 
                     update {
                         it.copy(
                             agendaItem = item,
                             notification = NotificationType.getNotification(
-                                remindAt = getRemindAtTime(eventRemindAt = item.remindAt, attendee = attendee),
+                                remindAt = attendee?.remindAt ?: item.remindAt ,
                                 startDate = item.from,
                             ),
                             startDate = item.from,
@@ -368,19 +370,13 @@ class EventDetailViewModel @Inject constructor(
                             pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
-                            isEventCreator = (item.hostId == value.userId),
+                            isEventCreator = (item.hostId == value.hostId),
                             isGoing = attendee?.isGoing ?: false,
                         )
                     }
                 }
             }
         }
-    }
-
-    private fun getRemindAtTime(eventRemindAt: LocalDateTime, attendee: Attendee?): LocalDateTime {
-        return attendee?.let {
-            it.remindAt
-        } ?: eventRemindAt
     }
 
     private fun editTitleOrDescription(text: String, editType: EditType) {

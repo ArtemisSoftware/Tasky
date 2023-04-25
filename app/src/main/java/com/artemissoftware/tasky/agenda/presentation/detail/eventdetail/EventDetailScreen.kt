@@ -39,13 +39,12 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.composables.assignment.VisitorItem
 import com.artemissoftware.tasky.agenda.composables.assignment.VisitorsHeader
+import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
-import com.artemissoftware.tasky.agenda.presentation.detail.mappers.toVisitor
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
@@ -126,13 +125,13 @@ private fun EventDetailScreenContent(
     )
 
     val visitorsGoing = remember(key1 = state.attendees) {
-        val list = state.attendees.filter { it.isGoing }.map { it.toVisitor(isEventCreator = (it.id == state.hostId)) }.toMutableList()
-        list.sortBy { !it.isEventCreator }
+        val list = state.attendees.filter { it.isGoing }.toMutableList()
+        list.sortBy { it.id != state.hostId }
         list.toList()
     }
 
     val visitorsNotGoing = remember(key1 = state.attendees) {
-        state.attendees.filter { !it.isGoing }.map { it.toVisitor(isEventCreator = false) }
+        state.attendees.filter { !it.isGoing }
     }
 
     TaskyScaffold(
@@ -341,6 +340,7 @@ private fun EventDetailScreenContent(
                                 type = VisitorOptionType.GOING,
                                 selectedOption = state.visitorOption,
                                 visitors = visitorsGoing,
+                                hostId = state.hostId,
                                 isEditing = state.isEditing && state.isEventCreator,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
@@ -349,6 +349,7 @@ private fun EventDetailScreenContent(
                             visitors(
                                 type = VisitorOptionType.NOT_GOING,
                                 selectedOption = state.visitorOption,
+                                hostId = state.hostId,
                                 visitors = visitorsNotGoing,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
@@ -395,7 +396,8 @@ private fun EventDetailScreenContent(
 private fun LazyListScope.visitors(
     type: VisitorOptionType,
     selectedOption: VisitorOptionType,
-    visitors: List<Visitor>,
+    visitors: List<Attendee>,
+    hostId: String,
     isEditing: Boolean = false,
     onDeleteVisitor: (String) -> Unit,
 ) {
@@ -418,9 +420,9 @@ private fun LazyListScope.visitors(
     items(
         items = visitors,
         key = {
-            it.attendee.id
+            it.id
         },
-        itemContent = { visitor ->
+        itemContent = { attendee ->
 
             AnimatedVisibility(
                 visible = ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()),
@@ -431,7 +433,8 @@ private fun LazyListScope.visitors(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 4.dp),
-                    visitor = visitor,
+                    attendee = attendee,
+                    isEventCreator = (hostId == attendee.id),
                     isEditing = isEditing,
                     onDeleteVisitor = { attendeeId ->
                         onDeleteVisitor(attendeeId)
