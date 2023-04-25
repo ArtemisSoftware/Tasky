@@ -22,6 +22,7 @@ class LogOutUseCase @Inject constructor(
                 Resource.Error(exception)
             }
             is DataResponse.Success -> {
+                agendaRepository.deleteLocalAgenda()
                 userStoreRepository.deleteUser()
                 Resource.Success(Unit)
             }
