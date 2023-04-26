@@ -2,9 +2,11 @@ package com.artemissoftware.tasky.agenda.data.repositories
 
 import com.artemissoftware.core.data.database.dao.AttendeeDao
 import com.artemissoftware.core.data.database.entities.AttendeeSyncEntity
+import com.artemissoftware.core.data.database.mappers.toSyncState
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.tasky.agenda.data.mappers.toAttendee
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
@@ -30,14 +32,18 @@ class AttendeeRepositoryImpl(
     }
 
     override suspend fun deleteAttendee(eventId: String): DataResponse<Unit> {
-        attendeeDao.upsertAttendeeSync(AttendeeSyncEntity(id = eventId, syncType = SyncType.DELETE))
+        attendeeDao.upsertSyncState(AttendeeSyncEntity(id = eventId, syncType = SyncType.DELETE))
 
         return try {
             agendaApiSource.deleteAttendee(eventId = eventId)
-            attendeeDao.upsertAttendeeSync(AttendeeSyncEntity(id = eventId, syncType = SyncType.SYNCED))
+            attendeeDao.upsertSyncState(AttendeeSyncEntity(id = eventId, syncType = SyncType.SYNCED))
             DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
         }
+    }
+
+    override suspend fun getAttendeesToSync(): List<SyncState> {
+        return attendeeDao.getAttendeesToSync().map { it.toSyncState() }
     }
 }
