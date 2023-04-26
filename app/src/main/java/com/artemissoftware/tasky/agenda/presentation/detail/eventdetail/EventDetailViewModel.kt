@@ -8,6 +8,7 @@ import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.models.agenda.NotificationType
+import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
@@ -30,16 +31,17 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.USER_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 import javax.inject.Inject
@@ -53,6 +55,7 @@ class EventDetailViewModel @Inject constructor(
     private val deleteEventUseCase: DeleteEventUseCase,
     private val saveEventUseCase: SaveEventUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
@@ -116,10 +119,28 @@ class EventDetailViewModel @Inject constructor(
             DetailEvents.Delete -> {
                 deleteEventWarning()
             }
-            DetailEvents.JoinEvent -> TODO()
-            DetailEvents.LeaveEvent -> TODO()
+            DetailEvents.JoinEvent -> {
+                setAttendeeGoingStatus(isGoing = true)
+            }
+            DetailEvents.LeaveEvent -> {
+                setAttendeeGoingStatus(isGoing = false)
+            }
             else -> Unit
         }
+    }
+
+    private fun setAttendeeGoingStatus(isGoing: Boolean) = with(_state) {
+        update {
+            val attendees = value.attendees.map { attendee ->
+                if (attendee.id == value.hostId) attendee.copy(isGoing = isGoing) else attendee
+            }
+
+            it.copy(
+                attendees = attendees,
+                isGoing = isGoing,
+            )
+        }
+        saveEvent(shouldPopBackStack = false)
     }
 
     private fun removePicture(pictureId: String) = with(_state) {
@@ -134,9 +155,9 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun goToPicture(picture: Picture) {
+    private fun goToPicture(picture: Picture) = with(_state.value) {
         viewModelScope.launch {
-            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture).route))
+            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture, isEventCreator = isEventCreator).route))
         }
     }
 
@@ -316,15 +337,30 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun loadDetail() = with(_state) {
+        viewModelScope.launch {
+            val user = getUserUseCase().first()
+            update {
+                it.copy(
+                    hostId = user.id
+                )
+            }
+            loadEventDetail()
+        }
+    }
+
+    private fun loadEventDetail() = with(_state) {
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
                 val result = getEventUseCase(eventId)
                 result?.let { item ->
+
+                    val attendee = item.attendees.find { attendee -> attendee.id == value.hostId }
+
                     update {
                         it.copy(
                             agendaItem = item,
                             notification = NotificationType.getNotification(
-                                remindAt = item.remindAt,
+                                remindAt = attendee?.remindAt ?: item.remindAt ,
                                 startDate = item.from,
                             ),
                             startDate = item.from,
@@ -334,16 +370,10 @@ class EventDetailViewModel @Inject constructor(
                             pictures = item.pictures,
                             attendees = item.attendees,
                             hostId = item.hostId,
+                            isEventCreator = (item.hostId == value.hostId),
+                            isGoing = attendee?.isGoing ?: false,
                         )
                     }
-                }
-            }
-        } ?: run {
-            savedStateHandle.get<String>(USER_ID)?.let { userId ->
-                update {
-                    it.copy(
-                        hostId = userId,
-                    )
                 }
             }
         }
@@ -367,7 +397,7 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveEvent(validatedPictures: List<Picture>) = with(_state.value) {
+    private fun saveEvent(validatedPictures: List<Picture> = emptyList(), shouldPopBackStack: Boolean = true) = with(_state.value) {
         val item = AgendaItem.Event(
             id = agendaItem.id,
             title = title,
@@ -380,11 +410,12 @@ class EventDetailViewModel @Inject constructor(
             attendees = attendees,
             pictures = validatedPictures,
             deletedPictures = deletedPictures,
+            isGoing = isGoing,
         )
 
         viewModelScope.launch {
             saveEventUseCase(item)
-            popBackStack()
+            if (shouldPopBackStack) popBackStack()
         }
     }
 

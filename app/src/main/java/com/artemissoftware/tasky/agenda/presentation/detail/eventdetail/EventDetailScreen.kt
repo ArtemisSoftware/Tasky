@@ -3,12 +3,18 @@ package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,12 +39,12 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.composables.assignment.VisitorItem
 import com.artemissoftware.tasky.agenda.composables.assignment.VisitorsHeader
+import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialog
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
@@ -46,6 +52,7 @@ import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvent
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
+import com.artemissoftware.tasky.util.VisibilityTransitions
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -57,7 +64,6 @@ fun EventDetailScreen(
     viewModel: EventDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     eventId: String? = null,
-    userId: String,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
     pictureRecipient: ResultRecipient<PhotoScreenDestination, PictureRecipient>,
 ) {
@@ -118,6 +124,16 @@ private fun EventDetailScreenContent(
         },
     )
 
+    val visitorsGoing = remember(key1 = state.attendees) {
+        val list = state.attendees.filter { it.isGoing }.toMutableList()
+        list.sortBy { it.id != state.hostId }
+        list.toList()
+    }
+
+    val visitorsNotGoing = remember(key1 = state.attendees) {
+        state.attendees.filter { !it.isGoing }
+    }
+
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
@@ -161,7 +177,7 @@ private fun EventDetailScreenContent(
                     Box(
                         modifier = Modifier
                             .padding(top = 32.dp)
-                            .padding(bottom = 68.dp),
+                            .padding(bottom = 12.dp),
                     ) {
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth(),
@@ -169,17 +185,14 @@ private fun EventDetailScreenContent(
                         ) {
                             item {
                                 AssignmentHeader(
-                                    agendaItemType = AgendaItemType.Task(),
+                                    agendaItemType = AgendaItemType.Event,
                                     title = state.title,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     onEditClick = {
                                         events(DetailEvents.EditTitle(it))
-                                    },
-                                    onIsDoneClick = {
-                                        events(DetailEvents.ToggleIsDone)
                                     },
                                 )
 
@@ -193,7 +206,7 @@ private fun EventDetailScreenContent(
                             }
                             item {
                                 AssignmentDescription(
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     description = state.description,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -202,13 +215,21 @@ private fun EventDetailScreenContent(
                                         events(DetailEvents.EditDescription(it))
                                     },
                                 )
+
+                                DetailDivider(
+                                    top = 20.dp,
+                                    bottom = 20.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                )
                             }
                             item {
                                 PhotoGallery(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(112.dp),
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     onAddPicturesClick = {
                                         singlePhotoPickerLauncher.launch(
                                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
@@ -233,7 +254,7 @@ private fun EventDetailScreenContent(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     startDate = state.startDate,
                                     onStartDateClick = {
                                         DateTimePicker.datePickerDialog(
@@ -305,7 +326,7 @@ private fun EventDetailScreenContent(
                             item {
                                 VisitorsHeader(
                                     visitorOptionType = state.visitorOption,
-                                    isEditing = state.isEditing,
+                                    isEditing = state.isEditing && state.isEventCreator,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp),
@@ -318,7 +339,9 @@ private fun EventDetailScreenContent(
                             visitors(
                                 type = VisitorOptionType.GOING,
                                 selectedOption = state.visitorOption,
-                                visitors = state.getGoingVisitors(),
+                                visitors = visitorsGoing,
+                                hostId = state.hostId,
+                                isEditing = state.isEditing && state.isEventCreator,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
                                 },
@@ -326,7 +349,8 @@ private fun EventDetailScreenContent(
                             visitors(
                                 type = VisitorOptionType.NOT_GOING,
                                 selectedOption = state.visitorOption,
-                                visitors = state.getNotGoingVisitors(),
+                                hostId = state.hostId,
+                                visitors = visitorsNotGoing,
                                 onDeleteVisitor = { attendeeId ->
                                     events(DetailEvents.DeleteVisitor(attendeeId = attendeeId))
                                 },
@@ -335,7 +359,8 @@ private fun EventDetailScreenContent(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
+                                        .padding(horizontal = 16.dp)
+                                        .padding(top = 40.dp, bottom = 32.dp),
                                 ) {
                                     eventButton(state = state, events = events)
                                 }
@@ -371,11 +396,17 @@ private fun EventDetailScreenContent(
 private fun LazyListScope.visitors(
     type: VisitorOptionType,
     selectedOption: VisitorOptionType,
-    visitors: List<Visitor>,
+    visitors: List<Attendee>,
+    hostId: String,
+    isEditing: Boolean = false,
     onDeleteVisitor: (String) -> Unit,
 ) {
-    if ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()) {
-        item {
+    item {
+        AnimatedVisibility(
+            visible = ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()),
+            enter = VisibilityTransitions.enterEdition(),
+            exit = VisibilityTransitions.exitEdition(),
+        ) {
             TaskyText(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -385,23 +416,33 @@ private fun LazyListScope.visitors(
                 text = stringResource(id = type.textId),
             )
         }
-        items(
-            items = visitors,
-            key = {
-                it.attendee.id
-            },
-            itemContent = { visitor ->
+    }
+    items(
+        items = visitors,
+        key = {
+            it.id
+        },
+        itemContent = { attendee ->
+
+            AnimatedVisibility(
+                visible = ((selectedOption == VisitorOptionType.ALL || type == selectedOption) && visitors.isNotEmpty()),
+                enter = VisibilityTransitions.enterEdition(),
+                exit = VisibilityTransitions.exitEdition(),
+            ) {
                 VisitorItem(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    visitor = visitor,
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 4.dp),
+                    attendee = attendee,
+                    isEventCreator = (hostId == attendee.id),
+                    isEditing = isEditing,
                     onDeleteVisitor = { attendeeId ->
                         onDeleteVisitor(attendeeId)
                     },
                 )
-            },
-        )
-    }
+            }
+        },
+    )
 }
 
 @Composable
@@ -409,16 +450,17 @@ private fun BoxScope.eventButton(
     state: EventDetailState,
     events: (DetailEvents) -> Unit,
 ) {
-    val (title, event) = if (state.isEventCreator) {
-        Pair(
-            String.format(
-                stringResource(id = R.string.delete_title_with_argument),
-                stringResource(id = R.string.event),
-            ),
-            DetailEvents.Delete,
-        )
-    } else {
-        if (state.isGoing()) {
+    val (title, event) = when {
+        state.isEventCreator -> {
+            Pair(
+                String.format(
+                    stringResource(id = R.string.delete_title_with_argument),
+                    stringResource(id = R.string.event),
+                ),
+                DetailEvents.Delete,
+            )
+        }
+        state.isGoing -> {
             Pair(
                 String.format(
                     stringResource(id = R.string.leave_title_with_argument),
@@ -426,7 +468,8 @@ private fun BoxScope.eventButton(
                 ),
                 DetailEvents.LeaveEvent,
             )
-        } else {
+        }
+        else -> {
             Pair(
                 String.format(
                     stringResource(id = R.string.join_title_with_argument),

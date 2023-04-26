@@ -38,9 +38,9 @@ enum class NotificationType(val minutesBefore: Long, val description: UiText) {
             return when (notificationType) {
                 TEN_MINUTES_BEFORE -> time.minusMinutes(TEN_MINUTES_BEFORE.minutesBefore)
                 THIRTY_MINUTES_BEFORE -> time.minusMinutes(THIRTY_MINUTES_BEFORE.minutesBefore)
-                ONE_HOUR_BEFORE -> time.minusHours(ONE_HOUR_BEFORE.minutesBefore)
-                SIX_HOURS_BEFORE -> time.minusHours(SIX_HOURS_BEFORE.minutesBefore)
-                ONE_DAY_BEFORE -> time.minusDays(ONE_DAY_BEFORE.minutesBefore)
+                ONE_HOUR_BEFORE -> time.minusMinutes(ONE_HOUR_BEFORE.minutesBefore)
+                SIX_HOURS_BEFORE -> time.minusMinutes(SIX_HOURS_BEFORE.minutesBefore)
+                ONE_DAY_BEFORE -> time.minusMinutes(ONE_DAY_BEFORE.minutesBefore)
             }
         }
 

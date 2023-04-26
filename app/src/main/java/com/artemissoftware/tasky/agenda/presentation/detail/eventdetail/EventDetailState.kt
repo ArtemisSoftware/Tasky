@@ -6,7 +6,6 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
 import java.time.LocalDateTime
 
 data class EventDetailState(
@@ -25,18 +24,5 @@ data class EventDetailState(
     val attendeeDialogState: AttendeeDialogState = AttendeeDialogState(),
     val attendees: List<Attendee> = emptyList(),
     val hostId: String = "",
-    val userId: String = "",
-) {
-
-    fun getGoingVisitors(): List<Visitor> {
-        return attendees.filter { it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) }
-    }
-
-    fun getNotGoingVisitors(): List<Visitor> {
-        return attendees.filter { !it.isGoing }.map { attendee -> Visitor(attendee = attendee, isEventCreator = isEventCreator(attendee.id)) }
-    }
-
-    private fun isEventCreator(attendeeId: String) = (attendeeId == hostId)
-
-    fun isGoing() = attendees.find { it.id == userId }?.isGoing ?: false
-}
+    val isGoing: Boolean = true,
+)

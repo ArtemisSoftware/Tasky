@@ -58,6 +58,12 @@ class AgendaApiSource @Inject constructor(
         }
     }
 
+    suspend fun deleteAttendee(eventId: String) {
+        return HandleApi.safeApiCall {
+            taskyAgendaApi.deleteAttendee(id = eventId)
+        }
+    }
+
     suspend fun getAgenda(time: Long): AgendaResponseDto {
         return HandleApi.safeApiCall {
             taskyAgendaApi.getAgenda(time = time)

@@ -34,6 +34,7 @@ fun EventAndSyncState.toAgendaItem(): AgendaItem.Event {
         from = this.event.startDate.toLocalDateTime(),
         attendees = attendees.map { it.toAttendee() },
         pictures = pictures.map { it.toPicture() },
+        syncState = this.syncState.syncType,
     )
 }
 

@@ -140,7 +140,7 @@ private fun TaskDetailScreenContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             AssignmentHeader(
-                                agendaItemType = AgendaItemType.Task(),
+                                agendaItemType = AgendaItemType.Task,
                                 title = state.title,
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,

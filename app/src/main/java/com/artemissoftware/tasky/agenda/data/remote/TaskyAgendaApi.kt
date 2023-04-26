@@ -59,4 +59,7 @@ interface TaskyAgendaApi {
 
     @GET("attendee")
     suspend fun getAttendee(@Query(value = "email") email: String): AttendeeDto
+
+    @DELETE("attendee")
+    suspend fun deleteAttendee(@Query("eventId") id: String)
 }

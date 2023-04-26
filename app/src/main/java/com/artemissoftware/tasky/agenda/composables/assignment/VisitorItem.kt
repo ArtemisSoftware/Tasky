@@ -30,12 +30,15 @@ import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.models.Visitor
+import com.artemissoftware.tasky.util.VisibilityTransitions
+import java.time.LocalDateTime
 
 @Composable
 fun VisitorItem(
-    visitor: Visitor,
+    attendee: Attendee,
+    isEditing: Boolean,
     onDeleteVisitor: (String) -> Unit,
+    isEventCreator: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -60,20 +63,20 @@ fun VisitorItem(
                     circleColor = Gray,
                     size = 32.dp,
                     textStyle = MaterialTheme.typography.overline,
-                    text = visitor.attendee.fullName,
+                    text = attendee.fullName,
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 TaskyText(
                     color = DarkGray,
                     style = MaterialTheme.typography.body2,
-                    text = visitor.attendee.fullName,
+                    text = attendee.fullName,
                 )
             }
 
             Box(
                 modifier = Modifier.weight(0.2F),
             ) {
-                if (visitor.isEventCreator) {
+                if (isEventCreator) {
                     TaskyText(
                         text = stringResource(id = R.string.creator),
                         modifier = Modifier.align(Alignment.CenterEnd),
@@ -81,16 +84,22 @@ fun VisitorItem(
                         color = LightBlue,
                     )
                 } else {
-                    TaskyIcon(
-                        size = 20.dp,
-                        icon = R.drawable.ic_trash,
-                        color = DarkGray,
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .clickable {
-                                onDeleteVisitor(visitor.attendee.id)
-                            },
-                    )
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = isEditing,
+                        enter = VisibilityTransitions.enterEdition(),
+                        exit = VisibilityTransitions.exitEdition(),
+                    ) {
+                        TaskyIcon(
+                            size = 20.dp,
+                            icon = R.drawable.ic_trash,
+                            color = DarkGray,
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .clickable {
+                                    onDeleteVisitor(attendee.id)
+                                },
+                        )
+                    }
                 }
             }
         }
@@ -102,28 +111,28 @@ fun VisitorItem(
 private fun VisitorItemPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         VisitorItem(
-            visitor = Visitor(
-                attendee = Attendee(
-                    fullName = "Bruce Wayne",
-                    id = "222",
-                    email = "Bruce@email.com",
-                    isGoing = false,
-                ),
-                isEventCreator = true,
+            attendee = Attendee(
+                fullName = "Bruce Wayne",
+                id = "222",
+                email = "Bruce@email.com",
+                isGoing = false,
+                remindAt = LocalDateTime.now(),
             ),
+            isEventCreator = true,
+            isEditing = false,
             onDeleteVisitor = {},
             modifier = Modifier.fillMaxWidth().height(46.dp),
         )
         VisitorItem(
-            visitor = Visitor(
-                attendee = Attendee(
-                    fullName = "Dick Grayson",
-                    id = "222",
-                    email = "Bruce@email.com",
-                    isGoing = false,
-                ),
-                isEventCreator = true,
+            attendee = Attendee(
+                fullName = "Dick Grayson",
+                id = "222",
+                email = "Bruce@email.com",
+                isGoing = false,
+                remindAt = LocalDateTime.now(),
             ),
+            isEventCreator = true,
+            isEditing = true,
             onDeleteVisitor = {},
             modifier = Modifier.fillMaxWidth().height(46.dp),
         )

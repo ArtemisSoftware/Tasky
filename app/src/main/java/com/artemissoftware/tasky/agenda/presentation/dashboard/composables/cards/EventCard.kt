@@ -34,13 +34,11 @@ fun EventCard(
     onOptionClick: (AgendaItemOption) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val agendaItemType = AgendaItemType.Event()
-
     Card(
         modifier = modifier,
         elevation = 0.dp,
         shape = RoundedCornerShape(20.dp),
-        backgroundColor = agendaItemType.color,
+        backgroundColor = AgendaItemType.Event.color,
     ) {
         Column(
             modifier = Modifier
@@ -51,7 +49,7 @@ fun EventCard(
                     modifier = Modifier.padding(top = 4.dp),
                     onIcon = R.drawable.ic_round_check,
                     offIcon = R.drawable.ic_circle,
-                    onIconColor = agendaItemType.generalTextColor,
+                    onIconColor = AgendaItemType.Event.generalTextColor,
                 )
 
                 Column(
@@ -62,9 +60,10 @@ fun EventCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TaskyText(
-                            color = agendaItemType.generalTextColor,
+                            color = AgendaItemType.Event.generalTextColor,
                             modifier = Modifier.weight(0.9F),
                             text = event.itemTitle,
+                            style = MaterialTheme.typography.h6,
                         )
 
                         TaskyPopupMenu(
@@ -80,7 +79,7 @@ fun EventCard(
                                     modifier = Modifier
                                         .weight(0.1F),
                                     icon = R.drawable.ic_more_options,
-                                    color = agendaItemType.generalTextColor,
+                                    color = AgendaItemType.Event.generalTextColor,
                                 )
                             },
                         )
@@ -88,10 +87,10 @@ fun EventCard(
 
                     TaskyText(
                         modifier = Modifier.padding(top = 12.dp),
-                        color = agendaItemType.secondaryTextColor,
+                        color = AgendaItemType.Event.secondaryTextColor,
                         maxLines = 2,
                         text = event.itemDescription ?: "",
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.body2,
                     )
                 }
             }
@@ -99,7 +98,7 @@ fun EventCard(
             Box(modifier = Modifier.fillMaxWidth().padding(top = 40.dp)) {
                 TaskyText(
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    color = agendaItemType.secondaryTextColor,
+                    color = AgendaItemType.Event.secondaryTextColor,
                     text = event.starDate.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
                     style = MaterialTheme.typography.body2,
                 )

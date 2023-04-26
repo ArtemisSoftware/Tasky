@@ -75,7 +75,7 @@ fun AssignmentHeader(
                         size = 20.dp,
                         onIcon = R.drawable.ic_round_check,
                         offIcon = R.drawable.ic_circle,
-                        onIconColor = agendaItemType.generalTextColor,
+                        onIconColor = agendaItemType.bulletColor,
                         onCheckedChange = onIsDoneClick,
                     )
 
@@ -110,12 +110,12 @@ fun AssignmentHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 private fun AssignmentHeaderPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentHeader(agendaItemType = AgendaItemType.Reminder(), title = "First title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
-        AssignmentHeader(agendaItemType = AgendaItemType.Task(), isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
-        AssignmentHeader(agendaItemType = AgendaItemType.Event(), isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Reminder, title = "First title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Task, isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemType = AgendaItemType.Event, isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
     }
 }
