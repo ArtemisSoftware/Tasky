@@ -107,7 +107,7 @@ fun EventDetailScreen(
             navigator.popBackStack()
         },
         onShowSnackBar = {
-            TODO()
+            state.taskyScaffoldState.taskySnackBarState.show(it)
         },
     )
 }
@@ -142,6 +142,7 @@ private fun EventDetailScreenContent(
     TaskyScaffold(
         isLoading = state.isLoading,
         backgroundColor = Black,
+        taskyScaffoldState = state.taskyScaffoldState,
         topBar = {
             TaskyTopBar(
                 onBackClicked = {

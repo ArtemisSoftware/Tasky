@@ -92,7 +92,7 @@ fun TaskyScaffold(
                 )
 
                 coroutineScope.launch {
-                    delay(2.seconds)
+                    delay((1.2).seconds)
                     taskyScaffoldState.taskySnackBarState.close()
                 }
             }
