@@ -18,6 +18,10 @@ interface AttendeeDao {
 
     @Upsert
     suspend fun upsertAttendeeSync(attendeeSyncEntity: AttendeeSyncEntity)
+
+    @Query("DELETE FROM attendeeSyncEntity WHERE id = :id")
+    suspend fun deleteSyncState(id: String)
+
     @Transaction
     suspend fun upsertAttendees(eventId: String, attendees: List<AttendeeEntity>) {
         deleteAttendees(eventId = eventId)

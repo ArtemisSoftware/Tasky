@@ -39,4 +39,8 @@ class AttendeeRepositoryImpl(
             DataResponse.Error(exception = ex)
         }
     }
+
+    override suspend fun deleteSyncState(eventId: String) {
+        attendeeDao.deleteSyncState(id = eventId)
+    }
 }
