@@ -25,7 +25,6 @@ class DeleteAttendeeUseCase @Inject constructor(
                 Resource.Error(exception)
             }
             is DataResponse.Success -> {
-                attendeeRepository.deleteSyncState(eventId = eventId)
                 Resource.Success(Unit)
             }
         }

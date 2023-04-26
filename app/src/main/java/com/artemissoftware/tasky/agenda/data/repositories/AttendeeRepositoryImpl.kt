@@ -34,13 +34,10 @@ class AttendeeRepositoryImpl(
 
         return try {
             agendaApiSource.deleteAttendee(eventId = eventId)
+            attendeeDao.upsertAttendeeSync(AttendeeSyncEntity(id = eventId, syncType = SyncType.SYNCED))
             DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
         }
-    }
-
-    override suspend fun deleteSyncState(eventId: String) {
-        attendeeDao.deleteSyncState(id = eventId)
     }
 }

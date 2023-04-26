@@ -8,6 +8,4 @@ interface AttendeeRepository {
     suspend fun getAttendee(email: String): DataResponse<Attendee?>
 
     suspend fun deleteAttendee(eventId: String): DataResponse<Unit>
-
-    suspend fun deleteSyncState(eventId: String)
 }
