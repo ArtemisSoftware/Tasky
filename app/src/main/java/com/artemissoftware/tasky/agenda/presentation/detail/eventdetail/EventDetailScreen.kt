@@ -26,6 +26,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.artemissoftware.core.presentation.composables.TaskyContentSurface
 import com.artemissoftware.core.presentation.composables.button.TaskyTextButton
+import com.artemissoftware.core.presentation.composables.connectivity.connectivityState
+import com.artemissoftware.core.presentation.composables.connectivity.models.TaskyConnectionState
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
@@ -68,6 +70,7 @@ fun EventDetailScreen(
     pictureRecipient: ResultRecipient<PhotoScreenDestination, PictureRecipient>,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val connection by connectivityState()
 
     resultRecipient.onNavResult { result ->
         result.getOr { null }?.let { editResult -> // TODO If by any chance it returns null, you could pop the backstack, so you get back to the agenda screen
@@ -91,6 +94,7 @@ fun EventDetailScreen(
 
     EventDetailScreenContent(
         state = state,
+        isNetworkConnectionAvailable = (connection === TaskyConnectionState.Available),
         events = viewModel::onTriggerEvent,
     )
 
@@ -111,6 +115,7 @@ fun EventDetailScreen(
 @Composable
 private fun EventDetailScreenContent(
     state: EventDetailState,
+    isNetworkConnectionAvailable: Boolean,
     events: (DetailEvents) -> Unit,
 ) {
     val context = LocalContext.current
@@ -229,7 +234,7 @@ private fun EventDetailScreenContent(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(112.dp),
-                                    isEditing = state.isEditing && state.isEventCreator,
+                                    isEditing = state.isEditing && state.isEventCreator && isNetworkConnectionAvailable,
                                     onAddPicturesClick = {
                                         singlePhotoPickerLauncher.launch(
                                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
@@ -497,6 +502,7 @@ fun EventDetailScreenContentContentPreview() {
             // agendaItem = AgendaItem.mockTask,
         ),
         events = {},
+        isNetworkConnectionAvailable = true,
     )
 }
 
@@ -509,5 +515,6 @@ fun EventDetailScreenContentEditingPreview() {
             // agendaItem = AgendaItem.mockTask,
         ),
         events = {},
+        isNetworkConnectionAvailable = true,
     )
 }
