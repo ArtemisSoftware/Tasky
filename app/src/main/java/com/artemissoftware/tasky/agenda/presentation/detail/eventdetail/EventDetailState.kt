@@ -24,6 +24,5 @@ data class EventDetailState(
     val attendeeDialogState: AttendeeDialogState = AttendeeDialogState(),
     val attendees: List<Attendee> = emptyList(),
     val hostId: String = "",
-    val hostName: String = "",
     val isGoing: Boolean = true,
 )

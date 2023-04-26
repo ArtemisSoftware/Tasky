@@ -14,9 +14,6 @@ class DeleteAttendeeUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(eventId: String): Resource<Unit> {
-        // TODO: localy delete the event. This method is in another PR
-        // eventRepository.deleteEvent(eventId = eventId)
-
         val result = attendeeRepository.deleteAttendee(eventId = eventId)
 
         return when (result) {
@@ -25,6 +22,9 @@ class DeleteAttendeeUseCase @Inject constructor(
                 Resource.Error(exception)
             }
             is DataResponse.Success -> {
+                // TODO: localy delete the event. This method is in another PR
+                // eventRepository.deleteEvent(eventId = eventId)
+
                 Resource.Success(Unit)
             }
         }
