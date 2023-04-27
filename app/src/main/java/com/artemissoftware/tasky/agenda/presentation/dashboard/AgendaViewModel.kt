@@ -35,7 +35,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -196,7 +195,7 @@ class AgendaViewModel @Inject constructor(
 
     private fun getAgendaItems(date: LocalDate) {
         viewModelScope.launch {
-            getAgendaItemsUseCase(date = date). debounce(100.milliseconds).collectLatest { result ->
+            getAgendaItemsUseCase(date = date).debounce(100.milliseconds).collectLatest { result ->
                 _state.update {
                     it.copy(
                         agendaItems = result,
