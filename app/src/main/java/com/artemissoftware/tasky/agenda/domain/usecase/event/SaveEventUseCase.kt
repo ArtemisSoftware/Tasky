@@ -14,10 +14,15 @@ class SaveEventUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         event: AgendaItem.Event,
+        attendeeLeftEvent: Boolean = false,
     ) {
         eventRepository.saveEventAndSync(event = event)
-        alarmScheduler.schedule(item = event)
-
+        if(attendeeLeftEvent){
+            alarmScheduler.cancel(id = event.id)
+        }
+        else {
+            alarmScheduler.schedule(item = event)
+        }
         val syncType = if (event.syncState == SyncType.SYNCED) SyncType.UPDATE else event.syncState
         eventUploader.upload(event = event, syncType)
     }

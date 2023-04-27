@@ -142,7 +142,7 @@ class EventDetailViewModel @Inject constructor(
                 isGoing = isGoing,
             )
         }
-        saveEvent(shouldPopBackStack = false)
+        saveEvent(shouldPopBackStack = false, attendeeLeftEvent = isGoing)
     }
 
     private fun removePicture(pictureId: String) = with(_state) {
@@ -406,7 +406,7 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun saveEvent(validatedPictures: List<Picture> = emptyList(), shouldPopBackStack: Boolean = true) = with(_state.value) {
+    private fun saveEvent(validatedPictures: List<Picture> = emptyList(), shouldPopBackStack: Boolean = true, attendeeLeftEvent: Boolean = false) = with(_state.value) {
         val item = AgendaItem.Event(
             id = agendaItem.id,
             title = title,
@@ -423,7 +423,7 @@ class EventDetailViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            saveEventUseCase(item)
+            saveEventUseCase(item, attendeeLeftEvent)
             if (shouldPopBackStack) popBackStack()
         }
     }
