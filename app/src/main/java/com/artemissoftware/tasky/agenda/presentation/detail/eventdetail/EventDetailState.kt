@@ -1,6 +1,8 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import com.artemissoftware.core.domain.models.agenda.NotificationType
+import com.artemissoftware.core.presentation.composables.scaffold.TaskyDialogState
+import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffoldState
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
@@ -25,4 +27,5 @@ data class EventDetailState(
     val attendees: List<Attendee> = emptyList(),
     val hostId: String = "",
     val isGoing: Boolean = true,
+    val taskyScaffoldState: TaskyScaffoldState = TaskyScaffoldState(),
 )

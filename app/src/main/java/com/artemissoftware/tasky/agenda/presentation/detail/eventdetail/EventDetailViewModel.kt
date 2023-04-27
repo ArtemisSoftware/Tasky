@@ -1,6 +1,8 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import android.net.Uri
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.AgendaException
@@ -13,6 +15,7 @@ import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.snackbar.TaskySnackBarType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
@@ -41,7 +44,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 import javax.inject.Inject
@@ -341,7 +343,7 @@ class EventDetailViewModel @Inject constructor(
             val user = getUserUseCase().first()
             update {
                 it.copy(
-                    hostId = user.id
+                    hostId = user.id,
                 )
             }
             loadEventDetail()
@@ -360,7 +362,7 @@ class EventDetailViewModel @Inject constructor(
                         it.copy(
                             agendaItem = item,
                             notification = NotificationType.getNotification(
-                                remindAt = attendee?.remindAt ?: item.remindAt ,
+                                remindAt = attendee?.remindAt ?: item.remindAt,
                                 startDate = item.from,
                             ),
                             startDate = item.from,
@@ -390,7 +392,14 @@ class EventDetailViewModel @Inject constructor(
             val result = validatePicturesUseCase.invoke(pictures = pictures)
 
             if (result.numberOfRejectedPictures != 0) {
-                sendUiEvent(UiEvent.ShowSnackBar(UiText.DynamicString("${result.numberOfRejectedPictures} photos were skipped because they were too large")))
+                sendUiEvent(
+                    UiEvent.ShowSnackBar(
+                        TaskySnackBarType.Info(
+                            text = UiText.DynamicString("${result.numberOfRejectedPictures} photos were skipped because they were too large"),
+                            imageVector = Icons.Default.Warning,
+                        ),
+                    ),
+                )
             }
 
             saveEvent(validatedPictures = result.validPictures)

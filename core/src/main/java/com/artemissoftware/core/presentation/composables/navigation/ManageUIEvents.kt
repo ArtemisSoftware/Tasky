@@ -3,6 +3,7 @@ package com.artemissoftware.tasky.authentication.presentation.login
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.snackbar.TaskySnackBarType
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.util.UiText
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ fun ManageUIEvents(
     onNavigateAndPopCurrent: (UiEvent.NavigateAndPopCurrent) -> Unit = {},
     onPopBackStack: () -> Unit = {},
     onPopBackStackWithArguments: (UiEvent.PopBackStackWithArguments<*>) -> Unit = {},
-    onShowSnackBar: (UiText) -> Unit = {},
+    onShowSnackBar: (TaskySnackBarType) -> Unit = {},
 ) {
     LaunchedEffect(key1 = Unit) {
         uiEvent.collectLatest { event ->
@@ -31,7 +32,7 @@ fun ManageUIEvents(
                     onNavigateAndPopCurrent(event)
                 }
                 is UiEvent.ShowSnackBar -> {
-                    onShowSnackBar.invoke(event.uiText)
+                    onShowSnackBar.invoke(event.snackBarType)
                 }
             }
         }
