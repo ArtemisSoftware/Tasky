@@ -32,13 +32,12 @@ import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
@@ -197,7 +196,7 @@ class AgendaViewModel @Inject constructor(
 
     private fun getAgendaItems(date: LocalDate) {
         viewModelScope.launch {
-            getAgendaItemsUseCase(date = date).collect { result ->
+            getAgendaItemsUseCase(date = date). debounce(100.milliseconds).collectLatest { result ->
                 _state.update {
                     it.copy(
                         agendaItems = result,
