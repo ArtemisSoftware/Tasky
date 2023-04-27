@@ -102,7 +102,7 @@ fun AssignmentHeader(
                 ) {
                     TaskyIcon(
                         icon = R.drawable.ic_right_arrow,
-                        size = 30.dp,
+                        size = 24.dp,
                     )
                 }
             }

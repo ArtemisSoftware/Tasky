@@ -32,7 +32,13 @@ import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -55,7 +61,7 @@ class AgendaViewModel @Inject constructor(
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
-    val state: StateFlow<AgendaState> = _state
+    val state: StateFlow<AgendaState> = _state.asStateFlow()
 
     init {
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
@@ -80,7 +86,7 @@ class AgendaViewModel @Inject constructor(
                 deleteItem(item = event.item)
             }
             is AgendaEvents.GoToDetail -> {
-                goToDetail(item = event.item)
+                goToDetail(item = event.item, isEditing = event.isEditing)
             }
             AgendaEvents.LogOut -> {
                 logout()
@@ -161,17 +167,17 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    private fun goToDetail(item: AgendaItem) {
+    private fun goToDetail(item: AgendaItem, isEditing: Boolean) {
         viewModelScope.launch {
             when (item) {
                 is AgendaItem.Reminder -> {
-                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = item.itemId).route))
+                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = item.itemId, isEditing = isEditing).route))
                 }
                 is AgendaItem.Task -> {
-                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
+                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId, isEditing = isEditing).route))
                 }
                 is AgendaItem.Event -> {
-                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId).route))
+                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, isEditing = isEditing).route))
                 }
             }
         }
@@ -193,9 +199,10 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
+    @OptIn(FlowPreview::class)
     private fun getAgendaItems(date: LocalDate) {
         viewModelScope.launch {
-            getAgendaItemsUseCase(date = date).debounce(100.milliseconds).collectLatest { result ->
+            getAgendaItemsUseCase(date = date).debounce(250.milliseconds).collectLatest { result ->
                 _state.update {
                     it.copy(
                         agendaItems = result,

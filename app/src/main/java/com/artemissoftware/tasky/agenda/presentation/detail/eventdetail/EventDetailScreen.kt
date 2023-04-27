@@ -64,6 +64,7 @@ fun EventDetailScreen(
     viewModel: EventDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     eventId: String? = null,
+    isEditing: Boolean = false,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
     pictureRecipient: ResultRecipient<PhotoScreenDestination, PictureRecipient>,
 ) {
@@ -210,7 +211,7 @@ private fun EventDetailScreenContent(
                                     description = state.description,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
+                                        .padding(horizontal = 16.dp).padding(bottom = 20.dp),
                                     onEditClick = {
                                         events(DetailEvents.EditDescription(it))
                                     },
@@ -224,30 +225,32 @@ private fun EventDetailScreenContent(
                                         .padding(horizontal = 16.dp),
                                 )
                             }
-                            item {
-                                PhotoGallery(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(112.dp),
-                                    isEditing = state.isEditing && state.isEventCreator,
-                                    onAddPicturesClick = {
-                                        singlePhotoPickerLauncher.launch(
-                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                                        )
-                                    },
-                                    pictures = state.pictures,
-                                    onPictureClick = {
-                                        events(DetailEvents.GoToPicture(picture = it))
-                                    },
-                                )
+                            if (state.isEventCreator) {
+                                item {
+                                    PhotoGallery(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(112.dp),
+                                        isEditing = state.isEditing,
+                                        onAddPicturesClick = {
+                                            singlePhotoPickerLauncher.launch(
+                                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                                            )
+                                        },
+                                        pictures = state.pictures,
+                                        onPictureClick = {
+                                            events(DetailEvents.GoToPicture(picture = it))
+                                        },
+                                    )
 
-                                DetailDivider(
-                                    top = 20.dp,
-                                    bottom = 28.dp,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                )
+                                    DetailDivider(
+                                        top = 20.dp,
+                                        bottom = 28.dp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    )
+                                }
                             }
                             item {
                                 TimeInterval(
