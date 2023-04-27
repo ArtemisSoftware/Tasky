@@ -64,7 +64,7 @@ class AgendaViewModel @Inject constructor(
         getUser()
         getAgendaItems(date = LocalDate.now())
         syncRemoteWithLocalData()
-        syncLocalWithRemoteData()
+        syncLocalWithRemoteDataUseCase()
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -213,18 +213,6 @@ class AgendaViewModel @Inject constructor(
         workManager.getWorkInfoByIdLiveData(workerId).observeForever { workInfo ->
             when (workInfo.state) {
                 WorkInfo.State.SUCCEEDED -> { syncAgenda(date = LocalDate.now()) }
-                else -> Unit
-            }
-        }
-    }
-
-    private fun syncLocalWithRemoteData() {
-        val workerId = syncLocalWithRemoteDataUseCase()
-
-        workManager.getWorkInfoByIdLiveData(workerId).observeForever { workerInfo ->
-
-            when (workerInfo.state) {
-                WorkInfo.State.ENQUEUED -> { /*Flow is already dealing with this*/ }
                 else -> Unit
             }
         }
