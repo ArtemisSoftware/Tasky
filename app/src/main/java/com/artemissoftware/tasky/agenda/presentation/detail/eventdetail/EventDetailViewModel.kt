@@ -33,6 +33,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUse
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
@@ -180,7 +181,7 @@ class EventDetailViewModel @Inject constructor(
                     result.exception?.let { ex ->
 
                         when (ex) {
-                            AgendaException.AttendeeDoesNotExist -> {
+                            AgendaException.AttendeeDoesNotExist, is AgendaException.AttendeeCannotAddItself -> {
                                 _state.update {
                                     it.copy(
                                         attendeeDialogState = it.attendeeDialogState.copy(errorMessage = ex.toUiText()),
@@ -351,6 +352,7 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun loadEventDetail() = with(_state) {
+        val isEditing = savedStateHandle.get<Boolean>(NavigationConstants.IS_EDITING) ?: false
         savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
             viewModelScope.launch {
                 val result = getEventUseCase(eventId)
@@ -360,6 +362,7 @@ class EventDetailViewModel @Inject constructor(
 
                     update {
                         it.copy(
+                            isEditing = isEditing,
                             agendaItem = item,
                             notification = NotificationType.getNotification(
                                 remindAt = attendee?.remindAt ?: item.remindAt,

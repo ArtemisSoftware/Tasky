@@ -74,6 +74,6 @@ class SyncLocalWithRemoteDataWorker @AssistedInject constructor(
     }
 
     companion object {
-        private val MAX_NUMBER_OF_RETRIES = 3
+        private const val MAX_NUMBER_OF_RETRIES = 3
     }
 }

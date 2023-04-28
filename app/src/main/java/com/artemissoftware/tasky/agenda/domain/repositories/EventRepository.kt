@@ -20,5 +20,5 @@ interface EventRepository {
 
     suspend fun getEventsToSync(): List<SyncState>
 
-    suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>)
+    suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>, refreshPictures: Boolean = false)
 }

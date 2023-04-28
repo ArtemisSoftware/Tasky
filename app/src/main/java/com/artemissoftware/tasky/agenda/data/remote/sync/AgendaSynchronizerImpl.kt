@@ -1,23 +1,52 @@
 package com.artemissoftware.tasky.agenda.data.remote.sync
 
-import androidx.work.BackoffPolicy
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
+import com.artemissoftware.core.util.extensions.toEpochMilli
+import com.artemissoftware.tasky.agenda.data.remote.worker.AgendaSyncWorker
 import com.artemissoftware.tasky.agenda.data.remote.worker.SyncLocalWithRemoteDataWorker
 import com.artemissoftware.tasky.agenda.data.remote.worker.SyncRemoteWithLocalDataWorker
 import com.artemissoftware.tasky.agenda.domain.sync.AgendaSynchronizer
+import com.artemissoftware.tasky.agenda.util.WorkerKeys
 import java.time.Duration
+import java.time.LocalDate
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class AgendaSynchronizerImpl(
     private val workManager: WorkManager,
 ) : AgendaSynchronizer {
+
+    override fun syncAgenda(currentDate: LocalDate): UUID {
+        workManager.cancelAllWorkByTag("syncAgenda")
+
+        val syncWorker: PeriodicWorkRequest = PeriodicWorkRequestBuilder<AgendaSyncWorker>(
+            repeatInterval = 15,
+            TimeUnit.MINUTES,
+            flexTimeInterval = 5,
+            TimeUnit.MINUTES,
+        )
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            )
+            .setInputData(
+                Data.Builder()
+                    .putLong(WorkerKeys.SELECTED_DATE, currentDate.toEpochMilli())
+                    .build(),
+            )
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, Duration.ofMinutes(5))
+            .addTag("syncAgenda")
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            "sync_agenda",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            syncWorker,
+        )
+
+        return syncWorker.id
+    }
 
     override fun syncLocalWithRemoteData(): UUID {
         val syncWorker = PeriodicWorkRequestBuilder<SyncLocalWithRemoteDataWorker>(

@@ -12,6 +12,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.TASK_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -140,13 +141,15 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadDetail() {
+    private fun loadDetail() = with(_state) {
+        val isEditing = savedStateHandle.get<Boolean>(NavigationConstants.IS_EDITING) ?: false
         savedStateHandle.get<String>(TASK_ID)?.let { taskId ->
             viewModelScope.launch {
                 val result = getTaskUseCase(taskId)
                 result?.let { item ->
-                    _state.update {
+                    update {
                         it.copy(
+                            isEditing = isEditing,
                             agendaItem = item,
                             notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.starDate),
                             startDate = item.time,

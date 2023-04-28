@@ -6,4 +6,5 @@ object WorkerKeys {
     const val EVENT_JSON = "eventJson"
     const val EVENT_PICTURE_LIST = "eventPictureList"
     const val SYNC_TYPE = "syncType"
+    const val SELECTED_DATE = "selectedDate"
 }
