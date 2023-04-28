@@ -1,7 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
@@ -16,11 +15,7 @@ import com.artemissoftware.core.util.extensions.nextDays
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.LogOutUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncLocalWithRemoteDataUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncRemoteWithLocalDataUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.agenda.*
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.DeleteAttendeeUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.DeleteEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
@@ -41,6 +36,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -50,14 +46,11 @@ class AgendaViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
     private val syncAgendaUseCase: SyncAgendaUseCase,
-    private val syncLocalWithRemoteDataUseCase: SyncLocalWithRemoteDataUseCase,
-    private val syncRemoteWithLocalDataUseCase: SyncRemoteWithLocalDataUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
     private val deleteAttendeeUseCase: DeleteAttendeeUseCase,
     private val completeTaskUseCase: CompleteTaskUseCase,
-    private val workManager: WorkManager,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
@@ -67,8 +60,7 @@ class AgendaViewModel @Inject constructor(
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
         getAgendaItems(date = LocalDate.now())
-        syncRemoteWithLocalData()
-        syncLocalWithRemoteDataUseCase()
+        syncAgendaUseCase(LocalDate.now())
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -105,7 +97,7 @@ class AgendaViewModel @Inject constructor(
 
     private fun updateAgenda(date: LocalDate) {
         getAgendaItems(date = date)
-        syncAgenda(date = date)
+        syncAgendaUseCase(date = date)
     }
 
     private fun changeDate(date: LocalDate) {
@@ -209,23 +201,6 @@ class AgendaViewModel @Inject constructor(
                     )
                 }
             }
-        }
-    }
-
-    private fun syncRemoteWithLocalData() {
-        val workerId = syncRemoteWithLocalDataUseCase()
-
-        workManager.getWorkInfoByIdLiveData(workerId).observeForever { workInfo ->
-            when (workInfo.state) {
-                WorkInfo.State.SUCCEEDED -> { syncAgenda(date = LocalDate.now()) }
-                else -> Unit
-            }
-        }
-    }
-
-    private fun syncAgenda(date: LocalDate) {
-        viewModelScope.launch {
-            syncAgendaUseCase(date = date)
         }
     }
 

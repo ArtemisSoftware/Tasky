@@ -60,6 +60,7 @@ class EventRepositoryImpl constructor(
 
         return try {
             agendaApiSource.deleteEvent(eventId = id)
+            eventDao.upsertEventSync(EventSyncEntity(id = id, syncType = SyncType.SYNCED))
             DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
