@@ -61,4 +61,14 @@ class AgendaRepositoryImpl(
             alarmScheduler.cancel(id)
         }
     }
+
+    override suspend fun deleteLocalAgenda() {
+        val deletedRemindersId = reminderDao.deleteAll()
+        val deletedTasksId = taskDao.deleteAll()
+        val deletedEventsId = eventDao.deleteAll()
+
+        (deletedRemindersId + deletedTasksId + deletedEventsId).forEach { id ->
+            alarmScheduler.cancel(id)
+        }
+    }
 }

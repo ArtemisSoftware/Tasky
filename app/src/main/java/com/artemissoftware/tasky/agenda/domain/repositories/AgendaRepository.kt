@@ -13,4 +13,6 @@ interface AgendaRepository {
     suspend fun logOut(): DataResponse<Unit>
 
     suspend fun deleteLocalAgenda(date: LocalDate)
+
+    suspend fun deleteLocalAgenda()
 }
