@@ -18,7 +18,13 @@ class LoginUseCase @Inject constructor(
 
         return when (result) {
             is DataResponse.Error -> {
-                val exception = result.exception?.description?.let { ValidationException.DataError(it) } ?: AuthenticationException.LoginError
+                val exception = result.exception?.let {
+                    if (it.code == 401) {
+                        AuthenticationException.LoginError
+                    } else {
+                        result.exception?.description?.let { ValidationException.DataError(it) } ?: AuthenticationException.LoginError
+                    }
+                } ?: AuthenticationException.LoginError
                 Resource.Error(exception)
             }
             is DataResponse.Success -> {

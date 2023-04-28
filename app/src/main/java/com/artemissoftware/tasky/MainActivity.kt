@@ -17,9 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
-import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
 import com.artemissoftware.core.util.interceptors.logOutState
-import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -55,13 +53,6 @@ class MainActivity : ComponentActivity() {
 private fun MainScreen(viewModel: MainViewModel, navController: NavHostController) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
-    state.taskyDialogState.dialog.value?.let {
-        TaskyDialog(
-            taskyDialogType = it,
-            onDialogDismiss = { state.taskyDialogState.closeDialog() },
-        )
-    }
-
     state.destinationAfterSplash?.let {
         DestinationsNavHost(
             navGraph = NavGraphs.root,
@@ -76,28 +67,20 @@ private fun MainScreen(viewModel: MainViewModel, navController: NavHostControlle
         )
     }
     LogOut(navController = navController)
-
-    ManageUIEvents(
-        uiEvent = viewModel.uiEvent,
-        showDialog = {
-            state.taskyDialogState.showDialog(it)
-        },
-    )
 }
 
 @Composable
 fun LogOut(navController: NavHostController) {
-//    DestinationsNavHost(
-//        navGraph = NavGraphs.root,
-//        startRoute = LoginScreenDestination,
-//        navController = navController
-//    )
     LaunchedEffect(key1 = Unit) {
         logOutState.collect {
-            navController.navigate(
-                route = LoginScreenDestination().route,
-                navOptions = NavOptions.Builder().setPopUpTo(navController.currentDestination?.route, inclusive = true).build(),
-            )
+            if (navController.currentDestination?.route != LoginScreenDestination().route) {
+                navController.navigate(
+                    route = LoginScreenDestination().route,
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(navController.currentDestination?.route, inclusive = true)
+                        .build(),
+                )
+            }
         }
     }
 }

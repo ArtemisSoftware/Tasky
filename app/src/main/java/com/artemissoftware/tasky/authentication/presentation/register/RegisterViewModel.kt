@@ -18,6 +18,7 @@ import com.artemissoftware.tasky.authentication.domain.usecases.validation.Valid
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class RegisterViewModel @Inject constructor(
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(RegisterState())
-    val state: StateFlow<RegisterState> = _state
+    val state: StateFlow<RegisterState> = _state.asStateFlow()
 
     fun onTriggerEvent(event: RegisterEvents) {
         when (event) {
