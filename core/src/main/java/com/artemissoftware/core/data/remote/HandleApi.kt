@@ -5,6 +5,7 @@ import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkError
 import com.artemissoftware.core.data.remote.exceptions.TaskyNetworkException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -25,7 +26,7 @@ object HandleApi {
                     throw ex
                 }
                 is HttpException -> {
-
+                    delay(1500L) // to stop error pop ups to show on screens
                     convertErrorBody(ex)?.let { error ->
                         throw TaskyNetworkException(
                             code = ex.code(),

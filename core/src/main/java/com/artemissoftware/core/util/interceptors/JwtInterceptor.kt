@@ -40,7 +40,7 @@ class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseC
             if (response.code == 401) {
                 runBlocking {
                     _logOutState.emit(Unit)
-                    delay(1500L) // to stop error pop ups to show on screens
+
                 }
             }
         }
