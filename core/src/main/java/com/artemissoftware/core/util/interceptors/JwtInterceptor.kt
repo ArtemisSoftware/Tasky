@@ -2,7 +2,6 @@ package com.artemissoftware.core.util.interceptors
 
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.util.annotations.NoJWTHeaderRequest
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
@@ -40,7 +39,6 @@ class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseC
             if (response.code == 401) {
                 runBlocking {
                     _logOutState.emit(Unit)
-
                 }
             }
         }
