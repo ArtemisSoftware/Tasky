@@ -45,7 +45,6 @@ fun ReminderDetailScreen(
     navigator: DestinationsNavigator,
     viewModel: ReminderDetailViewModel = hiltViewModel(),
     reminderId: String? = null,
-    isEditing: Boolean = false,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

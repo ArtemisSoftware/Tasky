@@ -12,7 +12,7 @@ import com.artemissoftware.tasky.agenda.domain.usecase.reminder.GetReminderUseCa
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.SaveReminderUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.IS_EDITING
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.REMINDER_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -142,15 +142,13 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadDetail() = with(_state) {
-        val isEditing = savedStateHandle.get<Boolean>(IS_EDITING) ?: false
+    private fun loadDetail() {
         savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
             viewModelScope.launch {
                 val result = getReminderUseCase(reminderId)
                 result?.let { item ->
-                    update {
+                    _state.update {
                         it.copy(
-                            isEditing = isEditing,
                             agendaItem = item,
                             notification = NotificationType.getNotification(remindAt = item.remindAt, startDate = item.starDate),
                             startDate = item.time,

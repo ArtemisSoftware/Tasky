@@ -30,6 +30,5 @@ fun ValidationException.toUiText(): UiText {
             UiText.StringResource(R.string.error_occurred_during_user_logout)
         }
         is AgendaException.NotValidPictures -> this.uiText
-        is AgendaException.AttendeeCannotAddItself -> this.uiText
     }
 }

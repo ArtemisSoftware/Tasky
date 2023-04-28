@@ -28,7 +28,7 @@ fun TaskyAvatar(
     textColor: Color = Black,
     circleColor: Color = Green,
     size: Dp = 45.dp,
-    textStyle: TextStyle = MaterialTheme.typography.button,
+    textStyle: TextStyle = MaterialTheme.typography.caption,
 ) {
     Box(
         modifier = modifier

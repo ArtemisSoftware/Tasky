@@ -47,7 +47,6 @@ fun TaskDetailScreen(
     navigator: DestinationsNavigator,
     viewModel: TaskDetailViewModel = hiltViewModel(),
     taskId: String? = null,
-    isEditing: Boolean = false,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

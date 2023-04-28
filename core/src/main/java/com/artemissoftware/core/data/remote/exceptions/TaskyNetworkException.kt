@@ -2,10 +2,10 @@ package com.artemissoftware.core.data.remote.exceptions
 
 import com.artemissoftware.core.util.UiText
 
-data class TaskyNetworkException(
+data class TaskyNetworkException (
     val code: Int = TaskyNetworkError.GenericApiError.code,
-    val description: UiText = UiText.StringResource(TaskyNetworkError.GenericApiError.description),
-) : RuntimeException() {
+    val description: UiText? = null
+): RuntimeException(){
 
     constructor(taskyNetworkError: TaskyNetworkError) : this(code = taskyNetworkError.code, description = UiText.StringResource(taskyNetworkError.description))
 

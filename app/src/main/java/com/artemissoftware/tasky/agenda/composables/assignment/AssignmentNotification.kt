@@ -96,7 +96,7 @@ fun AssignmentNotification(
                 ) {
                     TaskyIcon(
                         icon = R.drawable.ic_right_arrow,
-                        size = 24.dp,
+                        size = 30.dp,
                     )
                 }
             }

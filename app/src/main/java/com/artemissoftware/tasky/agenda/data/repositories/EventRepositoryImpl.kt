@@ -23,6 +23,7 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
 import java.time.LocalDate
 
 class EventRepositoryImpl constructor(
@@ -59,7 +60,6 @@ class EventRepositoryImpl constructor(
 
         return try {
             agendaApiSource.deleteEvent(eventId = id)
-            eventDao.upsertEventSync(EventSyncEntity(id = id, syncType = SyncType.SYNCED))
             DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
@@ -80,14 +80,11 @@ class EventRepositoryImpl constructor(
         return eventDao.getEventsToSync().map { it.toSyncState() }
     }
 
-    override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>, refreshPictures: Boolean) {
+    override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>) {
         events.map { it.toEventAndSyncState() }.forEachIndexed { index, item ->
 
             database.withTransaction {
                 eventDao.upsertSyncStateAndEvent(eventEntity = item.event, eventSyncEntity = item.syncState)
-                if (refreshPictures) {
-                    pictureDao.deletePictures(eventId = item.event.id)
-                }
                 pictureDao.upsert(pictures = item.pictures)
                 attendeeDao.upsert(attendees = item.attendees)
             }

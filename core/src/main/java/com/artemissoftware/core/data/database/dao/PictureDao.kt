@@ -15,9 +15,6 @@ interface PictureDao {
     @Query("DELETE FROM pictureEntity WHERE id in (:idList)")
     suspend fun deletePictures(idList: List<String>)
 
-    @Query("DELETE FROM pictureEntity WHERE eventId = :eventId")
-    suspend fun deletePictures(eventId: String)
-
     @Transaction
     suspend fun upsertPictures(deletedPictures: List<String>, pictures: List<PictureEntity>) {
         deletePictures(deletedPictures)

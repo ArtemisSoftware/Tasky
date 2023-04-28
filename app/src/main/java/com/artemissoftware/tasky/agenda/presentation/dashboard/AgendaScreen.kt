@@ -36,7 +36,6 @@ import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Black
-import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.core.util.constants.DateTimePatternsConstants
@@ -143,7 +142,7 @@ private fun AgendaScreenContent(
                             TaskyDropDownItem(text = stringResource(id = it.descriptionId))
                         },
                         placeHolder = {
-                            TaskyAvatar(text = state.userName, circleColor = Light, textColor = LightBlue)
+                            TaskyAvatar(text = state.userName, circleColor = LightBlue)
                         },
                     )
                 },
@@ -169,9 +168,7 @@ private fun AgendaScreenContent(
                 TaskyContentSurface(
                     content = {
                         Column(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 4.dp),
+                            modifier = Modifier.padding(horizontal = 16.dp),
                         ) {
                             LazyRow(
                                 state = listWeekDaysState,

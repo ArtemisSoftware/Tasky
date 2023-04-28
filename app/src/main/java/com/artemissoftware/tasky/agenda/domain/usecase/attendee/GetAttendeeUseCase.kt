@@ -17,15 +17,7 @@ class GetAttendeeUseCase @Inject constructor(
 
         return when (result) {
             is DataResponse.Error -> {
-                val exception = result.exception?.let {
-                    if (it.code == 409) {
-                        AgendaException.AttendeeCannotAddItself(it.description)
-                    }
-                    else{
-                        ValidationException.DataError(it.description)
-                    }
-                } ?: AgendaException.AttendeeError
-
+                val exception = result.exception?.description?.let { ValidationException.DataError(it) } ?: AgendaException.AttendeeError
                 Resource.Error(exception)
             }
             is DataResponse.Success -> {
