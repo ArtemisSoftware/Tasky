@@ -40,16 +40,20 @@ class AgendaSyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            supervisorScope {
-                val reminderJobs = remindersSync(coroutineScope = this)
-                val taskJobs = tasksSync(coroutineScope = this)
-                val attendeeJobs = attendeesSync(coroutineScope = this)
-                val eventJobs = eventsSync(coroutineScope = this)
-                (reminderJobs + taskJobs + attendeeJobs + eventJobs).forEach { it.join() }
-            }
+            syncRemoteWithLocalData()
             syncLocalWithRemoteData()
         } catch (e: Exception) {
             Result.retry()
+        }
+    }
+
+    private suspend fun syncRemoteWithLocalData() {
+        supervisorScope {
+            val reminderJobs = remindersSync(coroutineScope = this)
+            val taskJobs = tasksSync(coroutineScope = this)
+            val attendeeJobs = attendeesSync(coroutineScope = this)
+            val eventJobs = eventsSync(coroutineScope = this)
+            (reminderJobs + taskJobs + attendeeJobs + eventJobs).forEach { it.join() }
         }
     }
 

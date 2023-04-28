@@ -23,7 +23,6 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import okhttp3.MultipartBody
 import java.time.LocalDate
 
 class EventRepositoryImpl constructor(
@@ -67,10 +66,13 @@ class EventRepositoryImpl constructor(
         }
     }
 
-    override suspend fun upsertEvents(events: List<AgendaItem.Event>) {
+    override suspend fun upsertEvents(events: List<AgendaItem.Event>, refreshPictures: Boolean) {
         events.forEach { event ->
             database.withTransaction { // TODO: not sure about this. What is I syncronize with the api but the version of the event localy is more up to date. How to solve this conflict?
                 eventDao.upsertSyncStateAndEvent(eventEntity = event.toEventEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = SyncType.SYNCED))
+                if (refreshPictures) {
+                    pictureDao.deletePictures(eventId = event.id)
+                }
                 pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
                 attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
             }

@@ -1,7 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
@@ -46,6 +45,7 @@ class AgendaViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
     private val syncAgendaUseCase: SyncAgendaUseCase,
+    private val syncAgendaPeriodicallyUseCase: SyncAgendaPeriodicallyUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
@@ -59,8 +59,7 @@ class AgendaViewModel @Inject constructor(
     init {
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
-        getAgendaItems(date = LocalDate.now())
-        syncAgendaUseCase(LocalDate.now())
+        updateAgenda(date = LocalDate.now())
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -97,7 +96,8 @@ class AgendaViewModel @Inject constructor(
 
     private fun updateAgenda(date: LocalDate) {
         getAgendaItems(date = date)
-        syncAgendaUseCase(date = date)
+        syncAgenda(date = LocalDate.now())
+        syncAgendaPeriodicallyUseCase(date = date)
     }
 
     private fun changeDate(date: LocalDate) {
@@ -119,6 +119,12 @@ class AgendaViewModel @Inject constructor(
             )
         }
         updateAgenda(date = date)
+    }
+
+    private fun syncAgenda(date: LocalDate) {
+        viewModelScope.launch {
+            syncAgendaUseCase(date = date)
+        }
     }
 
     private fun logout() {
