@@ -16,4 +16,5 @@ class TaskyScaffoldState {
         dialog.value = null
     }
 
+    val taskySnackBarState = TaskySnackBarState()
 }

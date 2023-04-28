@@ -5,14 +5,12 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.artemissoftware.core.data.database.entities.ReminderEntity
 import com.artemissoftware.core.data.database.entities.TaskEntity
 import com.artemissoftware.core.data.database.entities.TaskSyncEntity
 import com.artemissoftware.core.data.database.entities.relations.TaskAndSyncState
 import com.artemissoftware.core.domain.SyncType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.time.LocalDate
 
 @Dao
 interface TaskDao {
@@ -24,6 +22,10 @@ interface TaskDao {
     @Transaction
     @Query("SELECT * FROM taskEntity WHERE time >= :initialDate AND time < :endDate")
     fun getTasks(initialDate: Long, endDate: Long): Flow<List<TaskAndSyncState>>
+
+    @Transaction
+    @Query("SELECT id FROM taskEntity")
+    fun getAllTasksIds(): List<String>
 
     @Transaction
     @Query("SELECT * FROM taskEntity WHERE time >= :currentTime")
@@ -59,8 +61,14 @@ interface TaskDao {
     @Delete
     suspend fun deleteAllTasks(tasks: List<TaskEntity>)
 
+    @Query("DELETE FROM taskEntity")
+    suspend fun deleteAllTasks()
+
     @Query("DELETE FROM taskSyncEntity WHERE id IN (:idList)")
     suspend fun deleteSyncState(idList: List<String>)
+
+    @Query("DELETE FROM taskSyncEntity")
+    suspend fun deleteAllSyncState()
 
     @Transaction
     suspend fun deleteTasksAndSyncState(initialDate: Long, endDate: Long): List<String> {
@@ -69,6 +77,14 @@ interface TaskDao {
         deleteSyncState(tasks.map { it.task.id })
 
         return tasks.map { it.task.id }
+    }
+
+    @Transaction
+    suspend fun deleteAll(): List<String> {
+        val ids = getAllTasksIds()
+        deleteAllTasks()
+        deleteAllSyncState()
+        return ids
     }
 
     @Transaction

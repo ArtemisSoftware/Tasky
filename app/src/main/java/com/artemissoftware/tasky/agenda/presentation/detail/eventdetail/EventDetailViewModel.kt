@@ -1,6 +1,8 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import android.net.Uri
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.AgendaException
@@ -13,6 +15,7 @@ import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.snackbar.TaskySnackBarType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
@@ -392,7 +395,14 @@ class EventDetailViewModel @Inject constructor(
             val result = validatePicturesUseCase.invoke(pictures = pictures)
 
             if (result.numberOfRejectedPictures != 0) {
-                sendUiEvent(UiEvent.ShowSnackBar(UiText.DynamicString("${result.numberOfRejectedPictures} photos were skipped because they were too large")))
+                sendUiEvent(
+                    UiEvent.ShowSnackBar(
+                        TaskySnackBarType.Info(
+                            text = UiText.DynamicString("${result.numberOfRejectedPictures} photos were skipped because they were too large"),
+                            imageVector = Icons.Default.Warning,
+                        ),
+                    ),
+                )
             }
 
             saveEvent(validatedPictures = result.validPictures)

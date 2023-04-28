@@ -29,6 +29,10 @@ interface EventDao {
     @Query("SELECT * FROM eventEntity")
     fun getEvents(): Flow<List<EventAndSyncState>>
 
+    @Transaction
+    @Query("SELECT id FROM eventEntity")
+    fun getEventsIds(): List<String>
+
     @Upsert
     fun upsert(eventEntity: EventEntity)
 
@@ -59,8 +63,14 @@ interface EventDao {
     @Delete
     suspend fun deleteAllEvents(events: List<EventEntity>)
 
+    @Query("DELETE FROM eventEntity")
+    suspend fun deleteAllEvents()
+
     @Query("DELETE FROM eventSyncEntity WHERE id IN (:idList)")
     suspend fun deleteSyncState(idList: List<String>)
+
+    @Query("DELETE FROM eventSyncEntity")
+    suspend fun deleteAllSyncState()
 
     @Transaction
     suspend fun deleteEventsAndSyncState(initialDate: Long, endDate: Long): List<String> {
@@ -69,6 +79,14 @@ interface EventDao {
         deleteSyncState(events.map { it.event.id })
 
         return events.map { it.event.id }
+    }
+
+    @Transaction
+    suspend fun deleteAll(): List<String> {
+        val ids = getEventsIds()
+        deleteAllEvents()
+        deleteAllSyncState()
+        return ids
     }
 
     @Transaction

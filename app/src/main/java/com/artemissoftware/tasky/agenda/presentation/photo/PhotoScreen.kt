@@ -19,6 +19,8 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.artemissoftware.core.presentation.composables.connectivity.connectivityState
+import com.artemissoftware.core.presentation.composables.connectivity.models.TaskyConnectionState
 import com.artemissoftware.core.presentation.composables.icon.TaskySquareIcon
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarAction
@@ -44,11 +46,13 @@ fun PhotoScreen(
     resultNavigator: ResultBackNavigator<PictureRecipient>,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val connection by connectivityState()
 
     PhotoScreenContent(
         picture = picture,
         isEventCreator = isEventCreator,
         state = state,
+        isNetworkConnectionAvailable = (connection === TaskyConnectionState.Available),
         events = viewModel::onTriggerEvent,
     )
 
@@ -67,6 +71,7 @@ fun PhotoScreen(
 private fun PhotoScreenContent(
     picture: Picture,
     isEventCreator: Boolean,
+    isNetworkConnectionAvailable: Boolean,
     events: (PhotoEvents) -> Unit,
     state: PhotoState,
 ) {
@@ -81,7 +86,7 @@ private fun PhotoScreenContent(
                 backGroundColor = Black,
                 title = stringResource(id = R.string.photo),
                 toolbarActions = { color ->
-                    if(isEventCreator) {
+                    if(isEventCreator && isNetworkConnectionAvailable) {
                         TaskyToolBarAction(
                             iconId = R.drawable.ic_trash,
                             tint = color,
@@ -141,6 +146,7 @@ private fun PhotoScreenContentPreview() {
     PhotoScreenContent(
         picture = Picture.Local(picId = "123", uri = "http://www.batman.com/riddler.jpg"),
         events = {},
+        isNetworkConnectionAvailable = true,
         isEventCreator = true,
         state = PhotoState(),
     )

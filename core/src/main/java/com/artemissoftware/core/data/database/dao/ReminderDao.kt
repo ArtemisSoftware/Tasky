@@ -11,7 +11,6 @@ import com.artemissoftware.core.data.database.entities.relations.ReminderAndSync
 import com.artemissoftware.core.domain.SyncType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.time.LocalDate
 
 @Dao
 interface ReminderDao {
@@ -22,6 +21,10 @@ interface ReminderDao {
     @Transaction
     @Query("SELECT * FROM reminderEntity WHERE time >= :initialDate AND time < :endDate")
     fun getReminders(initialDate: Long, endDate: Long): Flow<List<ReminderAndSyncState>>
+
+    @Transaction
+    @Query("SELECT id FROM reminderEntity")
+    fun getAllRemindersIds(): List<String>
 
     @Transaction
     @Query("SELECT * FROM reminderEntity WHERE time >= :currentTime")
@@ -57,8 +60,14 @@ interface ReminderDao {
     @Delete
     suspend fun deleteAllReminders(reminders: List<ReminderEntity>)
 
+    @Query("DELETE FROM reminderEntity")
+    suspend fun deleteAllReminders()
+
     @Query("DELETE FROM reminderSyncEntity WHERE id IN (:idList)")
     suspend fun deleteSyncState(idList: List<String>)
+
+    @Query("DELETE FROM reminderSyncEntity")
+    suspend fun deleteAllSyncState()
 
     @Transaction
     suspend fun deleteRemindersAndSyncState(initialDate: Long, endDate: Long): List<String> {
@@ -67,6 +76,14 @@ interface ReminderDao {
         deleteSyncState(reminders.map { it.reminder.id })
 
         return reminders.map { it.reminder.id }
+    }
+
+    @Transaction
+    suspend fun deleteAll(): List<String> {
+        val ids = getAllRemindersIds()
+        deleteAllReminders()
+        deleteAllSyncState()
+        return ids
     }
 
     @Transaction

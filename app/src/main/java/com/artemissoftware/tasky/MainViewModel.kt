@@ -28,7 +28,7 @@ class MainViewModel @Inject constructor(
     private val _state = MutableStateFlow(MainState())
     val state: StateFlow<MainState> = _state
 
-    private var authenticateRetries = 3
+    private var authenticateRetries = 2
 
     init {
         authenticate()
@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
                                     it.copy(showSplash = false, destinationAfterSplash = LoginScreenDestination)
                                 }
                             }
-                            else -> {
+                            else -> { // TODO: review this when network and api error have been split. Next PR
                                 _state.update { it.copy(showSplash = false) }
                                 sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = exception, reloadEvent = { authenticate() })))
                             }
