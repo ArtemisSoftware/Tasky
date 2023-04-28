@@ -16,9 +16,9 @@ interface EventRepository {
 
     suspend fun deleteEventAndSync(id: String): DataResponse<Unit>
 
-    suspend fun upsertEvents(events: List<AgendaItem.Event>, refreshPictures: Boolean = false)
+    suspend fun upsertEvents(events: List<AgendaItem.Event>)
 
     suspend fun getEventsToSync(): List<SyncState>
 
-    suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>)
+    suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>, refreshPictures: Boolean = false)
 }

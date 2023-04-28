@@ -26,12 +26,10 @@ class SyncAgendaUseCase @Inject constructor(
             is DataResponse.Success -> {
                 result.data?.let { items ->
 
-                    //agendaRepository.deleteLocalAgenda(date = date)
-
                     with(items) {
-                        reminderRepository.upsertReminders(filterIsInstance<AgendaItem.Reminder>())
-                        taskRepository.upsertTasks(filterIsInstance<AgendaItem.Task>())
-                        eventRepository.upsertEvents(filterIsInstance<AgendaItem.Event>(), refreshPictures = true)
+                        reminderRepository.syncRemindersWithRemote(filterIsInstance<AgendaItem.Reminder>())
+                        taskRepository.syncTasksWithRemote(filterIsInstance<AgendaItem.Task>())
+                        eventRepository.syncEventsWithRemote(filterIsInstance<AgendaItem.Event>(), refreshPictures = true)
                     }
                 }
             }

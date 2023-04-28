@@ -22,7 +22,7 @@ class AgendaSynchronizerImpl(
         val syncWorker: PeriodicWorkRequest = PeriodicWorkRequestBuilder<AgendaSyncWorker>(
             repeatInterval = 15,
             TimeUnit.MINUTES,
-            flexTimeInterval = 14,
+            flexTimeInterval = 5,
             TimeUnit.MINUTES,
         )
             .setConstraints(

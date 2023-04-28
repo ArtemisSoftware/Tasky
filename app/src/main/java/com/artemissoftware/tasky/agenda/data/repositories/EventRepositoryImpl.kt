@@ -66,13 +66,10 @@ class EventRepositoryImpl constructor(
         }
     }
 
-    override suspend fun upsertEvents(events: List<AgendaItem.Event>, refreshPictures: Boolean) {
+    override suspend fun upsertEvents(events: List<AgendaItem.Event>) {
         events.forEach { event ->
             database.withTransaction { // TODO: not sure about this. What is I syncronize with the api but the version of the event localy is more up to date. How to solve this conflict?
                 eventDao.upsertSyncStateAndEvent(eventEntity = event.toEventEntity(), eventSyncEntity = EventSyncEntity(id = event.id, syncType = SyncType.SYNCED))
-                if (refreshPictures) {
-                    pictureDao.deletePictures(eventId = event.id)
-                }
                 pictureDao.upsertPictures(deletedPictures = event.deletedPictures, pictures = event.pictures.map { it.toEntity(eventId = event.id) })
                 attendeeDao.upsertAttendees(eventId = event.id, attendees = event.attendees.map { it.toEntity(eventId = event.id) })
             }
@@ -83,11 +80,14 @@ class EventRepositoryImpl constructor(
         return eventDao.getEventsToSync().map { it.toSyncState() }
     }
 
-    override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>) {
+    override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>, refreshPictures: Boolean) {
         events.map { it.toEventAndSyncState() }.forEachIndexed { index, item ->
 
             database.withTransaction {
                 eventDao.upsertSyncStateAndEvent(eventEntity = item.event, eventSyncEntity = item.syncState)
+                if (refreshPictures) {
+                    pictureDao.deletePictures(eventId = item.event.id)
+                }
                 pictureDao.upsert(pictures = item.pictures)
                 attendeeDao.upsert(attendees = item.attendees)
             }
