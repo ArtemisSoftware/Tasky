@@ -26,18 +26,14 @@ import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
@@ -55,7 +51,7 @@ class AgendaViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AgendaState())
     val state: StateFlow<AgendaState> = _state.asStateFlow()
-
+    var needleJob: Job? = null
     init {
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
@@ -204,10 +200,39 @@ class AgendaViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         agendaItems = result,
+                        // needlePosition = NeedleLogic.showOnTop(result)
                     )
+                }
+                checkNeedlePosition(result)
+            }
+        }
+    }
+
+    private suspend fun checkNeedlePosition(result: List<AgendaItem>) {
+        supervisorScope {
+            needleJob = launch {
+                while (true) {
+                    _state.update {
+                        it.copy(
+                            needlePosition = getNeedlePosition(result),
+                        )
+                    }
+                    delay(60.seconds)
                 }
             }
         }
+    }
+
+    private fun getNeedlePosition(items: List<AgendaItem>): String {
+        val currentDate = LocalDateTime.now()
+        items.forEach { item ->
+
+            if (currentDate < item.starDate) {
+                return item.itemId
+            }
+        }
+        needleJob?.cancel()
+        return ""
     }
 
     private fun updateDaysOfTheWeek(selectedDay: LocalDate) {

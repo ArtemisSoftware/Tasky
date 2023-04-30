@@ -11,4 +11,5 @@ data class AgendaState(
     val selectedDayOfTheWeek: LocalDate = LocalDate.now(),
     val userName: String = "",
     val userId: String = "",
+    val needlePosition: String = "",
 )

@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.composables
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +26,7 @@ fun Needle(
 
     Canvas(
         modifier = modifier
-            .height(height)
+            .height(height).background(color = Color.Red)
     ) {
         drawCircle(
             color = color,

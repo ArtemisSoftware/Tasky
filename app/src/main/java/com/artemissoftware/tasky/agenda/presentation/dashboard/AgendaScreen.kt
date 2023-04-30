@@ -44,6 +44,7 @@ import com.artemissoftware.core.util.constants.DateTimePatternsConstants.DATE_PA
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.AgendaItemType
+import com.artemissoftware.tasky.agenda.composables.Needle
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -217,7 +218,6 @@ private fun AgendaScreenContent(
 
                             LazyColumn(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
                                 items(
                                     items = state.agendaItems,
@@ -225,7 +225,18 @@ private fun AgendaScreenContent(
                                         it.itemId
                                     },
                                     itemContent = { item ->
+
+                                        var lolo = 8.dp
+                                        if (item.itemId == state.needlePosition) {
+                                            Needle(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                radius = 24F,
+                                                color = Black,
+                                            )
+                                            lolo = 0.dp
+                                        }
                                         AssignmentCard(
+                                            modifier = Modifier.padding(vertical = lolo),
                                             agendaItem = item,
                                             onCheckedChange = {
                                                 if (item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item))
