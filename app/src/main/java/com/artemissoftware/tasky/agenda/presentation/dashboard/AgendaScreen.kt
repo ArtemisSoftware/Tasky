@@ -226,17 +226,18 @@ private fun AgendaScreenContent(
                                     },
                                     itemContent = { item ->
 
-                                        var lolo = 8.dp
+                                        var paddingTop = 16.dp
                                         if (item.itemId == state.needlePosition) {
                                             Needle(
-                                                modifier = Modifier.fillMaxWidth(),
+                                                modifier = Modifier
+                                                    .fillMaxWidth(),
                                                 radius = 24F,
                                                 color = Black,
                                             )
-                                            lolo = 0.dp
+                                            paddingTop = 0.dp
                                         }
                                         AssignmentCard(
-                                            modifier = Modifier.padding(vertical = lolo),
+                                            modifier = Modifier.padding(top = paddingTop),
                                             agendaItem = item,
                                             onCheckedChange = {
                                                 if (item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item))
