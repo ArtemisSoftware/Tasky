@@ -8,7 +8,7 @@ import javax.inject.Inject
 class SyncAgendaPeriodicallyUseCase @Inject constructor(
     private val agendaSynchronizer: AgendaSynchronizer,
 ) {
-    operator fun invoke(date: LocalDate): UUID {
-        return agendaSynchronizer.syncAgenda(currentDate = date)
+    operator fun invoke(): UUID {
+        return agendaSynchronizer.syncAgenda()
     }
 }
