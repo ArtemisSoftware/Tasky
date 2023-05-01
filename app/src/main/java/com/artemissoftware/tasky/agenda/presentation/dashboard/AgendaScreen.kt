@@ -256,6 +256,14 @@ private fun AgendaScreenContent(
                                                 }
                                             },
                                         )
+                                        if (state.needlePosition == "") {
+                                            Needle(
+                                                modifier = Modifier
+                                                    .fillMaxWidth(),
+                                                radius = 24F,
+                                                color = Black,
+                                            )
+                                        }
                                     },
                                 )
                             }
