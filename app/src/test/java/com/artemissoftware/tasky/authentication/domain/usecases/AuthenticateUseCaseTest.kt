@@ -1,6 +1,5 @@
 package com.artemissoftware.tasky.authentication.domain.usecases
 
-import com.artemissoftware.core.data.repositories.FakeUserStoreRepository
 import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource

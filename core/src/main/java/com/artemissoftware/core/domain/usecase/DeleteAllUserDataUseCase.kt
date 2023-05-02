@@ -3,8 +3,10 @@ package com.artemissoftware.core.domain.usecase
 import com.artemissoftware.core.domain.repositories.UserRepository
 import javax.inject.Inject
 
-class GetUserUseCase @Inject constructor(
+class DeleteAllUserDataUseCase @Inject constructor(
     private val userRepository: UserRepository,
 ) {
-    operator fun invoke() = userRepository.getUser()
+    suspend operator fun invoke() {
+        userRepository.deleteAllUserData()
+    }
 }
