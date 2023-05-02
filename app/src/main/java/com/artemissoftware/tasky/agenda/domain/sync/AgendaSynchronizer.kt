@@ -5,7 +5,7 @@ import java.util.UUID
 
 interface AgendaSynchronizer {
 
-    fun syncAgenda(currentDate: LocalDate): UUID
+    fun syncAgenda(): UUID
 
     fun syncLocalWithRemoteData(): UUID
 

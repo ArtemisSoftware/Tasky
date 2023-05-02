@@ -58,6 +58,7 @@ class AgendaViewModel @Inject constructor(
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
         updateAgenda(date = LocalDate.now())
+        syncAgendaPeriodicallyUseCase()
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -95,7 +96,6 @@ class AgendaViewModel @Inject constructor(
     private fun updateAgenda(date: LocalDate) {
         getAgendaItems(date = date)
         syncAgenda(date = date)
-        syncAgendaPeriodicallyUseCase(date = date)
     }
 
     private fun changeDate(date: LocalDate) {

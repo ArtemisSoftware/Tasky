@@ -70,6 +70,12 @@ class AgendaApiSource @Inject constructor(
         }
     }
 
+    suspend fun getFullAgenda(): AgendaResponseDto {
+        return HandleApi.safeApiCall {
+            taskyAgendaApi.getFullAgenda()
+        }
+    }
+
     suspend fun logOut(): ResponseBody {
         return HandleApi.safeApiCall {
             taskyAuthenticationApi.logoutUser()
