@@ -11,6 +11,7 @@ import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.core.util.extensions.nextDays
+import com.artemissoftware.core.util.extensions.secondsUntilNextFullMinute
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
@@ -30,6 +31,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -209,16 +211,16 @@ class AgendaViewModel @Inject constructor(
     }
 
     private suspend fun checkNeedlePosition(result: List<AgendaItem>) {
-        supervisorScope {
-            needleJob = launch {
-                while (true) {
-                    _state.update {
-                        it.copy(
-                            needlePosition = getNeedlePosition(result),
-                        )
-                    }
-                    delay(60.seconds)
+        needleJob = viewModelScope.launch {
+            delay(LocalTime.now().secondsUntilNextFullMinute())
+
+            while (true) {
+                _state.update {
+                    it.copy(
+                        needlePosition = getNeedlePosition(result),
+                    )
                 }
+                delay(60.seconds)
             }
         }
     }
