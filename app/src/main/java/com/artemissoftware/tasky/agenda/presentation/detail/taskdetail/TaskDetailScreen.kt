@@ -23,11 +23,11 @@ import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarActi
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentDescription
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
@@ -46,7 +46,7 @@ import com.ramcosta.composedestinations.result.getOr
 fun TaskDetailScreen(
     navigator: DestinationsNavigator,
     viewModel: TaskDetailViewModel = hiltViewModel(),
-    taskId: String? = null,
+    id: String? = null,
     isEditing: Boolean = false,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
 ) {

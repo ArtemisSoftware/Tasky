@@ -24,8 +24,8 @@ import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.util.constants.DateTimePatternsConstants
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOption
 
 @Composable
@@ -35,7 +35,6 @@ fun TaskCard(
     onOptionClick: (AgendaItemOption) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     Card(
         modifier = modifier,
         elevation = 0.dp,

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.BODY
 import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.ID
+import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.LINK
 import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.TITLE
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -55,9 +56,10 @@ class AlarmSchedulerImpl @Inject constructor(
     private fun getIntent(item: AgendaItem): Intent {
         val intent = Intent(context, AlarmReceiver::class.java)
         val bundle = Bundle().apply {
-            putString(TITLE, AgendaItemType.convertAgendaItem(item).name)
+            putInt(TITLE, AgendaItemType.convertAgendaItem(item).title)
             putString(BODY, item.itemTitle)
             putString(ID, item.itemId)
+            putString(LINK, AgendaItemType.convertAgendaItem(item).detailDeepLink)
         }
         return intent.apply {
             putExtras(bundle)

@@ -23,7 +23,7 @@ import com.artemissoftware.core.presentation.composables.icon.TaskyIconToggleBut
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.DarkGray
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.AgendaItemType
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
