@@ -55,12 +55,20 @@ import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.artemissoftware.tasky.util.VisibilityTransitions
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.FULL_ROUTE_PLACEHOLDER
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.result.getOr
 
-@Destination
+@Destination(
+    deepLinks = [
+        DeepLink(
+            uriPattern = "https://tasky.com/$FULL_ROUTE_PLACEHOLDER",
+        ),
+    ],
+)
 @Composable
 fun EventDetailScreen(
     viewModel: EventDetailViewModel = hiltViewModel(),
