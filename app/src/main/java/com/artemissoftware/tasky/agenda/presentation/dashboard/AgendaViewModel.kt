@@ -11,6 +11,7 @@ import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.core.util.extensions.nextDays
+import com.artemissoftware.core.util.extensions.secondsUntilNextFullMinute
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
@@ -26,18 +27,15 @@ import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
@@ -55,11 +53,12 @@ class AgendaViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AgendaState())
     val state: StateFlow<AgendaState> = _state.asStateFlow()
-
+    var needleJob: Job? = null
     init {
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
         updateAgenda(date = LocalDate.now())
+        syncAgendaPeriodicallyUseCase()
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -97,7 +96,6 @@ class AgendaViewModel @Inject constructor(
     private fun updateAgenda(date: LocalDate) {
         getAgendaItems(date = date)
         syncAgenda(date = date)
-        syncAgendaPeriodicallyUseCase(date = date)
     }
 
     private fun changeDate(date: LocalDate) {
@@ -204,10 +202,39 @@ class AgendaViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         agendaItems = result,
+                        // needlePosition = NeedleLogic.showOnTop(result)
                     )
                 }
+                checkNeedlePosition(result)
             }
         }
+    }
+
+    private suspend fun checkNeedlePosition(result: List<AgendaItem>) {
+        needleJob = viewModelScope.launch {
+            delay(LocalTime.now().secondsUntilNextFullMinute())
+
+            while (true) {
+                _state.update {
+                    it.copy(
+                        needlePosition = getNeedlePosition(result),
+                    )
+                }
+                delay(60.seconds)
+            }
+        }
+    }
+
+    private fun getNeedlePosition(items: List<AgendaItem>): String {
+        val currentDate = LocalDateTime.now()
+        items.forEach { item ->
+
+            if (currentDate < item.starDate) {
+                return item.itemId
+            }
+        }
+        needleJob?.cancel()
+        return ""
     }
 
     private fun updateDaysOfTheWeek(selectedDay: LocalDate) {

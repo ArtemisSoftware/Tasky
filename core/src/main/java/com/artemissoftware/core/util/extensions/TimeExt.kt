@@ -55,3 +55,7 @@ fun LocalDate.nextDays(includeCurrentDay: Boolean = true, numberOfNextDays: Int)
 
     return list
 }
+
+fun LocalTime.secondsUntilNextFullMinute(): Long {
+    return (60 - this.second).toLong()
+}

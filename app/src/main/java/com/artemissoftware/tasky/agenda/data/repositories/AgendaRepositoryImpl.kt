@@ -33,6 +33,15 @@ class AgendaRepositoryImpl(
         }
     }
 
+    override suspend fun getFullAgenda(): DataResponse<List<AgendaItem>> {
+        return try {
+            val result = agendaApiSource.getFullAgenda()
+            DataResponse.Success(data = result.toAgenda())
+        } catch (ex: TaskyNetworkException) {
+            DataResponse.Error(exception = ex)
+        }
+    }
+
     override suspend fun getFutureAgenda(currentDate: Long): List<AgendaItem> {
         val reminders = reminderDao.getRemindersToSetAlarm(currentTime = currentDate).map { it.toAgendaItem() }
         val tasks = taskDao.getTasksToSetAlarm(currentTime = currentDate).map { it.toAgendaItem() }

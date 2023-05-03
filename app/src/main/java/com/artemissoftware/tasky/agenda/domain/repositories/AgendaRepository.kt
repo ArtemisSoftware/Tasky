@@ -8,6 +8,8 @@ interface AgendaRepository {
 
     suspend fun getAgenda(date: LocalDate): DataResponse<List<AgendaItem>>
 
+    suspend fun getFullAgenda(): DataResponse<List<AgendaItem>>
+
     suspend fun getFutureAgenda(currentDate: Long): List<AgendaItem>
 
     suspend fun logOut(): DataResponse<Unit>

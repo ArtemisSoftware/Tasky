@@ -28,6 +28,9 @@ interface TaskyAgendaApi {
     @POST("syncAgenda")
     suspend fun syncAgenda(@Body agenda: AgendaBodyDto): ResponseBody
 
+    @GET("fullAgenda")
+    suspend fun getFullAgenda(): AgendaResponseDto
+
     @POST("task")
     suspend fun createTask(@Body task: TaskDto): ResponseBody
 

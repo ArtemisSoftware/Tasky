@@ -141,9 +141,8 @@ class AgendaSyncWorker @AssistedInject constructor(
     }
 
     private suspend fun syncLocalWithRemoteData(): Result {
-        with(workerParameters.inputData) {
-            val date = getLong(WorkerKeys.SELECTED_DATE, LocalDate.now().toEpochMilli()).toLocalDateTime().toLocalDate()
-            val result = agendaRepository.getAgenda(date)
+
+            val result = agendaRepository.getFullAgenda()
 
             when (result) {
                 is DataResponse.Error -> {
@@ -152,7 +151,7 @@ class AgendaSyncWorker @AssistedInject constructor(
                 is DataResponse.Success -> {
                     result.data?.let { items ->
 
-                        agendaRepository.deleteLocalAgenda(date)
+                        agendaRepository.deleteLocalAgenda()
 
                         supervisorScope {
                             val reminderJob = launch {
@@ -173,7 +172,7 @@ class AgendaSyncWorker @AssistedInject constructor(
                     }
                 }
             }
-        }
+
     }
 
     private fun getWorkResult(isSuccess: Boolean): Result {
