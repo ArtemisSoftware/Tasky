@@ -15,6 +15,7 @@ import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffoldState
 import com.artemissoftware.core.presentation.composables.snackbar.TaskySnackBarType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.core.presentation.events.UiEvent
@@ -32,7 +33,6 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.SaveEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
-import com.artemissoftware.tasky.agenda.presentation.detail.reminderdetail.ReminderDetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
@@ -74,8 +74,12 @@ class EventDetailViewModel @Inject constructor(
         savedStateHandle["state"] = _state.value
     }
 
-    private fun getState() = (savedStateHandle.get<EventDetailState>("state"))?.copy(isLoading = false)
-
+    private fun getState() = (savedStateHandle.get<EventDetailState>("state"))?.copy(
+        isLoading = false,
+        attendeeDialogState = AttendeeDialogState(),
+        taskyScaffoldState = TaskyScaffoldState(),
+        isEditing = false
+    )
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -299,7 +303,6 @@ class EventDetailViewModel @Inject constructor(
         updateState()
     }
 
-
     private fun goToPicture(picture: Picture) = with(_state.value) {
         viewModelScope.launch {
             sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture, isEventCreator = isEventCreator).route))
@@ -341,7 +344,6 @@ class EventDetailViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun openAttendeeDialog() = with(_state) {
         update {

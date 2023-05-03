@@ -44,7 +44,7 @@ class ReminderDetailViewModel @Inject constructor(
         savedStateHandle["state"] = _state.value
     }
 
-    private fun getState() = (savedStateHandle.get<ReminderDetailState>("state"))?.copy(isLoading = false)
+    private fun getState() = (savedStateHandle.get<ReminderDetailState>("state"))?.copy(isLoading = false, isEditing = false)
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
