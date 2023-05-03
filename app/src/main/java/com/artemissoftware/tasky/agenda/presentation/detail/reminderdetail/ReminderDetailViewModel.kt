@@ -33,12 +33,18 @@ class ReminderDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(ReminderDetailState())
+    private val _state = MutableStateFlow(getState() ?: ReminderDetailState())
     val state: StateFlow<ReminderDetailState> = _state.asStateFlow()
 
     init {
         loadDetail()
     }
+
+    private fun updateState(reminderDetailState: ReminderDetailState) {
+        savedStateHandle["state"] = reminderDetailState
+    }
+
+    private fun getState() = (savedStateHandle.get<ReminderDetailState>("state"))?.copy(isLoading = false)
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -84,6 +90,7 @@ class ReminderDetailViewModel @Inject constructor(
                 description = text,
             )
         }
+        updateState(_state.value)
     }
 
     private fun updateTitle(text: String) = with(_state) {
@@ -92,6 +99,7 @@ class ReminderDetailViewModel @Inject constructor(
                 title = text,
             )
         }
+        updateState(_state.value)
     }
 
     private fun updateNotification(notification: NotificationType) = with(_state) {
@@ -100,6 +108,7 @@ class ReminderDetailViewModel @Inject constructor(
                 notification = notification,
             )
         }
+        updateState(_state.value)
     }
 
     private fun updateStartDate(startDate: LocalDate) = with(_state) {
@@ -108,6 +117,7 @@ class ReminderDetailViewModel @Inject constructor(
                 startDate = it.startDate.with(startDate),
             )
         }
+        updateState(_state.value)
     }
 
     private fun updateStartTime(startTime: LocalTime) = with(_state) {
@@ -120,6 +130,7 @@ class ReminderDetailViewModel @Inject constructor(
                 startDate = result,
             )
         }
+        updateState(_state.value)
     }
 
     private fun toggleEdition() = with(_state) {
@@ -160,7 +171,7 @@ class ReminderDetailViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        } ?: kotlin.run { updateState(_state.value) }
     }
 
     private fun saveReminder() = with(_state.value) {

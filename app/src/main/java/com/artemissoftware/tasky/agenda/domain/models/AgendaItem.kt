@@ -1,10 +1,13 @@
 package com.artemissoftware.tasky.agenda.domain.models
 
+import android.os.Parcelable
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.agenda.NotificationType
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDateTime
 import java.util.*
 
+@Parcelize
 sealed class AgendaItem(
     val itemId: String,
     val itemTitle: String,
@@ -13,7 +16,7 @@ sealed class AgendaItem(
     val starDate: LocalDateTime,
     val itemNotification: NotificationType,
     val itemSyncState: SyncType,
-) {
+): Parcelable {
 
     data class Reminder(
         val id: String = UUID.randomUUID().toString(),
