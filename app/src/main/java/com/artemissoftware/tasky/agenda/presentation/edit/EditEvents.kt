@@ -9,7 +9,5 @@ sealed class EditEvents : TaskyEvents() {
 
     object PopBackStack : EditEvents()
 
-    data class LoadData(val text: String, val editType: EditType) : EditEvents()
-
     data class UpdateText(val text: String) : EditEvents()
 }

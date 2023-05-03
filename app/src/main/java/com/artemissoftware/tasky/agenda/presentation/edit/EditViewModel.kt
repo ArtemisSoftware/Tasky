@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
-import com.artemissoftware.tasky.agenda.presentation.detail.taskdetail.TaskDetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,17 +18,18 @@ import javax.inject.Inject
 @HiltViewModel
 class EditViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(getState() ?:EditState())
+    private val _state = MutableStateFlow(getState() ?: EditState())
     val state: StateFlow<EditState> = _state.asStateFlow()
+
+    init {
+        loadData()
+    }
 
     fun onTriggerEvent(event: EditEvents) {
         when (event) {
             EditEvents.PopBackStack -> { popBackStack() }
             EditEvents.Update -> {
                 update()
-            }
-            is EditEvents.LoadData -> {
-                loadData(event.text, event.editType)
             }
             is EditEvents.UpdateText -> {
                 updateText(event.text)
@@ -41,7 +42,6 @@ class EditViewModel @Inject constructor(private val savedStateHandle: SavedState
     }
 
     private fun getState() = (savedStateHandle.get<EditState>("state"))
-
 
     private fun updateText(text: String) = with(_state) {
         update {
@@ -59,13 +59,18 @@ class EditViewModel @Inject constructor(private val savedStateHandle: SavedState
         }
     }
 
-    private fun loadData(text: String, editType: EditType) = with(_state) {
+    private fun loadData() = with(_state) {
+        val text = savedStateHandle.get<String>(NavigationConstants.TEXT).orEmpty()
+        val editType = savedStateHandle.get<EditType>(NavigationConstants.IS_EDITING) ?: EditType.Title
+
         update {
             it.copy(
                 text = text,
                 editType = editType,
             )
         }
+
+        updateState()
     }
 
     private fun update() {
