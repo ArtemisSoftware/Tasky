@@ -40,8 +40,8 @@ class ReminderDetailViewModel @Inject constructor(
         loadDetail()
     }
 
-    private fun updateState(reminderDetailState: ReminderDetailState) {
-        savedStateHandle["state"] = reminderDetailState
+    private fun updateState() {
+        savedStateHandle["state"] = _state.value
     }
 
     private fun getState() = (savedStateHandle.get<ReminderDetailState>("state"))?.copy(isLoading = false)
@@ -90,7 +90,7 @@ class ReminderDetailViewModel @Inject constructor(
                 description = text,
             )
         }
-        updateState(_state.value)
+        updateState()
     }
 
     private fun updateTitle(text: String) = with(_state) {
@@ -99,7 +99,7 @@ class ReminderDetailViewModel @Inject constructor(
                 title = text,
             )
         }
-        updateState(_state.value)
+        updateState()
     }
 
     private fun updateNotification(notification: NotificationType) = with(_state) {
@@ -108,7 +108,7 @@ class ReminderDetailViewModel @Inject constructor(
                 notification = notification,
             )
         }
-        updateState(_state.value)
+        updateState()
     }
 
     private fun updateStartDate(startDate: LocalDate) = with(_state) {
@@ -117,7 +117,7 @@ class ReminderDetailViewModel @Inject constructor(
                 startDate = it.startDate.with(startDate),
             )
         }
-        updateState(_state.value)
+        updateState()
     }
 
     private fun updateStartTime(startTime: LocalTime) = with(_state) {
@@ -130,7 +130,7 @@ class ReminderDetailViewModel @Inject constructor(
                 startDate = result,
             )
         }
-        updateState(_state.value)
+        updateState()
     }
 
     private fun toggleEdition() = with(_state) {
@@ -171,7 +171,7 @@ class ReminderDetailViewModel @Inject constructor(
                     }
                 }
             }
-        } ?: kotlin.run { updateState(_state.value) }
+        }
     }
 
     private fun saveReminder() = with(_state.value) {
