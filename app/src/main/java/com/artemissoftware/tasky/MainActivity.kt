@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
 import com.artemissoftware.core.util.interceptors.logOutState
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
+import com.artemissoftware.tasky.destinations.AgendaScreenDestination
 import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -68,14 +69,10 @@ private fun MainScreen(viewModel: MainViewModel, navController: NavHostControlle
             startRoute = it,
             navController = navController,
         )
-    } ?: run {
-        DestinationsNavHost(
-            navGraph = NavGraphs.root,
-            startRoute = LoginScreenDestination,
-            navController = navController,
-        )
+        navController
+        LogOut(navController = navController)
     }
-    LogOut(navController = navController)
+
 
     ManageUIEvents(
         uiEvent = viewModel.uiEvent,
