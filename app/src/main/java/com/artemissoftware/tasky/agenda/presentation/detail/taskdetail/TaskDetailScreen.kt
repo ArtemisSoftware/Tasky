@@ -28,6 +28,7 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemStyle
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
@@ -149,7 +150,7 @@ private fun TaskDetailScreenContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             AssignmentHeader(
-                                agendaItemType = AgendaItemType.Task,
+                                agendaItemStyle = AgendaItemStyle.Task,
                                 title = state.title,
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,

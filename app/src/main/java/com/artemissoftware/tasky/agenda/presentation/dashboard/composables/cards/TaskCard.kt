@@ -27,6 +27,7 @@ import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
 import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemOption
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemStyle
 
 @Composable
 fun TaskCard(
@@ -39,7 +40,7 @@ fun TaskCard(
         modifier = modifier,
         elevation = 0.dp,
         shape = RoundedCornerShape(20.dp),
-        backgroundColor = AgendaItemType.Task.color,
+        backgroundColor = AgendaItemStyle.Task.color,
     ) {
         Column(
             modifier = Modifier
@@ -51,7 +52,7 @@ fun TaskCard(
                     modifier = Modifier.padding(top = 4.dp),
                     onIcon = R.drawable.ic_round_check,
                     offIcon = R.drawable.ic_circle,
-                    onIconColor = AgendaItemType.Task.generalTextColor,
+                    onIconColor = AgendaItemStyle.Task.generalTextColor,
                     onCheckedChange = onCheckedChange,
                 )
 
@@ -63,7 +64,7 @@ fun TaskCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TaskyText(
-                            color = AgendaItemType.Task.generalTextColor,
+                            color = AgendaItemStyle.Task.generalTextColor,
                             modifier = Modifier.weight(0.9F),
                             text = task.itemTitle,
                             style = MaterialTheme.typography.h6.copy(textDecoration = if (task.isDone) TextDecoration.LineThrough else TextDecoration.None),
@@ -82,7 +83,7 @@ fun TaskCard(
                                     modifier = Modifier
                                         .weight(0.1F),
                                     icon = R.drawable.ic_more_options,
-                                    color = AgendaItemType.Task.generalTextColor,
+                                    color = AgendaItemStyle.Task.generalTextColor,
                                 )
                             },
                         )
@@ -90,7 +91,7 @@ fun TaskCard(
 
                     TaskyText(
                         modifier = Modifier.padding(top = 12.dp),
-                        color = AgendaItemType.Task.secondaryTextColor,
+                        color = AgendaItemStyle.Task.secondaryTextColor,
                         maxLines = 2,
                         text = task.description ?: "",
                         style = MaterialTheme.typography.body2,
@@ -101,7 +102,7 @@ fun TaskCard(
             Box(modifier = Modifier.fillMaxWidth().padding(top = 40.dp)) {
                 TaskyText(
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    color = AgendaItemType.Task.secondaryTextColor,
+                    color = AgendaItemStyle.Task.secondaryTextColor,
                     text = task.starDate.format(DateTimePatternsConstants.DATE_TIME_PATTERN_MMM_d_HH_mm),
                     style = MaterialTheme.typography.body2,
                 )

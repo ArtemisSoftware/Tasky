@@ -10,6 +10,8 @@ import com.artemissoftware.core.util.TaskyNotification
 import com.artemissoftware.core.util.extensions.replaceUriParameter
 import com.artemissoftware.core.util.safeLet
 import com.artemissoftware.tasky.MainActivity
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.TASKY_HOST
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -18,7 +20,7 @@ class AlarmReceiver : BroadcastReceiver() {
             extras.getString(ID)?.let { id ->
                 val title = extras.getString(TITLE).orEmpty()
                 val body = extras.getString(BODY).orEmpty()
-                val deeplink = extras.getString(LINK, "https://tasky.com")
+                val deeplink = extras.getString(LINK, TASKY_HOST)
 
                 TaskyNotification.sendNotification(
                     context = currentContext,
@@ -32,7 +34,7 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private fun getPendingIntent(context: Context, deeplink: String, id : String): PendingIntent {
-        val link = deeplink.toUri().replaceUriParameter("id", id)
+        val link = deeplink.toUri().replaceUriParameter(NavigationConstants.ID, id)
         val intent = Intent(Intent.ACTION_VIEW, link, context, MainActivity::class.java)
 
         val pendingIntent: PendingIntent = TaskStackBuilder.create(context).run {

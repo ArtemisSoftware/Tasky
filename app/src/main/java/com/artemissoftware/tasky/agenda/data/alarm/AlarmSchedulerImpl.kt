@@ -56,7 +56,7 @@ class AlarmSchedulerImpl @Inject constructor(
     private fun getIntent(item: AgendaItem): Intent {
         val intent = Intent(context, AlarmReceiver::class.java)
         val bundle = Bundle().apply {
-            putInt(TITLE, AgendaItemType.convertAgendaItem(item).title)
+            putString(TITLE, AgendaItemType.convertAgendaItem(item).text.asString(context))
             putString(BODY, item.itemTitle)
             putString(ID, item.itemId)
             putString(LINK, AgendaItemType.convertAgendaItem(item).detailDeepLink)

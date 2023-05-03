@@ -24,11 +24,12 @@ import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.DarkGray
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemStyle
 import com.artemissoftware.tasky.util.VisibilityTransitions
 
 @Composable
 fun AssignmentHeader(
-    agendaItemType: AgendaItemType,
+    agendaItemStyle: AgendaItemStyle,
     title: String,
     onEditClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -45,12 +46,12 @@ fun AssignmentHeader(
         ) {
             TaskySquare(
                 size = 20.dp,
-                color = agendaItemType.color,
-                borderColor = agendaItemType.borderColor,
+                color = agendaItemStyle.color,
+                borderColor = agendaItemStyle.borderColor,
             )
             Spacer(modifier = Modifier.width(12.dp))
             TaskyText(
-                text = stringResource(id = agendaItemType.title),
+                text = stringResource(id = agendaItemStyle.title),
                 style = MaterialTheme.typography.subtitle1,
                 color = DarkGray,
             )
@@ -75,7 +76,7 @@ fun AssignmentHeader(
                         size = 20.dp,
                         onIcon = R.drawable.ic_round_check,
                         offIcon = R.drawable.ic_circle,
-                        onIconColor = agendaItemType.bulletColor,
+                        onIconColor = agendaItemStyle.bulletColor,
                         onCheckedChange = onIsDoneClick,
                     )
 
@@ -114,8 +115,8 @@ fun AssignmentHeader(
 @Composable
 private fun AssignmentHeaderPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        AssignmentHeader(agendaItemType = AgendaItemType.Reminder, title = "First title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
-        AssignmentHeader(agendaItemType = AgendaItemType.Task, isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
-        AssignmentHeader(agendaItemType = AgendaItemType.Event, isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemStyle = AgendaItemStyle.Reminder, title = "First title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemStyle = AgendaItemStyle.Task, isEditing = true, title = "Second title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
+        AssignmentHeader(agendaItemStyle = AgendaItemStyle.Event, isEditing = true, title = "Third title", modifier = Modifier.fillMaxWidth(), onEditClick = {})
     }
 }

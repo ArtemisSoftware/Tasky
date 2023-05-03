@@ -26,12 +26,12 @@ import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemStyle
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.REMINDER_DETAIL_ROUTE
 import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
@@ -148,7 +148,7 @@ fun ReminderDetailScreenContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             AssignmentHeader(
-                                agendaItemType = AgendaItemType.Reminder,
+                                agendaItemStyle = AgendaItemStyle.Reminder,
                                 title = state.title,
                                 modifier = Modifier.fillMaxWidth(),
                                 isEditing = state.isEditing,

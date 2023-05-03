@@ -43,6 +43,7 @@ import com.artemissoftware.tasky.agenda.composables.assignment.VisitorsHeader
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemStyle
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
@@ -200,7 +201,7 @@ private fun EventDetailScreenContent(
                         ) {
                             item {
                                 AssignmentHeader(
-                                    agendaItemType = AgendaItemType.Event,
+                                    agendaItemStyle = AgendaItemStyle.Event,
                                     title = state.title,
                                     modifier = Modifier
                                         .fillMaxWidth()
