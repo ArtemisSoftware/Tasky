@@ -11,7 +11,6 @@ import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
-import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.EventDetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.TASK_ID
@@ -34,7 +33,7 @@ class TaskDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(getState() ?:TaskDetailState())
+    private val _state = MutableStateFlow(getState() ?: TaskDetailState())
     val state: StateFlow<TaskDetailState> = _state.asStateFlow()
 
     init {
@@ -46,7 +45,6 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun getState() = (savedStateHandle.get<TaskDetailState>("state"))?.copy(isLoading = false, isEditing = false)
-
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -67,7 +65,6 @@ class TaskDetailViewModel @Inject constructor(
             else -> Unit
         }
     }
-
 
     private fun updateDescription(text: String) = with(_state) {
         update {
@@ -161,7 +158,6 @@ class TaskDetailViewModel @Inject constructor(
             sendUiEvent(UiEvent.PopBackStack)
         }
     }
-
 
     private fun loadDetail() = with(_state) {
         val isEditing = savedStateHandle.get<Boolean>(NavigationConstants.IS_EDITING) ?: false

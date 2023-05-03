@@ -1,8 +1,10 @@
 package com.artemissoftware.tasky.agenda.presentation.edit
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.presentation.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
+import com.artemissoftware.tasky.agenda.presentation.detail.taskdetail.TaskDetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditRecipient
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,9 +16,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
+class EditViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(EditState())
+    private val _state = MutableStateFlow(getState() ?:EditState())
     val state: StateFlow<EditState> = _state.asStateFlow()
 
     fun onTriggerEvent(event: EditEvents) {
@@ -34,12 +36,21 @@ class EditViewModel @Inject constructor() : TaskyUiEventViewModel() {
         }
     }
 
+    private fun updateState() {
+        savedStateHandle["state"] = _state.value
+    }
+
+    private fun getState() = (savedStateHandle.get<EditState>("state"))
+
+
     private fun updateText(text: String) = with(_state) {
         update {
             it.copy(
                 text = text,
             )
         }
+
+        updateState()
     }
 
     private fun popBackStack() {
