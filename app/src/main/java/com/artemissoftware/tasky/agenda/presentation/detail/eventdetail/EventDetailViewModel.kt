@@ -12,7 +12,7 @@ import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
-import com.artemissoftware.core.presentation.TaskyUiEventViewModel
+import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.composables.snackbar.TaskySnackBarType
