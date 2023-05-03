@@ -33,7 +33,7 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun getPendingIntent(context: Context, deeplink: String, id : String): PendingIntent {
+    private fun getPendingIntent(context: Context, deeplink: String, id: String): PendingIntent {
         val link = deeplink.toUri().replaceUriParameter(NavigationConstants.ID, id)
         val intent = Intent(Intent.ACTION_VIEW, link, context, MainActivity::class.java)
 
