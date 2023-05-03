@@ -9,10 +9,7 @@ import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
-import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
-import com.artemissoftware.tasky.agenda.data.mappers.toDto
-import com.artemissoftware.tasky.agenda.data.mappers.toEntity
-import com.artemissoftware.tasky.agenda.data.mappers.toTaskAndSyncState
+import com.artemissoftware.tasky.agenda.data.mappers.*
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -82,7 +79,7 @@ class TaskRepositoryImpl constructor(
     override suspend fun syncTasksWithRemote(tasks: List<AgendaItem.Task>) {
         tasks.map { it.toTaskAndSyncState() }.forEachIndexed { index, item ->
             taskDao.upsertSyncStateAndTask(taskEntity = item.task, taskSyncEntity = item.syncState)
-            alarmScheduler.schedule(tasks[index])
+            alarmScheduler.schedule(tasks[index].toAlarmSpec())
         }
     }
 }

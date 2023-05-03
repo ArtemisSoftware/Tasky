@@ -1,9 +1,9 @@
 package com.artemissoftware.tasky.agenda.domain.alarm
 
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import com.artemissoftware.core.data.alarm.AlarmSpec
 
 interface AlarmScheduler {
 
-    fun schedule(item: AgendaItem)
+    fun schedule(alarmSpec: AlarmSpec)
     fun cancel(id: String)
 }

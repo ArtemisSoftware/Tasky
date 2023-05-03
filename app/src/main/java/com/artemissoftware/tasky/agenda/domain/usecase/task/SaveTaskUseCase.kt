@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.task
 
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.tasky.agenda.data.mappers.toAlarmSpec
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
@@ -14,7 +15,7 @@ class SaveTaskUseCase @Inject constructor(
         task: AgendaItem.Task,
     ) {
         val result = taskRepository.saveTaskAndSync(task = task)
-        alarmScheduler.schedule(item = task)
+        alarmScheduler.schedule(alarmSpec = task.toAlarmSpec())
 
         when (result) {
             is DataResponse.Error -> {

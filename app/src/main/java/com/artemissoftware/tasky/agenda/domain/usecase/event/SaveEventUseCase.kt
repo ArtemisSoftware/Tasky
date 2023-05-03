@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.event
 
 import com.artemissoftware.core.domain.SyncType
+import com.artemissoftware.tasky.agenda.data.mappers.toAlarmSpec
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
@@ -21,7 +22,7 @@ class SaveEventUseCase @Inject constructor(
             alarmScheduler.cancel(id = event.id)
         }
         else {
-            alarmScheduler.schedule(item = event)
+            alarmScheduler.schedule(alarmSpec = event.toAlarmSpec())
         }
         val syncType = if (event.syncState == SyncType.SYNCED) SyncType.UPDATE else event.syncState
         eventUploader.upload(event = event, syncType)

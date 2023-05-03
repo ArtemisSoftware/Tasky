@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
 import com.artemissoftware.core.domain.models.DataResponse
+import com.artemissoftware.tasky.agenda.data.mappers.toAlarmSpec
 import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
@@ -14,7 +15,7 @@ class SaveReminderUseCase @Inject constructor(
         reminder: AgendaItem.Reminder,
     ) {
         val result = reminderRepository.saveReminderAndSync(reminder = reminder)
-        alarmScheduler.schedule(item = reminder)
+        alarmScheduler.schedule(alarmSpec = reminder.toAlarmSpec())
 
         when (result) {
             is DataResponse.Error -> {
