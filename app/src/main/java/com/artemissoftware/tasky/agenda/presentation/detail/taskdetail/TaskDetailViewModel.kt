@@ -11,15 +11,13 @@ import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
+import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.EventDetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.TASK_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -40,8 +38,8 @@ class TaskDetailViewModel @Inject constructor(
         loadDetail()
     }
 
-    private fun updateState() {
-        savedStateHandle["state"] = _state.value
+    private fun updateState(update: (TaskDetailState) -> TaskDetailState) {
+        savedStateHandle["state"] = _state.updateAndGet { update(it) }
     }
 
     private fun getState() = (savedStateHandle.get<TaskDetailState>("state"))?.copy(isLoading = false, isEditing = false)
@@ -66,44 +64,36 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateDescription(text: String) = with(_state) {
-        update {
+    private fun updateDescription(text: String) {
+        updateState {
             it.copy(
                 description = text,
             )
         }
-
-        updateState()
     }
 
-    private fun updateTitle(text: String) = with(_state) {
-        update {
+    private fun updateTitle(text: String) {
+        updateState {
             it.copy(
                 title = text,
             )
         }
-
-        updateState()
     }
 
-    private fun updateNotification(notification: NotificationType) = with(_state) {
-        update {
+    private fun updateNotification(notification: NotificationType) {
+        updateState {
             it.copy(
                 notification = notification,
             )
         }
-
-        updateState()
     }
 
-    private fun updateStartDate(startDate: LocalDate) = with(_state) {
-        update {
+    private fun updateStartDate(startDate: LocalDate) {
+        updateState {
             it.copy(
                 startDate = it.startDate.with(startDate),
             )
         }
-
-        updateState()
     }
 
     private fun updateStartTime(startTime: LocalTime) = with(_state) {
@@ -111,23 +101,19 @@ class TaskDetailViewModel @Inject constructor(
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        update {
+        updateState {
             it.copy(
                 startDate = result,
             )
         }
-
-        updateState()
     }
 
-    private fun toggleIsDone() = with(_state) {
-        update {
+    private fun toggleIsDone() {
+        updateState {
             it.copy(
                 isDone = !it.isDone,
             )
         }
-
-        updateState()
     }
 
     private fun deleteTask() {

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -40,8 +41,8 @@ class ReminderDetailViewModel @Inject constructor(
         loadDetail()
     }
 
-    private fun updateState() {
-        savedStateHandle["state"] = _state.value
+    private fun updateState(update: (ReminderDetailState) -> ReminderDetailState) {
+        savedStateHandle["state"] = _state.updateAndGet { update(it) }
     }
 
     private fun getState() = (savedStateHandle.get<ReminderDetailState>("state"))?.copy(isLoading = false, isEditing = false)
@@ -75,49 +76,36 @@ class ReminderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun deleteReminder() {
-        savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
-            viewModelScope.launch {
-                deleteReminderUseCase(id = reminderId)
-                popBackStack()
-            }
-        }
-    }
-
-    private fun updateDescription(text: String) = with(_state) {
-        update {
+    private fun updateDescription(text: String) {
+        updateState {
             it.copy(
                 description = text,
             )
         }
-        updateState()
     }
 
-    private fun updateTitle(text: String) = with(_state) {
-        update {
+    private fun updateTitle(text: String) {
+        updateState {
             it.copy(
                 title = text,
             )
         }
-        updateState()
     }
 
-    private fun updateNotification(notification: NotificationType) = with(_state) {
-        update {
+    private fun updateNotification(notification: NotificationType) {
+        updateState {
             it.copy(
                 notification = notification,
             )
         }
-        updateState()
     }
 
-    private fun updateStartDate(startDate: LocalDate) = with(_state) {
-        update {
+    private fun updateStartDate(startDate: LocalDate) {
+        updateState {
             it.copy(
                 startDate = it.startDate.with(startDate),
             )
         }
-        updateState()
     }
 
     private fun updateStartTime(startTime: LocalTime) = with(_state) {
@@ -125,12 +113,20 @@ class ReminderDetailViewModel @Inject constructor(
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        update {
+        updateState {
             it.copy(
                 startDate = result,
             )
         }
-        updateState()
+    }
+
+    private fun deleteReminder() {
+        savedStateHandle.get<String>(REMINDER_ID)?.let { reminderId ->
+            viewModelScope.launch {
+                deleteReminderUseCase(id = reminderId)
+                popBackStack()
+            }
+        }
     }
 
     private fun toggleEdition() = with(_state) {

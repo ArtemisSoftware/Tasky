@@ -33,17 +33,14 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.SaveEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
+import com.artemissoftware.tasky.agenda.presentation.edit.EditState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -70,8 +67,8 @@ class EventDetailViewModel @Inject constructor(
         loadDetail()
     }
 
-    private fun updateState() {
-        savedStateHandle["state"] = _state.value
+    private fun updateState(update: (EventDetailState) -> EventDetailState) {
+        savedStateHandle["state"] = _state.updateAndGet { update(it) }
     }
 
     private fun getState() = (savedStateHandle.get<EventDetailState>("state"))?.copy(
@@ -145,7 +142,7 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun setAttendeeGoingStatus(isGoing: Boolean) = with(_state) {
-        update {
+        updateState {
             val attendees = value.attendees.map { attendee ->
                 if (attendee.id == value.hostId) attendee.copy(isGoing = isGoing) else attendee
             }
@@ -155,12 +152,11 @@ class EventDetailViewModel @Inject constructor(
                 isGoing = isGoing,
             )
         }
-        updateState()
         saveEvent(shouldPopBackStack = false, attendeeLeftEvent = isGoing)
     }
 
-    private fun removePicture(pictureId: String) = with(_state) {
-        update {
+    private fun removePicture(pictureId: String) {
+        updateState {
             val listPictures = it.pictures.toMutableList()
             listPictures.removeIf { it.id == pictureId }
 
@@ -169,51 +165,44 @@ class EventDetailViewModel @Inject constructor(
                 deletedPictures = it.deletedPictures + pictureId,
             )
         }
-        updateState()
     }
 
-    private fun addPicture(uri: Uri) = with(_state) {
-        update {
+    private fun addPicture(uri: Uri) {
+        updateState {
             it.copy(
                 pictures = it.pictures + Picture.Local(uri = uri.toString(), picId = UUID.randomUUID().toString()),
             )
         }
-        updateState()
     }
 
-    private fun addAttendee(attendee: Attendee) = with(_state) {
-        update {
+    private fun addAttendee(attendee: Attendee) {
+        updateState {
             it.copy(
                 attendees = it.attendees + attendee,
             )
         }
-        updateState()
     }
 
-    private fun deleteVisitor(attendeeId: String) = with(_state) {
-        update {
+    private fun deleteVisitor(attendeeId: String) {
+        updateState {
             val list = it.attendees.toMutableList()
             list.removeIf { it.id == attendeeId }
             it.copy(
                 attendees = list.toList(),
             )
         }
-
-        updateState()
     }
 
-    private fun updateVisitorsSelection(visitorOptionType: VisitorOptionType) = with(_state) {
-        update {
+    private fun updateVisitorsSelection(visitorOptionType: VisitorOptionType) {
+        updateState {
             it.copy(
                 visitorOption = visitorOptionType,
             )
         }
-
-        updateState()
     }
 
-    private fun updateAttendeeEmail(email: String) = with(_state) {
-        update {
+    private fun updateAttendeeEmail(email: String) {
+        updateState {
             it.copy(
                 attendeeDialogState = it.attendeeDialogState.copy(
                     email = email,
@@ -221,48 +210,38 @@ class EventDetailViewModel @Inject constructor(
                 ),
             )
         }
-
-        updateState()
     }
 
-    private fun updateDescription(text: String) = with(_state) {
-        update {
+    private fun updateDescription(text: String) {
+        updateState {
             it.copy(
                 description = text,
             )
         }
-
-        updateState()
     }
 
-    private fun updateTitle(text: String) = with(_state) {
-        update {
+    private fun updateTitle(text: String) {
+        updateState {
             it.copy(
                 title = text,
             )
         }
-
-        updateState()
     }
 
-    private fun updateNotification(notification: NotificationType) = with(_state) {
-        update {
+    private fun updateNotification(notification: NotificationType) {
+        updateState {
             it.copy(
                 notification = notification,
             )
         }
-
-        updateState()
     }
 
-    private fun updateStartDate(startDate: LocalDate) = with(_state) {
-        update {
+    private fun updateStartDate(startDate: LocalDate) {
+        updateState {
             it.copy(
                 startDate = it.startDate.with(startDate),
             )
         }
-
-        updateState()
     }
 
     private fun updateStartTime(startTime: LocalTime) = with(_state) {
@@ -270,23 +249,19 @@ class EventDetailViewModel @Inject constructor(
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        update {
+        updateState {
             it.copy(
                 startDate = result,
             )
         }
-
-        updateState()
     }
 
-    private fun updateEndDate(endDate: LocalDate) = with(_state) {
-        update {
+    private fun updateEndDate(endDate: LocalDate) {
+        updateState {
             it.copy(
                 endDate = it.endDate.with(endDate),
             )
         }
-
-        updateState()
     }
 
     private fun updateEndTime(endTime: LocalTime) = with(_state) {
@@ -294,13 +269,11 @@ class EventDetailViewModel @Inject constructor(
             .withHour(endTime.hour)
             .withMinute(endTime.minute)
 
-        update {
+        updateState {
             it.copy(
                 endDate = result,
             )
         }
-
-        updateState()
     }
 
     private fun goToPicture(picture: Picture) = with(_state.value) {
