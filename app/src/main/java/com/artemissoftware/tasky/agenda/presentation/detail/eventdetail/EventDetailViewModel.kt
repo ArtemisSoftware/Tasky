@@ -34,7 +34,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.EVENT_ID
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -353,7 +353,7 @@ class EventDetailViewModel @Inject constructor(
 
     private fun loadEventDetail() = with(_state) {
         val isEditing = savedStateHandle.get<Boolean>(NavigationConstants.IS_EDITING) ?: false
-        savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
+        savedStateHandle.get<String>(ID)?.let { eventId ->
             viewModelScope.launch {
                 val result = getEventUseCase(eventId)
                 result?.let { item ->
@@ -438,7 +438,7 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun deleteEvent() {
-        savedStateHandle.get<String>(EVENT_ID)?.let { eventId ->
+        savedStateHandle.get<String>(ID)?.let { eventId ->
             viewModelScope.launch {
                 deleteEventUseCase(id = eventId)
                 popBackStack()
@@ -447,7 +447,7 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun getSyncType(agendaItem: AgendaItem.Event): SyncType {
-        return savedStateHandle.get<String>(EVENT_ID)?.let {
+        return savedStateHandle.get<String>(ID)?.let {
             if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
         } ?: SyncType.CREATE
     }
