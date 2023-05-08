@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.artemissoftware.tasky.agenda.data.mappers.toAlarmSpec
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetFutureAgendaItemsUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

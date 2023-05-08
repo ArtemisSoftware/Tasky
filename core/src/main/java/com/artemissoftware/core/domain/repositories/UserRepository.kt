@@ -10,5 +10,5 @@ interface UserRepository {
 
     suspend fun deleteUser()
 
-    suspend fun deleteAllUserData()
+    suspend fun deleteAllUserData(): List<String>
 }

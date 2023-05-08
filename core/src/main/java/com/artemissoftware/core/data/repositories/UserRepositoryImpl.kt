@@ -37,13 +37,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteAllUserData() {
+    override suspend fun deleteAllUserData(): List<String> {
         val deletedRemindersId = reminderDao.deleteAll()
         val deletedTasksId = taskDao.deleteAll()
         val deletedEventsId = eventDao.deleteAll()
-
-        (deletedRemindersId + deletedTasksId + deletedEventsId).forEach { id ->
-            //--alarmScheduler.cancel(id)
-        }
+        return (deletedRemindersId + deletedTasksId + deletedEventsId)
     }
 }

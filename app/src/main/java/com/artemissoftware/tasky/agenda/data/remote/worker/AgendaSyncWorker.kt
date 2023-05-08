@@ -5,10 +5,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.artemissoftware.core.domain.SyncType
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.core.domain.models.DataResponse
-import com.artemissoftware.core.util.extensions.toEpochMilli
-import com.artemissoftware.core.util.extensions.toLocalDateTime
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.AttendeeRepository
@@ -16,14 +14,12 @@ import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
 import com.artemissoftware.tasky.agenda.domain.uploader.EventUploader
-import com.artemissoftware.tasky.agenda.util.WorkerKeys
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import java.time.LocalDate
 
 @HiltWorker
 class AgendaSyncWorker @AssistedInject constructor(

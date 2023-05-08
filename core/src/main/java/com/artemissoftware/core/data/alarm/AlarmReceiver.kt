@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.data.alarm
+package com.artemissoftware.core.data.alarm
 
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
@@ -6,11 +6,18 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
+import com.artemissoftware.core.util.AlarmIntent
 import com.artemissoftware.core.util.TaskyNotification
 import com.artemissoftware.core.util.safeLet
-import com.artemissoftware.tasky.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var alarmIntent: AlarmIntent
+
     override fun onReceive(context: Context?, intent: Intent?) {
         safeLet(context, intent?.extras) { currentContext, extras ->
 
@@ -33,10 +40,8 @@ class AlarmReceiver : BroadcastReceiver() {
         // TODO: how to get the destinations here if we are on the data module that does not know about navigation?
         val deeplink = "https://tasky.com".toUri()
 
-        val intent = Intent(Intent.ACTION_VIEW, deeplink, context, MainActivity::class.java)
-
         val pendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(intent)
+            addNextIntentWithParentStack(alarmIntent.getIntent(deeplink))
             getPendingIntent(REQUEST_CODE, PendingIntent.FLAG_IMMUTABLE)
         }
 

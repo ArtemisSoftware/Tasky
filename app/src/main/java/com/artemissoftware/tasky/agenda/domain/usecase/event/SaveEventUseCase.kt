@@ -2,7 +2,7 @@ package com.artemissoftware.tasky.agenda.domain.usecase.event
 
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.tasky.agenda.data.mappers.toAlarmSpec
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import com.artemissoftware.tasky.agenda.domain.uploader.EventUploader

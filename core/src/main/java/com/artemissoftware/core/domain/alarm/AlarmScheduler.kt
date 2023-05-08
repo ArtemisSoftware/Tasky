@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.domain.alarm
+package com.artemissoftware.core.domain.alarm
 
 import com.artemissoftware.core.data.alarm.AlarmSpec
 

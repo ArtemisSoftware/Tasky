@@ -41,7 +41,7 @@
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove">
         </provider>
-        <receiver android:name=".agenda.data.alarm.AlarmReceiver" />
+        <receiver android:name="com.artemissoftware.core.data.alarm.AlarmReceiver" />
         <receiver
             android:name=".agenda.data.alarm.AlarmBootUpReceiver"
             android:directBootAware="true"

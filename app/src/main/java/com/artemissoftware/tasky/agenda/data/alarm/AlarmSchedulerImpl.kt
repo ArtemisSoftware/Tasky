@@ -5,11 +5,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.artemissoftware.core.data.alarm.AlarmReceiver
 import com.artemissoftware.core.data.alarm.AlarmSpec
-import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.BODY
-import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.ID
-import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.TITLE
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.BODY
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.ID
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.TITLE
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
