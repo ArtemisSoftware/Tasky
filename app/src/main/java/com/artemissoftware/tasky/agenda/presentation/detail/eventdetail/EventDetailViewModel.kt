@@ -15,6 +15,7 @@ import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
+import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffoldState
 import com.artemissoftware.core.presentation.composables.snackbar.TaskySnackBarType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
 import com.artemissoftware.core.presentation.events.UiEvent
@@ -32,17 +33,14 @@ import com.artemissoftware.tasky.agenda.domain.usecase.event.SaveEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.ValidatePicturesUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
+import com.artemissoftware.tasky.agenda.presentation.edit.EditState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -62,12 +60,23 @@ class EventDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(EventDetailState())
+    private val _state = MutableStateFlow(getState() ?: EventDetailState())
     val state: StateFlow<EventDetailState> = _state.asStateFlow()
 
     init {
         loadDetail()
     }
+
+    private fun updateState(update: (EventDetailState) -> EventDetailState) {
+        savedStateHandle["state"] = _state.updateAndGet { update(it) }
+    }
+
+    private fun getState() = (savedStateHandle.get<EventDetailState>("state"))?.copy(
+        isLoading = false,
+        attendeeDialogState = AttendeeDialogState(),
+        taskyScaffoldState = TaskyScaffoldState(),
+        isEditing = false
+    )
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -133,7 +142,7 @@ class EventDetailViewModel @Inject constructor(
     }
 
     private fun setAttendeeGoingStatus(isGoing: Boolean) = with(_state) {
-        update {
+        updateState {
             val attendees = value.attendees.map { attendee ->
                 if (attendee.id == value.hostId) attendee.copy(isGoing = isGoing) else attendee
             }
@@ -146,8 +155,8 @@ class EventDetailViewModel @Inject constructor(
         saveEvent(shouldPopBackStack = false, attendeeLeftEvent = isGoing)
     }
 
-    private fun removePicture(pictureId: String) = with(_state) {
-        update {
+    private fun removePicture(pictureId: String) {
+        updateState {
             val listPictures = it.pictures.toMutableList()
             listPictures.removeIf { it.id == pictureId }
 
@@ -158,17 +167,118 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun goToPicture(picture: Picture) = with(_state.value) {
-        viewModelScope.launch {
-            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture, isEventCreator = isEventCreator).route))
-        }
-    }
-
-    private fun addPicture(uri: Uri) = with(_state) {
-        update {
+    private fun addPicture(uri: Uri) {
+        updateState {
             it.copy(
                 pictures = it.pictures + Picture.Local(uri = uri.toString(), picId = UUID.randomUUID().toString()),
             )
+        }
+    }
+
+    private fun addAttendee(attendee: Attendee) {
+        updateState {
+            it.copy(
+                attendees = it.attendees + attendee,
+            )
+        }
+    }
+
+    private fun deleteVisitor(attendeeId: String) {
+        updateState {
+            val list = it.attendees.toMutableList()
+            list.removeIf { it.id == attendeeId }
+            it.copy(
+                attendees = list.toList(),
+            )
+        }
+    }
+
+    private fun updateVisitorsSelection(visitorOptionType: VisitorOptionType) {
+        updateState {
+            it.copy(
+                visitorOption = visitorOptionType,
+            )
+        }
+    }
+
+    private fun updateAttendeeEmail(email: String) {
+        updateState {
+            it.copy(
+                attendeeDialogState = it.attendeeDialogState.copy(
+                    email = email,
+                    emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateEmailUseCase(email)),
+                ),
+            )
+        }
+    }
+
+    private fun updateDescription(text: String) {
+        updateState {
+            it.copy(
+                description = text,
+            )
+        }
+    }
+
+    private fun updateTitle(text: String) {
+        updateState {
+            it.copy(
+                title = text,
+            )
+        }
+    }
+
+    private fun updateNotification(notification: NotificationType) {
+        updateState {
+            it.copy(
+                notification = notification,
+            )
+        }
+    }
+
+    private fun updateStartDate(startDate: LocalDate) {
+        updateState {
+            it.copy(
+                startDate = it.startDate.with(startDate),
+            )
+        }
+    }
+
+    private fun updateStartTime(startTime: LocalTime) = with(_state) {
+        val result = value.startDate
+            .withHour(startTime.hour)
+            .withMinute(startTime.minute)
+
+        updateState {
+            it.copy(
+                startDate = result,
+            )
+        }
+    }
+
+    private fun updateEndDate(endDate: LocalDate) {
+        updateState {
+            it.copy(
+                endDate = it.endDate.with(endDate),
+            )
+        }
+    }
+
+    private fun updateEndTime(endTime: LocalTime) = with(_state) {
+        val result = value.endDate
+            .withHour(endTime.hour)
+            .withMinute(endTime.minute)
+
+        updateState {
+            it.copy(
+                endDate = result,
+            )
+        }
+    }
+
+    private fun goToPicture(picture: Picture) = with(_state.value) {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.Navigate(PhotoScreenDestination(picture = picture, isEventCreator = isEventCreator).route))
         }
     }
 
@@ -208,32 +318,6 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun addAttendee(attendee: Attendee) = with(_state) {
-        update {
-            it.copy(
-                attendees = it.attendees + attendee,
-            )
-        }
-    }
-
-    private fun deleteVisitor(attendeeId: String) = with(_state) {
-        update {
-            val list = it.attendees.toMutableList()
-            list.removeIf { it.id == attendeeId }
-            it.copy(
-                attendees = list.toList(),
-            )
-        }
-    }
-
-    private fun updateVisitorsSelection(visitorOptionType: VisitorOptionType) = with(_state) {
-        update {
-            it.copy(
-                visitorOption = visitorOptionType,
-            )
-        }
-    }
-
     private fun openAttendeeDialog() = with(_state) {
         update {
             it.copy(
@@ -250,85 +334,10 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateAttendeeEmail(email: String) = with(_state) {
-        update {
-            it.copy(
-                attendeeDialogState = it.attendeeDialogState.copy(
-                    email = email,
-                    emailValidationStateType = TaskyTextFieldValidationStateType.getStateType(validateEmailUseCase(email)),
-                ),
-            )
-        }
-    }
-
     private fun toggleEdition() = with(_state) {
         update {
             it.copy(
                 isEditing = !it.isEditing,
-            )
-        }
-    }
-
-    private fun updateDescription(text: String) = with(_state) {
-        update {
-            it.copy(
-                description = text,
-            )
-        }
-    }
-
-    private fun updateTitle(text: String) = with(_state) {
-        update {
-            it.copy(
-                title = text,
-            )
-        }
-    }
-
-    private fun updateNotification(notification: NotificationType) = with(_state) {
-        update {
-            it.copy(
-                notification = notification,
-            )
-        }
-    }
-
-    private fun updateStartDate(startDate: LocalDate) = with(_state) {
-        update {
-            it.copy(
-                startDate = it.startDate.with(startDate),
-            )
-        }
-    }
-
-    private fun updateStartTime(startTime: LocalTime) = with(_state) {
-        val result = value.startDate
-            .withHour(startTime.hour)
-            .withMinute(startTime.minute)
-
-        update {
-            it.copy(
-                startDate = result,
-            )
-        }
-    }
-
-    private fun updateEndDate(endDate: LocalDate) = with(_state) {
-        update {
-            it.copy(
-                endDate = it.endDate.with(endDate),
-            )
-        }
-    }
-
-    private fun updateEndTime(endTime: LocalTime) = with(_state) {
-        val result = value.endDate
-            .withHour(endTime.hour)
-            .withMinute(endTime.minute)
-
-        update {
-            it.copy(
-                endDate = result,
             )
         }
     }

@@ -11,15 +11,13 @@ import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.GetTaskUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.task.SaveTaskUseCase
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
+import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.EventDetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import com.artemissoftware.tasky.agenda.util.NavigationConstants.ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -33,12 +31,18 @@ class TaskDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : TaskyUiEventViewModel() {
 
-    private val _state = MutableStateFlow(TaskDetailState())
+    private val _state = MutableStateFlow(getState() ?: TaskDetailState())
     val state: StateFlow<TaskDetailState> = _state.asStateFlow()
 
     init {
         loadDetail()
     }
+
+    private fun updateState(update: (TaskDetailState) -> TaskDetailState) {
+        savedStateHandle["state"] = _state.updateAndGet { update(it) }
+    }
+
+    private fun getState() = (savedStateHandle.get<TaskDetailState>("state"))?.copy(isLoading = false, isEditing = false)
 
     fun onTriggerEvent(event: DetailEvents) {
         when (event) {
@@ -60,6 +64,58 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
+    private fun updateDescription(text: String) {
+        updateState {
+            it.copy(
+                description = text,
+            )
+        }
+    }
+
+    private fun updateTitle(text: String) {
+        updateState {
+            it.copy(
+                title = text,
+            )
+        }
+    }
+
+    private fun updateNotification(notification: NotificationType) {
+        updateState {
+            it.copy(
+                notification = notification,
+            )
+        }
+    }
+
+    private fun updateStartDate(startDate: LocalDate) {
+        updateState {
+            it.copy(
+                startDate = it.startDate.with(startDate),
+            )
+        }
+    }
+
+    private fun updateStartTime(startTime: LocalTime) = with(_state) {
+        val result = value.startDate
+            .withHour(startTime.hour)
+            .withMinute(startTime.minute)
+
+        updateState {
+            it.copy(
+                startDate = result,
+            )
+        }
+    }
+
+    private fun toggleIsDone() {
+        updateState {
+            it.copy(
+                isDone = !it.isDone,
+            )
+        }
+    }
+
     private fun deleteTask() {
         savedStateHandle.get<String>(ID)?.let { taskId ->
             viewModelScope.launch {
@@ -77,14 +133,6 @@ class TaskDetailViewModel @Inject constructor(
         }
     }
 
-    private fun toggleIsDone() = with(_state) {
-        update {
-            it.copy(
-                isDone = !it.isDone,
-            )
-        }
-    }
-
     private fun editTitleOrDescription(text: String, editType: EditType) {
         viewModelScope.launch {
             sendUiEvent(UiEvent.Navigate(EditScreenDestination(text, editType).route))
@@ -94,50 +142,6 @@ class TaskDetailViewModel @Inject constructor(
     private fun popBackStack() {
         viewModelScope.launch {
             sendUiEvent(UiEvent.PopBackStack)
-        }
-    }
-
-    private fun updateDescription(text: String) = with(_state) {
-        update {
-            it.copy(
-                description = text,
-            )
-        }
-    }
-
-    private fun updateTitle(text: String) = with(_state) {
-        update {
-            it.copy(
-                title = text,
-            )
-        }
-    }
-
-    private fun updateNotification(notification: NotificationType) = with(_state) {
-        update {
-            it.copy(
-                notification = notification,
-            )
-        }
-    }
-
-    private fun updateStartDate(startDate: LocalDate) = with(_state) {
-        update {
-            it.copy(
-                startDate = it.startDate.with(startDate),
-            )
-        }
-    }
-
-    private fun updateStartTime(startTime: LocalTime) = with(_state) {
-        val result = value.startDate
-            .withHour(startTime.hour)
-            .withMinute(startTime.minute)
-
-        update {
-            it.copy(
-                startDate = result,
-            )
         }
     }
 

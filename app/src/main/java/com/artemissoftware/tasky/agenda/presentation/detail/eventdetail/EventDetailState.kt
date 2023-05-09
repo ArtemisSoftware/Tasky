@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
+import android.os.Parcelable
 import com.artemissoftware.core.domain.models.agenda.NotificationType
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyDialogState
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffoldState
@@ -8,8 +9,10 @@ import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.domain.models.Picture
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.dialog.AttendeeDialogState
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDateTime
 
+@Parcelize
 data class EventDetailState(
     val isLoading: Boolean = false,
     val isEditing: Boolean = false,
@@ -28,4 +31,4 @@ data class EventDetailState(
     val hostId: String = "",
     val isGoing: Boolean = true,
     val taskyScaffoldState: TaskyScaffoldState = TaskyScaffoldState(),
-)
+)  : Parcelable
