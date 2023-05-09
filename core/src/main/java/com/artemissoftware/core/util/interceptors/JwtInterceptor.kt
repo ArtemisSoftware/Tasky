@@ -42,7 +42,7 @@ class JwtInterceptor @Inject constructor(
             if (response.code == 401) {
                 runBlocking {
                     _logOutState.emit(Unit)
-                    deleteAllUserDataUseCase.invoke()
+                    deleteAllUserDataUseCase()
                 }
             }
         }
