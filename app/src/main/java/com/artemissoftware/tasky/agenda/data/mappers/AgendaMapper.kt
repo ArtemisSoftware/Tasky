@@ -11,10 +11,12 @@ fun AgendaResponseDto.toAgenda(): List<AgendaItem> {
 }
 
 fun AgendaItem.toAlarmSpec() : AlarmSpec {
+    val agendaItemType = AgendaItemType.convertAgendaItem(this)
     return AlarmSpec(
         id = itemId,
         date = itemRemindAt,
-        title = AgendaItemType.convertAgendaItem(this).name,
+        title = agendaItemType.text,
         body = itemTitle,
+        deeplink = agendaItemType.detailDeepLink
     )
 }

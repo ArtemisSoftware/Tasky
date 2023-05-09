@@ -5,13 +5,17 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.net.toUri
 import com.artemissoftware.core.data.alarm.AlarmReceiver
 import com.artemissoftware.core.data.alarm.AlarmSpec
 import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.BODY
 import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.ID
 import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.TITLE
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.LINK
 import com.artemissoftware.core.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.util.extensions.replaceUriParameter
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
@@ -56,13 +60,17 @@ class AlarmSchedulerImpl @Inject constructor(
     private fun getIntent(alarmSpec: AlarmSpec): Intent {
         val intent = Intent(context, AlarmReceiver::class.java)
         val bundle = Bundle().apply {
-            putString(TITLE, alarmSpec.title)
+            putString(TITLE, alarmSpec.title.asString(context = context))
             putString(BODY, alarmSpec.body)
             putString(ID, alarmSpec.id)
-            putString(LINK, AgendaItemType.convertAgendaItem(item).detailDeepLink)
+            putString(LINK, getDeepLink(alarmSpec = alarmSpec))
         }
         return intent.apply {
             putExtras(bundle)
         }
+    }
+
+    private fun getDeepLink(alarmSpec: AlarmSpec): String = with(alarmSpec){
+        return deeplink.toUri().replaceUriParameter(NavigationConstants.ID, id).toString()
     }
 }

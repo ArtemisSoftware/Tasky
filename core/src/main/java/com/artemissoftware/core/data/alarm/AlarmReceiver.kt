@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 import com.artemissoftware.core.util.AlarmIntent
-import com.artemissoftware.core.util.TaskyNotification
-import com.artemissoftware.core.util.extensions.replaceUriParameter
+import com.artemissoftware.core.util.constants.TaskyConstants.TASKY_HOST
+import com.artemissoftware.core.util.notifications.TaskyNotification
 import com.artemissoftware.core.util.safeLet
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -32,18 +32,15 @@ class AlarmReceiver : BroadcastReceiver() {
                     id = id,
                     title = title,
                     body = body,
-                    pendingIntent = getPendingIntent(context = currentContext, deeplink = deeplink, id = id),
+                    pendingIntent = getPendingIntent(context = currentContext, deeplink = deeplink),
                 )
             }
         }
     }
 
-    private fun getPendingIntent(context: Context, deeplink: String, id: String): PendingIntent {
-        val link = deeplink.toUri().replaceUriParameter(NavigationConstants.ID, id)
-        val intent = Intent(Intent.ACTION_VIEW, link, context, MainActivity::class.java)
-
+    private fun getPendingIntent(context: Context, deeplink: String): PendingIntent {
         val pendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(alarmIntent.getIntent(deeplink))
+            addNextIntentWithParentStack(alarmIntent.getIntent(deeplink.toUri()))
             getPendingIntent(REQUEST_CODE, PendingIntent.FLAG_IMMUTABLE)
         }
 
