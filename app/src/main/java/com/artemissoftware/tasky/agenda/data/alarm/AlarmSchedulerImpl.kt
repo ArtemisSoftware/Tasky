@@ -5,12 +5,17 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.BODY
-import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.ID
-import com.artemissoftware.tasky.agenda.data.alarm.AlarmReceiver.Companion.TITLE
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
-import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
+import androidx.core.net.toUri
+import com.artemissoftware.core.data.alarm.AlarmReceiver
+import com.artemissoftware.core.data.alarm.AlarmSpec
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.BODY
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.ID
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.TITLE
+import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.LINK
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.util.extensions.replaceUriParameter
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
+import com.artemissoftware.tasky.agenda.util.NavigationConstants
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
@@ -21,20 +26,20 @@ class AlarmSchedulerImpl @Inject constructor(
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun schedule(item: AgendaItem) {
-        cancel(id = item.itemId)
-        setAlarm(item = item)
+    override fun schedule(alarmSpec: AlarmSpec) {
+        cancel(id = alarmSpec.id)
+        setAlarm(alarmSpec = alarmSpec)
     }
 
-    private fun setAlarm(item: AgendaItem) {
-        if (item.itemRemindAt.isAfter(LocalDateTime.now())) {
+    private fun setAlarm(alarmSpec: AlarmSpec) = with(alarmSpec) {
+        if (date.isAfter(LocalDateTime.now())) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                item.itemRemindAt.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                date.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
                 PendingIntent.getBroadcast(
                     context,
-                    item.itemId.hashCode(),
-                    getIntent(item),
+                    id.hashCode(),
+                    getIntent(this),
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
                 ),
             )
@@ -52,15 +57,20 @@ class AlarmSchedulerImpl @Inject constructor(
         )
     }
 
-    private fun getIntent(item: AgendaItem): Intent {
+    private fun getIntent(alarmSpec: AlarmSpec): Intent {
         val intent = Intent(context, AlarmReceiver::class.java)
         val bundle = Bundle().apply {
-            putString(TITLE, AgendaItemType.convertAgendaItem(item).name)
-            putString(BODY, item.itemTitle)
-            putString(ID, item.itemId)
+            putString(TITLE, alarmSpec.title.asString(context = context))
+            putString(BODY, alarmSpec.body)
+            putString(ID, alarmSpec.id)
+            putString(LINK, getDeepLink(alarmSpec = alarmSpec))
         }
         return intent.apply {
             putExtras(bundle)
         }
+    }
+
+    private fun getDeepLink(alarmSpec: AlarmSpec): String = with(alarmSpec){
+        return deeplink.toUri().replaceUriParameter(NavigationConstants.ID, id).toString()
     }
 }

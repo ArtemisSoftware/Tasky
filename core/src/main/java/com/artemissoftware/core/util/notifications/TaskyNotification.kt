@@ -1,4 +1,4 @@
-package com.artemissoftware.core.util
+package com.artemissoftware.core.util.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

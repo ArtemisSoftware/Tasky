@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.SyncType
 import com.artemissoftware.core.domain.models.agenda.NotificationType
-import com.artemissoftware.core.presentation.TaskyUiEventViewModel
+import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.usecase.task.DeleteTaskUseCase
@@ -14,7 +14,7 @@ import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.eventdetail.EventDetailState
 import com.artemissoftware.tasky.agenda.presentation.edit.models.EditType
 import com.artemissoftware.tasky.agenda.util.NavigationConstants
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.TASK_ID
+import com.artemissoftware.tasky.agenda.util.NavigationConstants.ID
 import com.artemissoftware.tasky.destinations.EditScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -117,7 +117,7 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun deleteTask() {
-        savedStateHandle.get<String>(TASK_ID)?.let { taskId ->
+        savedStateHandle.get<String>(ID)?.let { taskId ->
             viewModelScope.launch {
                 deleteTaskUseCase(id = taskId)
                 popBackStack()
@@ -147,7 +147,7 @@ class TaskDetailViewModel @Inject constructor(
 
     private fun loadDetail() = with(_state) {
         val isEditing = savedStateHandle.get<Boolean>(NavigationConstants.IS_EDITING) ?: false
-        savedStateHandle.get<String>(TASK_ID)?.let { taskId ->
+        savedStateHandle.get<String>(ID)?.let { taskId ->
             viewModelScope.launch {
                 val result = getTaskUseCase(taskId)
                 result?.let { item ->
@@ -185,7 +185,7 @@ class TaskDetailViewModel @Inject constructor(
     }
 
     private fun getSyncType(agendaItem: AgendaItem.Task): SyncType {
-        return savedStateHandle.get<String>(TASK_ID)?.let {
+        return savedStateHandle.get<String>(ID)?.let {
             if (agendaItem.syncState == SyncType.SYNCED) SyncType.UPDATE else agendaItem.syncState
         } ?: SyncType.CREATE
     }

@@ -1,10 +1,10 @@
 package com.artemissoftware.core.domain.usecase
 
-import com.artemissoftware.core.domain.repositories.UserStoreRepository
+import com.artemissoftware.core.domain.repositories.UserRepository
 import javax.inject.Inject
 
 class GetUserUseCase @Inject constructor(
-    private val userStoreRepository: UserStoreRepository,
+    private val userRepository: UserRepository,
 ) {
-    suspend operator fun invoke() = userStoreRepository.getUser()
+    operator fun invoke() = userRepository.getUser()
 }

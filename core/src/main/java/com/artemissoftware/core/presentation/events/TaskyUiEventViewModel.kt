@@ -1,4 +1,4 @@
-package com.artemissoftware.core.presentation
+package com.artemissoftware.core.presentation.events
 
 import androidx.lifecycle.ViewModel
 import com.artemissoftware.core.presentation.events.UiEvent

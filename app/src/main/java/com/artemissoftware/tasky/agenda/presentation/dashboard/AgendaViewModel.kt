@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
-import com.artemissoftware.core.presentation.TaskyUiEventViewModel
+import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.events.UiEvent
@@ -167,13 +167,13 @@ class AgendaViewModel @Inject constructor(
         viewModelScope.launch {
             when (item) {
                 is AgendaItem.Reminder -> {
-                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = item.itemId, isEditing = isEditing).route))
+                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(id = item.itemId, isEditing = isEditing).route))
                 }
                 is AgendaItem.Task -> {
-                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId, isEditing = isEditing).route))
+                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(id = item.itemId, isEditing = isEditing).route))
                 }
                 is AgendaItem.Event -> {
-                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId, isEditing = isEditing).route))
+                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(id = item.itemId, isEditing = isEditing).route))
                 }
             }
         }

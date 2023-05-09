@@ -9,12 +9,9 @@ import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
-import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
-import com.artemissoftware.tasky.agenda.data.mappers.toDto
-import com.artemissoftware.tasky.agenda.data.mappers.toEntity
-import com.artemissoftware.tasky.agenda.data.mappers.toReminderAndSyncState
+import com.artemissoftware.tasky.agenda.data.mappers.*
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import kotlinx.coroutines.flow.Flow
@@ -82,7 +79,7 @@ class ReminderRepositoryImpl constructor(
     override suspend fun syncRemindersWithRemote(reminders: List<AgendaItem.Reminder>) {
         reminders.map { it.toReminderAndSyncState() }.forEachIndexed { index, item ->
             reminderDao.upsertSyncStateAndReminder(reminderEntity = item.reminder, reminderSyncEntity = item.syncState)
-            alarmScheduler.schedule(reminders[index])
+            alarmScheduler.schedule(reminders[index].toAlarmSpec())
         }
     }
 }
