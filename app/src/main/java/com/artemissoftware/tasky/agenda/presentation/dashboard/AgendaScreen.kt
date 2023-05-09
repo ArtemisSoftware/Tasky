@@ -43,7 +43,6 @@ import com.artemissoftware.core.util.constants.DateTimePatternsConstants
 import com.artemissoftware.core.util.constants.DateTimePatternsConstants.DATE_PATTERN_MONTH
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.Needle
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
@@ -273,14 +272,6 @@ private fun AgendaScreenContent(
             }
         },
     )
-}
-
-private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
-    return when (item) {
-        is AgendaItem.Reminder -> AgendaItemType.Reminder
-        is AgendaItem.Task -> AgendaItemType.Task
-        is AgendaItem.Event -> AgendaItemType.Event
-    }
 }
 
 @Preview(showBackground = true)

@@ -11,6 +11,7 @@ import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.BODY
 import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.ID
 import com.artemissoftware.core.data.alarm.AlarmReceiver.Companion.TITLE
 import com.artemissoftware.core.domain.alarm.AlarmScheduler
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
@@ -58,6 +59,7 @@ class AlarmSchedulerImpl @Inject constructor(
             putString(TITLE, alarmSpec.title)
             putString(BODY, alarmSpec.body)
             putString(ID, alarmSpec.id)
+            putString(LINK, AgendaItemType.convertAgendaItem(item).detailDeepLink)
         }
         return intent.apply {
             putExtras(bundle)
