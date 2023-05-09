@@ -4,7 +4,7 @@ import com.artemissoftware.core.domain.AgendaException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.Resource
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.repositories.AttendeeRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import javax.inject.Inject

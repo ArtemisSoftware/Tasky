@@ -1,4 +1,4 @@
-package com.artemissoftware.tasky.agenda.data.alarm
+package com.artemissoftware.core.data.alarm
 
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
@@ -6,14 +6,19 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
-import com.artemissoftware.core.util.TaskyNotification
-import com.artemissoftware.core.util.extensions.replaceUriParameter
+import com.artemissoftware.core.util.AlarmIntent
+import com.artemissoftware.core.util.constants.TaskyConstants.TASKY_HOST
+import com.artemissoftware.core.util.notifications.TaskyNotification
 import com.artemissoftware.core.util.safeLet
-import com.artemissoftware.tasky.MainActivity
-import com.artemissoftware.tasky.agenda.util.NavigationConstants
-import com.artemissoftware.tasky.agenda.util.NavigationConstants.TASKY_HOST
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var alarmIntent: AlarmIntent
+
     override fun onReceive(context: Context?, intent: Intent?) {
         safeLet(context, intent?.extras) { currentContext, extras ->
 
@@ -27,18 +32,15 @@ class AlarmReceiver : BroadcastReceiver() {
                     id = id,
                     title = title,
                     body = body,
-                    pendingIntent = getPendingIntent(context = currentContext, deeplink = deeplink, id = id),
+                    pendingIntent = getPendingIntent(context = currentContext, deeplink = deeplink),
                 )
             }
         }
     }
 
-    private fun getPendingIntent(context: Context, deeplink: String, id: String): PendingIntent {
-        val link = deeplink.toUri().replaceUriParameter(NavigationConstants.ID, id)
-        val intent = Intent(Intent.ACTION_VIEW, link, context, MainActivity::class.java)
-
+    private fun getPendingIntent(context: Context, deeplink: String): PendingIntent {
         val pendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(intent)
+            addNextIntentWithParentStack(alarmIntent.getIntent(deeplink.toUri()))
             getPendingIntent(REQUEST_CODE, PendingIntent.FLAG_IMMUTABLE)
         }
 

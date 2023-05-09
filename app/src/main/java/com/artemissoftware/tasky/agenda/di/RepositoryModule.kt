@@ -2,6 +2,7 @@ package com.artemissoftware.tasky.agenda.di
 
 import android.content.Context
 import com.artemissoftware.core.data.database.TaskyDatabase
+import com.artemissoftware.core.util.AlarmIntent
 import com.artemissoftware.tasky.agenda.data.alarm.AlarmSchedulerImpl
 import com.artemissoftware.tasky.agenda.data.compressor.ImageCompressorImpl
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
@@ -10,13 +11,14 @@ import com.artemissoftware.tasky.agenda.data.repositories.AttendeeRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.EventRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.ReminderRepositoryImpl
 import com.artemissoftware.tasky.agenda.data.repositories.TaskRepositoryImpl
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.compressor.ImageCompressor
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.AttendeeRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.TaskRepository
+import com.artemissoftware.tasky.util.AlarmIntentImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,5 +70,11 @@ object RepositoryModule {
     @Singleton
     fun provideImageCompressor(@ApplicationContext context: Context): ImageCompressor {
         return ImageCompressorImpl(context = context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlarmIntent(@ApplicationContext context: Context): AlarmIntent {
+        return AlarmIntentImpl(context = context)
     }
 }

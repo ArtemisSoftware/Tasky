@@ -3,7 +3,8 @@ package com.artemissoftware.tasky.agenda.data.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.tasky.agenda.data.mappers.toAlarmSpec
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetFutureAgendaItemsUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +27,8 @@ class AlarmBootUpReceiver : BroadcastReceiver() {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             CoroutineScope(job).launch {
                 val items = getFutureAgendaItemsUseCase()
-                items.forEach {
-                    alarmScheduler.schedule(it)
+                items.map { it.toAlarmSpec() }.forEach { alarmSpec ->
+                    alarmScheduler.schedule(alarmSpec)
                 }
             }
         }
