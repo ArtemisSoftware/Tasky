@@ -1,11 +1,12 @@
 package com.artemissoftware.tasky
 
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.AuthenticationException
+import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
-import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.authentication.domain.usecases.AuthenticateUseCase
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.artemissoftware.core.R as CoreR
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -29,6 +31,12 @@ class MainViewModel @Inject constructor(
 
     init {
         authenticate()
+    }
+
+    fun onTriggerEvent(event: MainEvents) {
+        when (event) {
+            MainEvents.ShowUserLoggedOutDialog -> { showUserLoggedOutDialog() }
+        }
     }
 
     private fun authenticate() {
@@ -49,5 +57,21 @@ class MainViewModel @Inject constructor(
                 else -> Unit
             }
         }
+    }
+
+    private fun showUserLoggedOutDialog(){
+        viewModelScope.launch {
+            _state.value.taskyDialogState.showDialog(getDialogData(ex = AuthenticationException.SessionExpired))
+        }
+    }
+
+    private fun getDialogData(ex: ValidationException): TaskyDialogType {
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.app_name),
+            description = ex.toUiText(),
+            dialogOptions = TaskyDialogOptions.SingleOption(
+                confirmationText = UiText.StringResource(CoreR.string.ok),
+            ),
+        )
     }
 }

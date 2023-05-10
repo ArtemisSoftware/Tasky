@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.authentication.domain.usecases
 
+import com.artemissoftware.core.data.mappers.toResource
 import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.DataResponse
@@ -16,8 +17,7 @@ class RegisterUserUseCase @Inject constructor(
 
         return when (result) {
             is DataResponse.Error -> {
-                val exception = result.exception?.description?.let { ValidationException.DataError(it) } ?: AuthenticationException.RegisterError
-                Resource.Error(exception)
+                result.exception.toResource(defaultException = AuthenticationException.RegisterError)
             }
             is DataResponse.Success -> {
                 Resource.Success(Unit)

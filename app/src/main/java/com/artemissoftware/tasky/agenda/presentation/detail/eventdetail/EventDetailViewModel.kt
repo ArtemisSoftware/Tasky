@@ -238,8 +238,12 @@ class EventDetailViewModel @Inject constructor(
 
     private fun updateStartDate(startDate: LocalDate) {
         updateState {
+
+            val endDate = if(startDate.isAfter(it.endDate.toLocalDate())) startDate else it.endDate
+
             it.copy(
                 startDate = it.startDate.with(startDate),
+                endDate = it.endDate.with(endDate)
             )
         }
     }
@@ -249,17 +253,24 @@ class EventDetailViewModel @Inject constructor(
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
+        val endDate = if(result.isAfter(value.endDate)) result.plusMinutes(30L) else result
+
         updateState {
             it.copy(
                 startDate = result,
+                endDate = endDate
             )
         }
     }
 
     private fun updateEndDate(endDate: LocalDate) {
         updateState {
+
+            val startDate = if(endDate.isBefore(it.startDate.toLocalDate())) endDate else it.startDate
+
             it.copy(
                 endDate = it.endDate.with(endDate),
+                startDate = it.startDate.with(startDate)
             )
         }
     }
@@ -269,9 +280,12 @@ class EventDetailViewModel @Inject constructor(
             .withHour(endTime.hour)
             .withMinute(endTime.minute)
 
+        val startDate = if(result.isBefore(value.startDate)) result.minusMinutes(30L) else result
+
         updateState {
             it.copy(
                 endDate = result,
+                startDate = startDate
             )
         }
     }

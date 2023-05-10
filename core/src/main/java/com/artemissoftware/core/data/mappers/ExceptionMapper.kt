@@ -10,8 +10,7 @@ fun<T> TaskyNetworkException?.toResource(defaultException: ValidationException):
             Resource.NotAuthenticated()
         }
         else{
-            val exception = description?.let { ValidationException.DataError(it) } ?: defaultException
-            Resource.Error(exception)
+            Resource.Error(ValidationException.DataError(description))
         }
     } ?: run { Resource.Error(defaultException)  }
 }

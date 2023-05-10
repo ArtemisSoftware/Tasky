@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.authentication.presentation.register
 
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
@@ -94,6 +95,9 @@ class RegisterViewModel @Inject constructor(
                             result.exception?.let {
                                 sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { register() })))
                             }
+                        }
+                        is Resource.NotAuthenticated ->{
+                            sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = AuthenticationException.RegisterError, reloadEvent = { register() })))
                         }
                         else -> Unit
                     }

@@ -246,7 +246,7 @@ private fun EventDetailScreenContent(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .height(112.dp),
-                                        isEditing = state.isEditing,
+                                        isEditing = state.isEditing && isNetworkConnectionAvailable,
                                         onAddPicturesClick = {
                                             singlePhotoPickerLauncher.launch(
                                                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
