@@ -26,7 +26,6 @@ object HandleApi {
                     throw ex
                 }
                 is HttpException -> {
-                    delay(1500L) // to stop error pop ups to show on screens
                     convertErrorBody(ex)?.let { error ->
                         throw TaskyNetworkException(
                             code = ex.code(),

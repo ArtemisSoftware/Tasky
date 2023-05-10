@@ -7,4 +7,6 @@ sealed class Resource<T>(val data: T? = null, val exception: ValidationException
     class Success<T>(data: T) : Resource<T>(data)
     class Error<T>(exception: ValidationException, data: T? = null) : Resource<T>(data, exception)
     class Loading<T>(data: T? = null) : Resource<T>(data)
+
+    class NotAuthenticated<T>: Resource<T>()
 }

@@ -87,7 +87,7 @@ class LoginViewModel @Inject constructor(
                                 sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { login() })))
                             }
                         }
-                        is Resource.Loading -> Unit
+                        else -> Unit
                     }
 
                     _state.update {

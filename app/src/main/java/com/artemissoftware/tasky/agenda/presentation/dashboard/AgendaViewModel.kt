@@ -136,7 +136,7 @@ class AgendaViewModel @Inject constructor(
                 is Resource.Success -> {
                     sendUiEvent(UiEvent.NavigateAndPopCurrent(LoginScreenDestination.route))
                 }
-                is Resource.Loading -> Unit
+                else -> Unit
             }
         }
     }

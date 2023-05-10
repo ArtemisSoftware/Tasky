@@ -95,7 +95,7 @@ class RegisterViewModel @Inject constructor(
                                 sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { register() })))
                             }
                         }
-                        is Resource.Loading -> Unit
+                        else -> Unit
                     }
 
                     _state.update {

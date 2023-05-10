@@ -13,7 +13,7 @@ class LoginUseCase @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) {
 
-    suspend operator fun invoke(email: String, password: String): Resource<Boolean> {
+    suspend operator fun invoke(email: String, password: String): Resource<Unit> {
         val result = authenticationRepository.loginUser(email = email, password = password)
 
         return when (result) {
@@ -29,7 +29,7 @@ class LoginUseCase @Inject constructor(
             }
             is DataResponse.Success -> {
                 result.data?.let { userStoreRepository.saveUser(it) }
-                Resource.Success(true)
+                Resource.Success(Unit)
             }
         }
     }

@@ -202,7 +202,7 @@ class EventDetailViewModel @Inject constructor(
                     }
                     closeAttendeeDialog()
                 }
-                is Resource.Loading -> Unit
+                else -> Unit
             }
         }
     }

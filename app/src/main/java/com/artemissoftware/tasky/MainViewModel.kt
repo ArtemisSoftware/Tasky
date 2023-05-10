@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
                         it.copy(showSplash = false, destinationAfterSplash = LoginScreenDestination)
                     }
                 }
-                is Resource.Loading -> Unit
+                else -> Unit
             }
         }
     }
