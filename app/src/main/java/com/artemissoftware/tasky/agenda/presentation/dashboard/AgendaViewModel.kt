@@ -1,26 +1,21 @@
 package com.artemissoftware.tasky.agenda.presentation.dashboard
 
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
-import com.artemissoftware.core.presentation.TaskyUiEventViewModel
+import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.core.util.extensions.nextDays
+import com.artemissoftware.core.util.extensions.secondsUntilNextFullMinute
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.models.DayOfWeek
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.GetAgendaItemsUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.LogOutUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncAgendaUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncLocalWithRemoteDataUseCase
-import com.artemissoftware.tasky.agenda.domain.usecase.agenda.SyncRemoteWithLocalDataUseCase
+import com.artemissoftware.tasky.agenda.domain.usecase.agenda.*
 import com.artemissoftware.tasky.agenda.domain.usecase.attendee.DeleteAttendeeUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.event.DeleteEventUseCase
 import com.artemissoftware.tasky.agenda.domain.usecase.reminder.DeleteReminderUseCase
@@ -32,11 +27,15 @@ import com.artemissoftware.tasky.destinations.LoginScreenDestination
 import com.artemissoftware.tasky.destinations.ReminderDetailScreenDestination
 import com.artemissoftware.tasky.destinations.TaskDetailScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
@@ -44,25 +43,22 @@ class AgendaViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getAgendaItemsUseCase: GetAgendaItemsUseCase,
     private val syncAgendaUseCase: SyncAgendaUseCase,
-    private val syncLocalWithRemoteDataUseCase: SyncLocalWithRemoteDataUseCase,
-    private val syncRemoteWithLocalDataUseCase: SyncRemoteWithLocalDataUseCase,
+    private val syncAgendaPeriodicallyUseCase: SyncAgendaPeriodicallyUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
     private val deleteAttendeeUseCase: DeleteAttendeeUseCase,
     private val completeTaskUseCase: CompleteTaskUseCase,
-    private val workManager: WorkManager,
 ) : TaskyUiEventViewModel() {
 
     private val _state = MutableStateFlow(AgendaState())
-    val state: StateFlow<AgendaState> = _state
-
+    val state: StateFlow<AgendaState> = _state.asStateFlow()
+    var needleJob: Job? = null
     init {
         updateDaysOfTheWeek(selectedDay = _state.value.selectedDayOfTheWeek)
         getUser()
-        getAgendaItems(date = LocalDate.now())
-        syncRemoteWithLocalData()
-        syncLocalWithRemoteDataUseCase()
+        updateAgenda(date = LocalDate.now())
+        syncAgendaPeriodicallyUseCase()
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -80,7 +76,7 @@ class AgendaViewModel @Inject constructor(
                 deleteItem(item = event.item)
             }
             is AgendaEvents.GoToDetail -> {
-                goToDetail(item = event.item)
+                goToDetail(item = event.item, isEditing = event.isEditing)
             }
             AgendaEvents.LogOut -> {
                 logout()
@@ -123,6 +119,12 @@ class AgendaViewModel @Inject constructor(
         updateAgenda(date = date)
     }
 
+    private fun syncAgenda(date: LocalDate) {
+        viewModelScope.launch {
+            syncAgendaUseCase(date = date)
+        }
+    }
+
     private fun logout() {
         viewModelScope.launch {
             val result = logOutUseCase.invoke()
@@ -161,17 +163,17 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    private fun goToDetail(item: AgendaItem) {
+    private fun goToDetail(item: AgendaItem, isEditing: Boolean) {
         viewModelScope.launch {
             when (item) {
                 is AgendaItem.Reminder -> {
-                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(reminderId = item.itemId).route))
+                    sendUiEvent(UiEvent.Navigate(ReminderDetailScreenDestination(id = item.itemId, isEditing = isEditing).route))
                 }
                 is AgendaItem.Task -> {
-                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(taskId = item.itemId).route))
+                    sendUiEvent(UiEvent.Navigate(TaskDetailScreenDestination(id = item.itemId, isEditing = isEditing).route))
                 }
                 is AgendaItem.Event -> {
-                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(eventId = item.itemId).route))
+                    sendUiEvent(UiEvent.Navigate(EventDetailScreenDestination(id = item.itemId, isEditing = isEditing).route))
                 }
             }
         }
@@ -193,33 +195,46 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
+    @OptIn(FlowPreview::class)
     private fun getAgendaItems(date: LocalDate) {
         viewModelScope.launch {
-            getAgendaItemsUseCase(date = date).debounce(100.milliseconds).collectLatest { result ->
+            getAgendaItemsUseCase(date = date).debounce(250.milliseconds).collectLatest { result ->
                 _state.update {
                     it.copy(
                         agendaItems = result,
+                        // needlePosition = NeedleLogic.showOnTop(result)
                     )
                 }
+                checkNeedlePosition(result)
             }
         }
     }
 
-    private fun syncRemoteWithLocalData() {
-        val workerId = syncRemoteWithLocalDataUseCase()
+    private suspend fun checkNeedlePosition(result: List<AgendaItem>) {
+        needleJob = viewModelScope.launch {
+            delay(LocalTime.now().secondsUntilNextFullMinute())
 
-        workManager.getWorkInfoByIdLiveData(workerId).observeForever { workInfo ->
-            when (workInfo.state) {
-                WorkInfo.State.SUCCEEDED -> { syncAgenda(date = LocalDate.now()) }
-                else -> Unit
+            while (true) {
+                _state.update {
+                    it.copy(
+                        needlePosition = getNeedlePosition(result),
+                    )
+                }
+                delay(60.seconds)
             }
         }
     }
 
-    private fun syncAgenda(date: LocalDate) {
-        viewModelScope.launch {
-            syncAgendaUseCase(date = date)
+    private fun getNeedlePosition(items: List<AgendaItem>): String {
+        val currentDate = LocalDateTime.now()
+        items.forEach { item ->
+
+            if (currentDate < item.starDate) {
+                return item.itemId
+            }
         }
+        needleJob?.cancel()
+        return ""
     }
 
     private fun updateDaysOfTheWeek(selectedDay: LocalDate) {

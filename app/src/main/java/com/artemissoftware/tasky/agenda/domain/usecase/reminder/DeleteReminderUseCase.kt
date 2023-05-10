@@ -1,7 +1,7 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.reminder
 
 import com.artemissoftware.core.domain.models.DataResponse
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.repositories.ReminderRepository
 import javax.inject.Inject
 

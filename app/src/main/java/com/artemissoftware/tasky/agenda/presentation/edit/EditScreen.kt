@@ -46,11 +46,6 @@ fun EditScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = Unit) {
-        // TODO: check if with hilt navigation I can get this object directly on the viewmodel and make this call on init
-        viewModel.onTriggerEvent(EditEvents.LoadData(text = text, editType = editType))
-    }
-
     EditScreenContent(
         state = state,
         events = viewModel::onTriggerEvent,

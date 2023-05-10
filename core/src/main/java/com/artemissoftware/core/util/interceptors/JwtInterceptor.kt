@@ -1,5 +1,6 @@
 package com.artemissoftware.core.util.interceptors
 
+import com.artemissoftware.core.domain.usecase.DeleteAllUserDataUseCase
 import com.artemissoftware.core.domain.usecase.GetUserUseCase
 import com.artemissoftware.core.util.annotations.NoJWTHeaderRequest
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +16,10 @@ import javax.inject.Inject
 private val _logOutState = MutableSharedFlow<Unit>(replay = 3)
 val logOutState = _logOutState.asSharedFlow()
 
-class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseCase) : Interceptor {
+class JwtInterceptor @Inject constructor(
+    private val getUserUseCase: GetUserUseCase,
+    private val deleteAllUserDataUseCase: DeleteAllUserDataUseCase,
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original: Request = chain.request()
@@ -39,6 +43,7 @@ class JwtInterceptor @Inject constructor(private val getUserUseCase: GetUserUseC
             if (response.code == 401) {
                 runBlocking {
                     _logOutState.emit(Unit)
+                    deleteAllUserDataUseCase()
                 }
             }
         }

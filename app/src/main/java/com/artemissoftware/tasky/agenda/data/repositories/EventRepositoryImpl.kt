@@ -13,17 +13,13 @@ import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.SyncState
 import com.artemissoftware.core.util.extensions.toEndOfDayEpochMilli
 import com.artemissoftware.core.util.extensions.toStartOfDayEpochMilli
-import com.artemissoftware.tasky.agenda.data.mappers.toAgendaItem
-import com.artemissoftware.tasky.agenda.data.mappers.toEntity
-import com.artemissoftware.tasky.agenda.data.mappers.toEventAndSyncState
-import com.artemissoftware.tasky.agenda.data.mappers.toEventEntity
+import com.artemissoftware.tasky.agenda.data.mappers.*
 import com.artemissoftware.tasky.agenda.data.remote.source.AgendaApiSource
-import com.artemissoftware.tasky.agenda.domain.alarm.AlarmScheduler
+import com.artemissoftware.core.domain.alarm.AlarmScheduler
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
 import com.artemissoftware.tasky.agenda.domain.repositories.EventRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import okhttp3.MultipartBody
 import java.time.LocalDate
 
 class EventRepositoryImpl constructor(
@@ -60,6 +56,7 @@ class EventRepositoryImpl constructor(
 
         return try {
             agendaApiSource.deleteEvent(eventId = id)
+            eventDao.upsertEventSync(EventSyncEntity(id = id, syncType = SyncType.SYNCED))
             DataResponse.Success(Unit)
         } catch (ex: TaskyNetworkException) {
             DataResponse.Error(exception = ex)
@@ -80,16 +77,19 @@ class EventRepositoryImpl constructor(
         return eventDao.getEventsToSync().map { it.toSyncState() }
     }
 
-    override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>) {
+    override suspend fun syncEventsWithRemote(events: List<AgendaItem.Event>, refreshPictures: Boolean) {
         events.map { it.toEventAndSyncState() }.forEachIndexed { index, item ->
 
             database.withTransaction {
                 eventDao.upsertSyncStateAndEvent(eventEntity = item.event, eventSyncEntity = item.syncState)
+                if (refreshPictures) {
+                    pictureDao.deletePictures(eventId = item.event.id)
+                }
                 pictureDao.upsert(pictures = item.pictures)
                 attendeeDao.upsert(attendees = item.attendees)
             }
 
-            alarmScheduler.schedule(events[index])
+            alarmScheduler.schedule(events[index].toAlarmSpec())
         }
     }
 }

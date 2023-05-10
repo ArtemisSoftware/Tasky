@@ -1,7 +1,7 @@
 package com.artemissoftware.tasky.agenda.presentation.photo
 
 import androidx.lifecycle.viewModelScope
-import com.artemissoftware.core.presentation.TaskyUiEventViewModel
+import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.tasky.agenda.presentation.edit.models.PictureRecipient
 import dagger.hilt.android.lifecycle.HiltViewModel

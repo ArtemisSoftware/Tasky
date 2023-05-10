@@ -1,8 +1,9 @@
 package com.artemissoftware.core.di
 
 import android.content.Context
-import com.artemissoftware.core.data.repositories.UserStoreRepositoryImpl
-import com.artemissoftware.core.domain.repositories.UserStoreRepository
+import com.artemissoftware.core.data.database.TaskyDatabase
+import com.artemissoftware.core.data.repositories.UserRepositoryImpl
+import com.artemissoftware.core.domain.repositories.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +17,7 @@ object TaskyRepositoryModule {
 
     @Provides
     @Singleton
-    fun provideUserStoreRepository(@ApplicationContext context: Context): UserStoreRepository {
-        return UserStoreRepositoryImpl(context = context)
+    fun provideUserRepository(@ApplicationContext context: Context, database: TaskyDatabase): UserRepository {
+        return UserRepositoryImpl(context = context, reminderDao = database.reminderDao, taskDao = database.taskDao, eventDao = database.eventDao)
     }
 }

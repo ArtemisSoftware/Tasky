@@ -5,12 +5,12 @@ import com.artemissoftware.core.domain.AgendaException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.DataResponse
 import com.artemissoftware.core.domain.models.Resource
-import com.artemissoftware.core.domain.repositories.UserStoreRepository
+import com.artemissoftware.core.domain.repositories.UserRepository
 import com.artemissoftware.tasky.agenda.domain.repositories.AgendaRepository
 import javax.inject.Inject
 
 class LogOutUseCase @Inject constructor(
-    private val userStoreRepository: UserStoreRepository,
+    private val userRepository: UserRepository,
     private val agendaRepository: AgendaRepository,
 ) {
 
@@ -23,7 +23,7 @@ class LogOutUseCase @Inject constructor(
             }
             is DataResponse.Success -> {
                 agendaRepository.deleteLocalAgenda()
-                userStoreRepository.deleteUser()
+                userRepository.deleteUser()
                 Resource.Success(Unit)
             }
         }

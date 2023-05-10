@@ -34,15 +34,16 @@ import com.artemissoftware.core.presentation.composables.topbar.TaskyToolBarActi
 import com.artemissoftware.core.presentation.composables.topbar.TaskyTopBar
 import com.artemissoftware.core.presentation.theme.Black
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.AgendaItemType
 import com.artemissoftware.tasky.agenda.composables.VisitorOptionType
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentDescription
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentHeader
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentNotification
 import com.artemissoftware.tasky.agenda.composables.assignment.VisitorItem
 import com.artemissoftware.tasky.agenda.composables.assignment.VisitorsHeader
+import com.artemissoftware.tasky.agenda.domain.models.AgendaItemType
 import com.artemissoftware.tasky.agenda.domain.models.Attendee
 import com.artemissoftware.tasky.agenda.presentation.dashboard.composables.PhotoGallery
+import com.artemissoftware.tasky.agenda.presentation.dashboard.models.AgendaItemStyle
 import com.artemissoftware.tasky.agenda.presentation.detail.DetailEvents
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.DetailDivider
 import com.artemissoftware.tasky.agenda.presentation.detail.composables.TimeInterval
@@ -55,17 +56,26 @@ import com.artemissoftware.tasky.destinations.EditScreenDestination
 import com.artemissoftware.tasky.destinations.PhotoScreenDestination
 import com.artemissoftware.tasky.util.DateTimePicker
 import com.artemissoftware.tasky.util.VisibilityTransitions
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.FULL_ROUTE_PLACEHOLDER
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.result.getOr
 
-@Destination
+@Destination(
+    deepLinks = [
+        DeepLink(
+            uriPattern = "https://tasky.com/$FULL_ROUTE_PLACEHOLDER",
+        ),
+    ],
+)
 @Composable
 fun EventDetailScreen(
     viewModel: EventDetailViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    eventId: String? = null,
+    id: String? = null,
+    isEditing: Boolean = false,
     resultRecipient: ResultRecipient<EditScreenDestination, EditRecipient>,
     pictureRecipient: ResultRecipient<PhotoScreenDestination, PictureRecipient>,
 ) {
@@ -191,7 +201,7 @@ private fun EventDetailScreenContent(
                         ) {
                             item {
                                 AssignmentHeader(
-                                    agendaItemType = AgendaItemType.Event,
+                                    agendaItemStyle = AgendaItemStyle.Event,
                                     title = state.title,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -216,7 +226,7 @@ private fun EventDetailScreenContent(
                                     description = state.description,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
+                                        .padding(horizontal = 16.dp).padding(bottom = 20.dp),
                                     onEditClick = {
                                         events(DetailEvents.EditDescription(it))
                                     },
@@ -230,30 +240,32 @@ private fun EventDetailScreenContent(
                                         .padding(horizontal = 16.dp),
                                 )
                             }
-                            item {
-                                PhotoGallery(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(112.dp),
-                                    isEditing = state.isEditing && state.isEventCreator && isNetworkConnectionAvailable,
-                                    onAddPicturesClick = {
-                                        singlePhotoPickerLauncher.launch(
-                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                                        )
-                                    },
-                                    pictures = state.pictures,
-                                    onPictureClick = {
-                                        events(DetailEvents.GoToPicture(picture = it))
-                                    },
-                                )
+                            if (state.isEventCreator) {
+                                item {
+                                    PhotoGallery(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(112.dp),
+                                        isEditing = state.isEditing,
+                                        onAddPicturesClick = {
+                                            singlePhotoPickerLauncher.launch(
+                                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                                            )
+                                        },
+                                        pictures = state.pictures,
+                                        onPictureClick = {
+                                            events(DetailEvents.GoToPicture(picture = it))
+                                        },
+                                    )
 
-                                DetailDivider(
-                                    top = 20.dp,
-                                    bottom = 28.dp,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                )
+                                    DetailDivider(
+                                        top = 20.dp,
+                                        bottom = 28.dp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    )
+                                }
                             }
                             item {
                                 TimeInterval(

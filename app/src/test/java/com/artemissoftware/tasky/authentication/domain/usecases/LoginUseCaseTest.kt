@@ -1,6 +1,6 @@
 package com.artemissoftware.tasky.authentication.domain.usecases
 
-import com.artemissoftware.core.data.repositories.FakeUserStoreRepository
+import com.artemissoftware.core.data.repositories.FakeUserRepository
 import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
@@ -18,15 +18,15 @@ class LoginUseCaseTest: BaseUseCaseTest() {
 
     private lateinit var loginUseCase: LoginUseCase
 
-    private lateinit var userStoreRepository: FakeUserStoreRepository
+    private lateinit var userStoreRepository: FakeUserRepository
     private lateinit var authenticationRepository: FakeAuthenticationRepository
 
     @Before
     fun setUp() {
 
-        userStoreRepository = FakeUserStoreRepository()
+        userStoreRepository = FakeUserRepository()
         authenticationRepository = FakeAuthenticationRepository()
-        loginUseCase = LoginUseCase(userStoreRepository = userStoreRepository, authenticationRepository = authenticationRepository)
+        loginUseCase = LoginUseCase(userRepository = userStoreRepository, authenticationRepository = authenticationRepository)
     }
 
     @Test

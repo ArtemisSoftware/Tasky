@@ -1,10 +1,15 @@
 package com.artemissoftware.core.presentation.composables.scaffold
 
+import android.os.Parcelable
 import androidx.compose.runtime.mutableStateOf
 import com.artemissoftware.core.presentation.composables.snackbar.TaskySnackBarType
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
-class TaskySnackBarState {
+@Parcelize
+class TaskySnackBarState : Parcelable {
 
+    @IgnoredOnParcel
     var snackbar = mutableStateOf<TaskySnackBarType?>(null)
         private set
 

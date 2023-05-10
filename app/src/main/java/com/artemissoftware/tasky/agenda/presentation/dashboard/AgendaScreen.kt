@@ -36,13 +36,14 @@ import com.artemissoftware.core.presentation.composables.menu.TaskyPopupMenu
 import com.artemissoftware.core.presentation.composables.scaffold.TaskyScaffold
 import com.artemissoftware.core.presentation.composables.text.TaskyText
 import com.artemissoftware.core.presentation.theme.Black
+import com.artemissoftware.core.presentation.theme.Light
 import com.artemissoftware.core.presentation.theme.LightBlue
 import com.artemissoftware.core.presentation.theme.White
 import com.artemissoftware.core.util.constants.DateTimePatternsConstants
 import com.artemissoftware.core.util.constants.DateTimePatternsConstants.DATE_PATTERN_MONTH
 import com.artemissoftware.core.util.extensions.format
 import com.artemissoftware.tasky.R
-import com.artemissoftware.tasky.agenda.AgendaItemType
+import com.artemissoftware.tasky.agenda.composables.Needle
 import com.artemissoftware.tasky.agenda.composables.WeekDay
 import com.artemissoftware.tasky.agenda.composables.assignment.AssignmentCard
 import com.artemissoftware.tasky.agenda.domain.models.AgendaItem
@@ -142,7 +143,7 @@ private fun AgendaScreenContent(
                             TaskyDropDownItem(text = stringResource(id = it.descriptionId))
                         },
                         placeHolder = {
-                            TaskyAvatar(text = state.userName, circleColor = LightBlue)
+                            TaskyAvatar(text = state.userName, circleColor = Light, textColor = LightBlue)
                         },
                     )
                 },
@@ -168,7 +169,9 @@ private fun AgendaScreenContent(
                 TaskyContentSurface(
                     content = {
                         Column(
-                            modifier = Modifier.padding(horizontal = 16.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 4.dp),
                         ) {
                             LazyRow(
                                 state = listWeekDaysState,
@@ -214,7 +217,6 @@ private fun AgendaScreenContent(
 
                             LazyColumn(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
                                 items(
                                     items = state.agendaItems,
@@ -222,7 +224,19 @@ private fun AgendaScreenContent(
                                         it.itemId
                                     },
                                     itemContent = { item ->
+
+                                        var paddingTop = 16.dp
+                                        if (item.itemId == state.needlePosition) {
+                                            Needle(
+                                                modifier = Modifier
+                                                    .fillMaxWidth(),
+                                                radius = 24F,
+                                                color = Black,
+                                            )
+                                            paddingTop = 0.dp
+                                        }
                                         AssignmentCard(
+                                            modifier = Modifier.padding(top = paddingTop),
                                             agendaItem = item,
                                             onCheckedChange = {
                                                 if (item is AgendaItem.Task) events(AgendaEvents.CompleteAssignment(item))
@@ -241,6 +255,14 @@ private fun AgendaScreenContent(
                                                 }
                                             },
                                         )
+                                        if (state.needlePosition == "") {
+                                            Needle(
+                                                modifier = Modifier
+                                                    .fillMaxWidth(),
+                                                radius = 24F,
+                                                color = Black,
+                                            )
+                                        }
                                     },
                                 )
                             }
@@ -250,14 +272,6 @@ private fun AgendaScreenContent(
             }
         },
     )
-}
-
-private fun getAgendaItemType(item: AgendaItem): AgendaItemType {
-    return when (item) {
-        is AgendaItem.Reminder -> AgendaItemType.Reminder
-        is AgendaItem.Task -> AgendaItemType.Task
-        is AgendaItem.Event -> AgendaItemType.Event
-    }
 }
 
 @Preview(showBackground = true)
