@@ -255,7 +255,7 @@ private fun AgendaScreenContent(
                                                 }
                                             },
                                         )
-                                        if (state.needlePosition == "") {
+                                        if (state.needlePosition == "" && state.agendaItems.last() == item) {
                                             Needle(
                                                 modifier = Modifier
                                                     .fillMaxWidth(),

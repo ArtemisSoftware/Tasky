@@ -47,12 +47,7 @@ class AgendaSynchronizerImpl(
     }
 
     override fun syncLocalWithRemoteData(): UUID {
-        val syncWorker = PeriodicWorkRequestBuilder<SyncLocalWithRemoteDataWorker>(
-            repeatInterval = 15,
-            TimeUnit.MINUTES,
-            flexTimeInterval = 5,
-            TimeUnit.MINUTES,
-        )
+        val syncWorker = OneTimeWorkRequestBuilder<SyncLocalWithRemoteDataWorker>()
             .setConstraints(
                 Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -60,12 +55,11 @@ class AgendaSynchronizerImpl(
             )
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, Duration.ofMinutes(5))
             .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            "sync_local_with_remote",
-            ExistingPeriodicWorkPolicy.REPLACE,
+        workManager.beginUniqueWork(
+            "sync_remote_with_local",
+            ExistingWorkPolicy.APPEND_OR_REPLACE,
             syncWorker,
-        )
+        ).enqueue()
 
         return syncWorker.id
     }

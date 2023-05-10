@@ -59,6 +59,7 @@ class AgendaViewModel @Inject constructor(
         getUser()
         updateAgenda(date = LocalDate.now())
         syncAgendaPeriodicallyUseCase()
+        syncAgendaUseCase()
     }
 
     fun onTriggerEvent(event: AgendaEvents) {
@@ -95,7 +96,6 @@ class AgendaViewModel @Inject constructor(
 
     private fun updateAgenda(date: LocalDate) {
         getAgendaItems(date = date)
-        syncAgenda(date = date)
     }
 
     private fun changeDate(date: LocalDate) {
@@ -117,12 +117,6 @@ class AgendaViewModel @Inject constructor(
             )
         }
         updateAgenda(date = date)
-    }
-
-    private fun syncAgenda(date: LocalDate) {
-        viewModelScope.launch {
-            syncAgendaUseCase(date = date)
-        }
     }
 
     private fun logout() {
@@ -198,11 +192,10 @@ class AgendaViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     private fun getAgendaItems(date: LocalDate) {
         viewModelScope.launch {
-            getAgendaItemsUseCase(date = date).debounce(250.milliseconds).collectLatest { result ->
+            getAgendaItemsUseCase(date = date).debounce(500.milliseconds).collectLatest { result ->
                 _state.update {
                     it.copy(
                         agendaItems = result,
-                        // needlePosition = NeedleLogic.showOnTop(result)
                     )
                 }
                 checkNeedlePosition(result)
