@@ -56,7 +56,7 @@ class AgendaSynchronizerImpl(
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, Duration.ofMinutes(5))
             .build()
         workManager.beginUniqueWork(
-            "sync_remote_with_local",
+            "sync_local_with_remote",
             ExistingWorkPolicy.APPEND_OR_REPLACE,
             syncWorker,
         ).enqueue()

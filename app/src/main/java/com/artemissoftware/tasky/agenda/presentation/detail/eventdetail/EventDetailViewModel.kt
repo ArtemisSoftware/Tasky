@@ -1,6 +1,7 @@
 package com.artemissoftware.tasky.agenda.presentation.detail.eventdetail
 
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.lifecycle.SavedStateHandle
@@ -236,57 +237,72 @@ class EventDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateStartDate(startDate: LocalDate) {
-        updateState {
+    private fun updateStartDate(startDate: LocalDate) = with(_state.value) {
 
-            val endDate = if(startDate.isAfter(it.endDate.toLocalDate())) startDate else it.endDate
-
-            it.copy(
-                startDate = it.startDate.with(startDate),
-                endDate = it.endDate.with(endDate)
-            )
+        if(startDate.isAfter(endDate.toLocalDate())) {
+            changeDateWarning(R.string.start_date_cannot_be_after_end_date)
+        }
+        else {
+            updateState {
+                it.copy(
+                    startDate = it.startDate.with(startDate)
+                )
+            }
         }
     }
 
-    private fun updateStartTime(startTime: LocalTime) = with(_state) {
-        val result = value.startDate
+    private fun updateStartTime(startTime: LocalTime) = with(_state.value) {
+        val result = startDate
             .withHour(startTime.hour)
             .withMinute(startTime.minute)
 
-        val endDate = if(result.isAfter(value.endDate)) result.plusMinutes(30L) else result
-
-        updateState {
-            it.copy(
-                startDate = result,
-                endDate = endDate
-            )
+        if(result.isAfter(endDate)){
+            changeDateWarning(R.string.start_time_cannot_be_after_end_time)
+        }
+        else {
+            updateState {
+                it.copy(
+                    startDate = result,
+                )
+            }
         }
     }
 
-    private fun updateEndDate(endDate: LocalDate) {
-        updateState {
+    private fun updateEndDate(endDate: LocalDate) = with(_state.value) {
 
-            val startDate = if(endDate.isBefore(it.startDate.toLocalDate())) endDate else it.startDate
+        if(endDate.isBefore(startDate.toLocalDate())){
+            changeDateWarning(R.string.end_date_cannot_be_before_start_date)
+        }
+        else {
+            updateState {
 
-            it.copy(
-                endDate = it.endDate.with(endDate),
-                startDate = it.startDate.with(startDate)
-            )
+                it.copy(
+                    endDate = it.endDate.with(endDate),
+                )
+            }
         }
     }
 
-    private fun updateEndTime(endTime: LocalTime) = with(_state) {
-        val result = value.endDate
+    private fun updateEndTime(endTime: LocalTime) = with(_state.value) {
+        val result = endDate
             .withHour(endTime.hour)
             .withMinute(endTime.minute)
 
-        val startDate = if(result.isBefore(value.startDate)) result.minusMinutes(30L) else result
+        if(result.isBefore(startDate)){
+            changeDateWarning(R.string.end_time_cannot_be_before_start_time)
+        }
+        else {
+            updateState {
+                it.copy(
+                    endDate = result
+                )
+            }
+        }
+    }
 
-        updateState {
-            it.copy(
-                endDate = result,
-                startDate = startDate
-            )
+    private fun changeDateWarning(@StringRes textId: Int) {
+        viewModelScope.launch {
+            sendUiEvent(UiEvent.ShowDialog(getDateWarningDialogData(text = textId)))
         }
     }
 
@@ -495,6 +511,16 @@ class EventDetailViewModel @Inject constructor(
                     deleteEvent()
                 },
                 cancelText = UiText.StringResource(CoreR.string.cancel),
+            ),
+        )
+    }
+
+    private fun getDateWarningDialogData(@StringRes text: Int): TaskyDialogType {
+        return TaskyDialogType.Error(
+            title = UiText.StringResource(R.string.event),
+            description = UiText.StringResource(text),
+            dialogOptions = TaskyDialogOptions.SingleOption(
+                confirmationText = UiText.StringResource(CoreR.string.ok),
             ),
         )
     }
