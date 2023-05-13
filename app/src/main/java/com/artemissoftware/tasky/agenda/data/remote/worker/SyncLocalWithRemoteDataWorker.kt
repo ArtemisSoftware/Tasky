@@ -27,7 +27,7 @@ class SyncLocalWithRemoteDataWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        val result = agendaRepository.getAgenda(LocalDate.now())
+        val result = agendaRepository.getFullAgenda()
 
         when (result) {
             is DataResponse.Error -> {

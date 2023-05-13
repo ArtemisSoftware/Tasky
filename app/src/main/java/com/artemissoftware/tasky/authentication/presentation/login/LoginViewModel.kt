@@ -1,18 +1,19 @@
 package com.artemissoftware.tasky.authentication.presentation.login
 
 import androidx.lifecycle.viewModelScope
+import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.Resource
-import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
+import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogOptions
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialogType
 import com.artemissoftware.core.presentation.composables.textfield.TaskyTextFieldValidationStateType
+import com.artemissoftware.core.presentation.events.TaskyUiEventViewModel
 import com.artemissoftware.core.presentation.events.UiEvent
 import com.artemissoftware.core.presentation.mappers.toUiText
 import com.artemissoftware.core.util.UiText
 import com.artemissoftware.tasky.R
 import com.artemissoftware.tasky.authentication.domain.usecases.LoginUseCase
-import com.artemissoftware.core.domain.usecase.validation.ValidateEmailUseCase
 import com.artemissoftware.tasky.authentication.domain.usecases.validation.ValidatePasswordUseCase
 import com.artemissoftware.tasky.destinations.AgendaScreenDestination
 import com.artemissoftware.tasky.destinations.RegisterScreenDestination
@@ -87,7 +88,10 @@ class LoginViewModel @Inject constructor(
                                 sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = it, reloadEvent = { login() })))
                             }
                         }
-                        is Resource.Loading -> Unit
+                        is Resource.NotAuthenticated ->{
+                            sendUiEvent(UiEvent.ShowDialog(getDialogData(ex = AuthenticationException.LoginError, reloadEvent = { login() })))
+                        }
+                        else -> Unit
                     }
 
                     _state.update {

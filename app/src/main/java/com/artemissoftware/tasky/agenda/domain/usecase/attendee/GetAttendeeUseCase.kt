@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.agenda.domain.usecase.attendee
 
+import com.artemissoftware.core.data.mappers.toResource
 import com.artemissoftware.core.domain.AgendaException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.DataResponse
@@ -17,16 +18,16 @@ class GetAttendeeUseCase @Inject constructor(
 
         return when (result) {
             is DataResponse.Error -> {
-                val exception = result.exception?.let {
-                    if (it.code == 409) {
-                        AgendaException.AttendeeCannotAddItself(it.description)
-                    }
-                    else{
-                        ValidationException.DataError(it.description)
-                    }
-                } ?: AgendaException.AttendeeError
 
-                Resource.Error(exception)
+                var resource = result.exception.toResource<Attendee>(defaultException = AgendaException.AttendeeError)
+
+                result.exception?.let {
+                    if (it.code == 409) {
+                        resource = Resource.Error(AgendaException.AttendeeCannotAddItself(it.description))
+                    }
+                }
+
+                resource
             }
             is DataResponse.Success -> {
                 result.data?.let { Resource.Success(it) } ?: Resource.Error(AgendaException.AttendeeDoesNotExist)

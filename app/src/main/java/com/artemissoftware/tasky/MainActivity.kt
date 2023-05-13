@@ -19,9 +19,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import com.artemissoftware.core.presentation.composables.dialog.TaskyDialog
 import com.artemissoftware.core.util.interceptors.logOutState
-import com.artemissoftware.tasky.authentication.presentation.login.ManageUIEvents
-import com.artemissoftware.tasky.destinations.AgendaScreenDestination
 import com.artemissoftware.tasky.destinations.LoginScreenDestination
+import com.artemissoftware.tasky.destinations.RegisterScreenDestination
 import com.artemissoftware.tasky.ui.theme.TaskyTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +44,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     val navController = rememberNavController()
-                    MainScreen(viewModel, navController)
+                    MainScreen(
+                        events = viewModel::onTriggerEvent,
+                        state = viewModel.state.collectAsStateWithLifecycle().value,
+                        navController = navController
+                    )
                 }
             }
         }
@@ -53,15 +56,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun MainScreen(viewModel: MainViewModel, navController: NavHostController) {
-    val state = viewModel.state.collectAsStateWithLifecycle().value
-
-    state.taskyDialogState.dialog.value?.let {
-        TaskyDialog(
-            taskyDialogType = it,
-            onDialogDismiss = { state.taskyDialogState.closeDialog() },
-        )
-    }
+private fun MainScreen(
+    events: (MainEvents) -> Unit,
+    navController: NavHostController,
+    state: MainState
+) {
 
     state.destinationAfterSplash?.let {
         DestinationsNavHost(
@@ -70,33 +69,49 @@ private fun MainScreen(viewModel: MainViewModel, navController: NavHostControlle
             navController = navController,
         )
         navController
-        LogOut(navController = navController)
+        LogOut(navController = navController, events)
     }
 
-
-    ManageUIEvents(
-        uiEvent = viewModel.uiEvent,
-        showDialog = {
-            state.taskyDialogState.showDialog(it)
-        },
-    )
+    state.taskyDialogState.dialog.value?.let {
+        TaskyDialog(
+            taskyDialogType = it,
+            onDialogDismiss = {
+                state.taskyDialogState.closeDialog()
+                navigateToLogin(navController)
+            },
+        )
+    }
 }
 
 @Composable
-fun LogOut(navController: NavHostController) {
-//    DestinationsNavHost(
-//        navGraph = NavGraphs.root,
-//        startRoute = LoginScreenDestination,
-//        navController = navController
-//    )
+fun LogOut(navController: NavHostController, events: (MainEvents) -> Unit) {
     LaunchedEffect(key1 = Unit) {
         logOutState.collect {
-            navController.navigate(
-                route = LoginScreenDestination().route,
-                navOptions = NavOptions.Builder().setPopUpTo(navController.currentDestination?.route, inclusive = true).build(),
-            )
+            if (showSessionExpiredDialog(navController)) {
+                events(MainEvents.ShowUserLoggedOutDialog)
+            }
         }
     }
+}
+
+private fun showSessionExpiredDialog(navController: NavHostController): Boolean{
+    return navController.currentDestination?.let { destination ->
+
+        if(destination.route == LoginScreenDestination().route
+            || destination.route == RegisterScreenDestination().route){
+            false
+        }
+        else true
+    } ?: true
+}
+
+private fun navigateToLogin(navController: NavHostController){
+    navController.navigate(
+        route = LoginScreenDestination().route,
+        navOptions = NavOptions.Builder()
+            .setPopUpTo(navController.currentDestination?.route, inclusive = true)
+            .build(),
+    )
 }
 
 @Composable

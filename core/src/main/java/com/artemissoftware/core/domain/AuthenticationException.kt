@@ -6,4 +6,5 @@ sealed class AuthenticationException : ValidationException() {
     object RegisterError : AuthenticationException()
 
     object UserNotAuthenticated : AuthenticationException()
+    object SessionExpired : AuthenticationException()
 }

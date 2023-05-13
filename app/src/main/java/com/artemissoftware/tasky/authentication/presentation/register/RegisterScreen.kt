@@ -56,6 +56,7 @@ private fun RegisterScreenContent(
 ) {
     TaskyScaffold(
         isLoading = state.isLoading,
+        taskyScaffoldState = state.scaffoldState,
         backgroundColor = Black,
         content = {
             Column(

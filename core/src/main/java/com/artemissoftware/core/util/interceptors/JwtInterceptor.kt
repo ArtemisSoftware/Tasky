@@ -38,6 +38,7 @@ class JwtInterceptor @Inject constructor(
         } ?: kotlin.run {
             chain.proceed(original)
         }
+
         return chain.also { response ->
             if (response.code == 401) {
                 runBlocking {

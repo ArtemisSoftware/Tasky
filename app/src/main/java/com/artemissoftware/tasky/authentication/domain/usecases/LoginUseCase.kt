@@ -1,5 +1,6 @@
 package com.artemissoftware.tasky.authentication.domain.usecases
 
+import com.artemissoftware.core.data.mappers.toResource
 import com.artemissoftware.core.domain.AuthenticationException
 import com.artemissoftware.core.domain.ValidationException
 import com.artemissoftware.core.domain.models.DataResponse
@@ -13,17 +14,16 @@ class LoginUseCase @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
 ) {
 
-    suspend operator fun invoke(email: String, password: String): Resource<Boolean> {
+    suspend operator fun invoke(email: String, password: String): Resource<Unit> {
         val result = authenticationRepository.loginUser(email = email, password = password)
 
         return when (result) {
             is DataResponse.Error -> {
-                val exception = result.exception?.description?.let { ValidationException.DataError(it) } ?: AuthenticationException.LoginError
-                Resource.Error(exception)
+                result.exception.toResource(defaultException = AuthenticationException.LoginError)
             }
             is DataResponse.Success -> {
                 result.data?.let { userRepository.saveUser(it) }
-                Resource.Success(true)
+                Resource.Success(Unit)
             }
         }
     }

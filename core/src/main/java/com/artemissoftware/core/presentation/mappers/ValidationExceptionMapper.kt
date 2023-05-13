@@ -31,5 +31,8 @@ fun ValidationException.toUiText(): UiText {
         }
         is AgendaException.NotValidPictures -> this.uiText
         is AgendaException.AttendeeCannotAddItself -> this.uiText
+        AuthenticationException.SessionExpired -> {
+            UiText.StringResource(R.string.session_has_expired)
+        }
     }
 }
